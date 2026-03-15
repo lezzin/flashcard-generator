@@ -5,7 +5,7 @@ namespace App\Actions\Anki;
 use Illuminate\Support\Facades\Http;
 use Exception;
 
-class AnkiService
+class InvokeAction
 {
     protected string $url;
 
