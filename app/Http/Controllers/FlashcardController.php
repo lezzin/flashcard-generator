@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Anki\ValidateConnectionAction;
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
-use App\Pipelines\Flashcard\FlashcardPipeline;
+use App\Jobs\GenerateFlashcardsJob;
 use App\Pipelines\Flashcard\FlashcardReprocessPipeline;
 
 class FlashcardController extends Controller
@@ -12,7 +12,11 @@ class FlashcardController extends Controller
     public function generate(FlashcardGenerateRequest $request)
     {
         app(ValidateConnectionAction::class)->execute();
-        FlashcardPipeline::handle($request->post('content'), $request->post('title'));
+
+        dispatch(new GenerateFlashcardsJob(
+            content: $request->post('content'),
+            title: $request->post('title'),
+        ))->onQueue('flashcard:generate');
 
         return response()->noContent();
     }
