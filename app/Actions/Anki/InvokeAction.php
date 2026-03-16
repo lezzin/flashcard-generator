@@ -14,7 +14,7 @@ class InvokeAction
         $this->url = config('services.anki.host');
     }
 
-    public function __invoke(string $action, array $params = []): mixed
+    public function execute(string $action, array $params = []): mixed
     {
         $requestJson = $this->getRequestPayload($action, $params);
         $response = Http::timeout(60)->post($this->url, $requestJson);

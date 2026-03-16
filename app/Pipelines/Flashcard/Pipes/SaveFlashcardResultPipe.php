@@ -11,13 +11,13 @@ class SaveFlashcardResultPipe
 {
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
-        $filename = Date::now()->timestamp;
+        $context->filename = Date::now()->timestamp;
 
         $json = $context->results
             ->map(fn($card) => $card->toArray())
             ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        Storage::disk('public')->put("flashcards/{$filename}.json", $json);
+        Storage::disk('public')->put("flashcards/{$context->filename}.json", $json);
 
         return $next($context);
     }

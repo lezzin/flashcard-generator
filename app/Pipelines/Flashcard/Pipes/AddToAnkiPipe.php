@@ -9,10 +9,17 @@ use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardTypes;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AddToAnkiPipe
 {
+    private const CHUNK_SIZE = 50;
+
+    public function __construct(
+        private readonly HighlightKeywordsAction $highlightKeywordsAction
+    ) {}
+
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
         if ($context->results->isEmpty()) {
@@ -23,15 +30,17 @@ class AddToAnkiPipe
             ->map(fn($card) => $this->buildPayload($card));
 
         $improvedPayloads = $payloads
-            ->chunk(50)
+            ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn($chunk) => (new HighlightKeywordsAction)($chunk)
+                fn($chunk) => $this->highlightKeywordsAction->execute($chunk)
             );
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
 
-        (new CreateDeckAction)($deckName);
-        (new AddNotesAction)($improvedPayloads->values()->toArray());
+        app(CreateDeckAction::class)->execute($deckName);
+        app(AddNotesAction::class)->execute($improvedPayloads->values()->toArray());
+
+        Storage::disk('public')->delete("flashcards/{$context->filename}.json");
 
         return $next($context);
     }

@@ -4,11 +4,9 @@ namespace App\Actions\Flashcard;
 
 use App\Enums\CardTypes;
 use App\Prompts\FlashcardHighlightPrompt;
-use Gemini\Data\GenerationConfig;
+use App\Actions\Gemini\GenerateJsonAction;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
-use Gemini\Enums\ResponseMimeType;
-use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Collection;
 
 class HighlightKeywordsAction
@@ -19,7 +17,11 @@ class HighlightKeywordsAction
         "background-color: #F1F8E9; color: #33691E;"
     ];
 
-    public function __invoke(Collection $notes): Collection
+    public function __construct(
+        private readonly GenerateJsonAction $generateJsonAction
+    ) {}
+
+    public function execute(Collection $notes): Collection
     {
         $texts = $this->extractTexts($notes);
         $keywordsList = $this->getKeywords($texts);
@@ -56,38 +58,34 @@ class HighlightKeywordsAction
 
     private function getKeywords(array $texts): array
     {
-        $response = Gemini::generativeModel('gemini-2.5-flash')
-            ->withGenerationConfig(
-                new GenerationConfig(
-                    responseMimeType: ResponseMimeType::APPLICATION_JSON,
-                    responseSchema: new Schema(
+        $schema = new Schema(
+            type: DataType::OBJECT,
+            properties: [
+                'results' => new Schema(
+                    type: DataType::ARRAY,
+                    items: new Schema(
                         type: DataType::OBJECT,
                         properties: [
-                            'results' => new Schema(
+                            'keywords' => new Schema(
                                 type: DataType::ARRAY,
-                                items: new Schema(
-                                    type: DataType::OBJECT,
-                                    properties: [
-                                        'keywords' => new Schema(
-                                            type: DataType::ARRAY,
-                                            items: new Schema(type: DataType::STRING),
-                                            minItems: 1,
-                                            maxItems: 3
-                                        )
-                                    ],
-                                    required: ['keywords']
-                                )
+                                items: new Schema(type: DataType::STRING),
+                                minItems: 1,
+                                maxItems: 3
                             )
                         ],
-                        required: ['results']
+                        required: ['keywords']
                     )
                 )
-            )
-            ->generateContent(
-                FlashcardHighlightPrompt::handle($texts)
-            );
+            ],
+            required: ['results']
+        );
 
-        return $response->json()->results ?? [];
+        $data = $this->generateJsonAction->execute(
+            FlashcardHighlightPrompt::handle($texts),
+            $schema
+        );
+
+        return $data->results ?? [];
     }
 
     private function applyStyling(string $text, array $keywords): string

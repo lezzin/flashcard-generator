@@ -4,37 +4,35 @@ namespace App\Pipelines\Summary\Pipes;
 
 use App\Pipelines\Summary\SummaryPipelineContext;
 use App\Prompts\SummaryGeneratePrompt;
+use App\Actions\Gemini\GenerateJsonAction;
 use Closure;
-use Gemini\Data\GenerationConfig;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
-use Gemini\Enums\ResponseMimeType;
-use Gemini\Laravel\Facades\Gemini;
 use Exception;
 
 class GenerateSummaryPipe
 {
+    public function __construct(
+        private readonly GenerateJsonAction $generateJsonAction
+    ) {}
+
     public function handle(SummaryPipelineContext $context, Closure $next)
     {
         $context->results = $context->blocks->map(function (array $block) {
             try {
-                $response = Gemini::generativeModel('gemini-2.5-flash')
-                    ->withGenerationConfig(
-                        generationConfig: new GenerationConfig(
-                            responseMimeType: ResponseMimeType::APPLICATION_JSON,
-                            responseSchema: new Schema(
-                                type: DataType::OBJECT,
-                                properties: [
-                                    'title' => new Schema(type: DataType::STRING),
-                                    'summary' => new Schema(type: DataType::STRING),
-                                ],
-                                required: ['title', 'summary'],
-                            )
-                        )
-                    )
-                    ->generateContent(SummaryGeneratePrompt::handle(null, $block['content']));
+                $schema = new Schema(
+                    type: DataType::OBJECT,
+                    properties: [
+                        'title' => new Schema(type: DataType::STRING),
+                        'summary' => new Schema(type: DataType::STRING),
+                    ],
+                    required: ['title', 'summary'],
+                );
 
-                return $response->json();
+                return $this->generateJsonAction->execute(
+                    SummaryGeneratePrompt::handle(null, $block['content']),
+                    $schema
+                );
             } catch (Exception $e) {
                 // If a block fails, we return a placeholder to avoid breaking the whole process
                 // In a real scenario, we might want to log this or retry.

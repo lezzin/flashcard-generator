@@ -12,6 +12,8 @@ class FlashcardPipelineContext
     /** @var Collection<int, \App\DTOs\GeneratedFlashcardDto> */
     public Collection $results;
 
+    public ?string $filename;
+
     public function __construct(
         public readonly string $content
     ) {
