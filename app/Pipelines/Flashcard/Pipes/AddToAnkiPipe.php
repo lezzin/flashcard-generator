@@ -23,11 +23,19 @@ class AddToAnkiPipe
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
         if ($context->results->isEmpty()) {
+            $context->log('AddToAnkiPipe skipped: No cards to add');
+
             return $next($context);
         }
 
+        $context->log('AddToAnkiPipe started', [
+            'card_count' => $context->results->count()
+        ]);
+
         $payloads = $context->results
             ->map(fn($card) => $this->buildPayload($card));
+
+        $context->log('Highlighting keywords');
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
@@ -37,8 +45,16 @@ class AddToAnkiPipe
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
 
+        $context->log("Adding cards to Anki", [
+            'deck' => $deckName
+        ]);
+
         app(CreateDeckAction::class)->execute($deckName);
         app(AddNotesAction::class)->execute($improvedPayloads->values()->toArray());
+
+        $context->log("Cleaning up temporary file", [
+            'filename' => "{$context->filename}.json"
+        ]);
 
         Storage::disk('public')->delete("flashcards/{$context->filename}.json");
 

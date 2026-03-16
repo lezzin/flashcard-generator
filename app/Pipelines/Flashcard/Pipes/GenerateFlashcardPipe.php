@@ -22,8 +22,16 @@ class GenerateFlashcardPipe
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
+        $context->log('GenerateFlashcardPipe started', [
+            'sources_count' => $context->sources->count()
+        ]);
+
         $context->results = $context->sources->flatMap(function (SourceContentDto $source) use ($context) {
             try {
+                $context->log("Generating flashcards for source", [
+                    'source_title' => $source->title
+                ]);
+
                 $schema = new Schema(
                     type: DataType::OBJECT,
                     properties: [
@@ -53,11 +61,27 @@ class GenerateFlashcardPipe
                 );
 
                 if (isset($data->flashcards)) {
-                    return $this->toDto($data->flashcards, $context->title, $source->title);
+                    $dtos = $this->toDto($data->flashcards, $context->title, $source->title);
+
+                    $context->log("Generated flashcards successfully", [
+                        'source' => $source->title,
+                        'count' => $dtos->count()
+                    ]);
+
+                    return $dtos;
                 }
+
+                $context->log("No flashcards found in response for source", [
+                    'source' => $source->title
+                ]);
 
                 return collect();
             } catch (Exception $e) {
+                $context->log("Error generating flashcards for source", [
+                    'source' => $source->title,
+                    'error' => $e->getMessage()
+                ]);
+
                 return collect();
             }
         });

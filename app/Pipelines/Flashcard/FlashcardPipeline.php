@@ -15,11 +15,17 @@ class FlashcardPipeline
     {
         $context = new FlashcardPipelineContext(content: $content, title: $title);
 
+        $context->log('Starting Flashcard Pipeline');
+
         /** @var FlashcardPipelineContext $result */
         $result = app(Pipeline::class)
             ->send($context)
             ->through(self::pipes())
             ->thenReturn();
+
+        $context->log('Finished Flashcard Pipeline', [
+            'total_flashcards' => $result->results->count()
+        ]);
 
         return $result->results;
     }
