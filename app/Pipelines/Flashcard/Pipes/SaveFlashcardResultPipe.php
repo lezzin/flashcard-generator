@@ -14,7 +14,7 @@ class SaveFlashcardResultPipe
         $context->filename = Date::now()->timestamp;
 
         $json = $context->results
-            ->map(fn ($card) => $card->toArray())
+            ->map(fn($card) => $card->toArray())
             ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         Storage::disk('public')->put("flashcards/{$context->filename}.json", $json);

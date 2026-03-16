@@ -2,7 +2,7 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\DTOs\RawFlashcardDto;
+use App\DTOs\SourceContentDto;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
 use Illuminate\Support\Str;
@@ -26,7 +26,7 @@ class GetContentPipe
             $title = Str::replace('{{TITULO_RESUMO}}', '', trim($parts[0]));
             $body = trim($parts[1]);
 
-            $context->flashcards->add(new RawFlashcardDto(
+            $context->sources->add(new SourceContentDto(
                 title: $title,
                 content: $body
             ));

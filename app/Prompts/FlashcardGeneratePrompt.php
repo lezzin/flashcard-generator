@@ -2,13 +2,13 @@
 
 namespace App\Prompts;
 
-use App\DTOs\RawFlashcardDto;
+use App\DTOs\SourceContentDto;
 
 class FlashcardGeneratePrompt
 {
-    public static function handle(RawFlashcardDto $flashcard): string
-    {
-        return <<<PROMPT
+  public static function handle(SourceContentDto $source): string
+  {
+    return <<<PROMPT
 Você é um especialista em criação de flashcards para memorização de longo prazo (estilo Anki).
 Sua tarefa é transformar o resumo fornecido em um conjunto de flashcards de alta qualidade, objetivos e fáceis de revisar.
 
@@ -43,11 +43,11 @@ REGRAS DE OURO:
 - Use português claro e gramaticalmente correto.
 
 CONTEÚDO PARA TRANSFORMAR EM FLASHCARDS:
-Título: {$flashcard->title}
-Texto: {$flashcard->content}
+Título: {$source->title}
+Texto: {$source->content}
 
 INSTRUÇÃO DE SAÍDA:
 Retorne EXCLUSIVAMENTE um objeto JSON contendo uma lista de "flashcards".
 PROMPT;
-    }
+  }
 }

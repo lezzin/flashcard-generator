@@ -2,16 +2,16 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\GeneratedFlashcardDto;
-use App\DTOs\RawFlashcardDto;
+use App\DTOs\SourceContentDto;
 use App\Enums\CardTypes;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use App\Prompts\FlashcardGeneratePrompt;
+use App\Actions\Gemini\GenerateJsonAction;
 use Closure;
-use Exception;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
+use Exception;
 use Illuminate\Support\Collection;
 
 class GenerateFlashcardPipe
@@ -22,7 +22,7 @@ class GenerateFlashcardPipe
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
-        $context->results = $context->flashcards->flatMap(function (RawFlashcardDto $flashcard) {
+        $context->results = $context->sources->flatMap(function (SourceContentDto $source) {
             try {
                 $schema = new Schema(
                     type: DataType::OBJECT,
@@ -42,13 +42,13 @@ class GenerateFlashcardPipe
                                 ],
                                 required: ['type', 'front']
                             )
-                        ),
+                        )
                     ],
                     required: ['flashcards']
                 );
 
                 $data = $this->generateJsonAction->execute(
-                    FlashcardGeneratePrompt::handle($flashcard),
+                    FlashcardGeneratePrompt::handle($source),
                     $schema
                 );
 

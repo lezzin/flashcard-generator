@@ -3,13 +3,13 @@
 namespace App\Pipelines\Flashcard;
 
 use App\DTOs\GeneratedFlashcardDto;
-use App\DTOs\RawFlashcardDto;
+use App\DTOs\SourceContentDto;
 use Illuminate\Support\Collection;
 
 class FlashcardPipelineContext
 {
-    /** @var Collection<string, RawFlashcardDto> */
-    public Collection $flashcards;
+    /** @var Collection<string, SourceContentDto> */
+    public Collection $sources;
 
     /** @var Collection<int, GeneratedFlashcardDto> */
     public Collection $results;
@@ -19,7 +19,7 @@ class FlashcardPipelineContext
     public function __construct(
         public readonly string $content
     ) {
-        $this->flashcards = collect();
+        $this->sources = collect();
         $this->results = collect();
     }
 }

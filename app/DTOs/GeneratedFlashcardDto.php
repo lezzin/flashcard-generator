@@ -9,6 +9,7 @@ class GeneratedFlashcardDto
     public function __construct(
         public readonly CardTypes $type,
         public readonly string $front,
+        public readonly string $title,
         public readonly ?string $back = null,
         public readonly ?string $extra = null,
     ) {}
@@ -17,6 +18,7 @@ class GeneratedFlashcardDto
     {
         return new self(
             type: CardTypes::CARD_OMIT,
+            title: $card->title,
             front: $card->front,
             extra: $card?->extra ?? null,
         );
@@ -26,6 +28,7 @@ class GeneratedFlashcardDto
     {
         return new self(
             type: CardTypes::CARD_SIMPLE,
+            title: $card->title,
             front: $card->front,
             back: $card?->back ?? null,
             extra: $card?->extra ?? null,
@@ -36,6 +39,7 @@ class GeneratedFlashcardDto
     {
         return [
             'type' => $this->type,
+            'title' => $this->title,
             'front' => $this->front,
             'back' => $this?->back ?? null,
             'extra' => $this?->extra ?? null,
