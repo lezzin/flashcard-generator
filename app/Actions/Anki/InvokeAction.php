@@ -17,7 +17,7 @@ class InvokeAction
     public function __invoke(string $action, array $params = []): mixed
     {
         $requestJson = $this->getRequestPayload($action, $params);
-        $response = Http::post($this->url, $requestJson);
+        $response = Http::timeout(60)->post($this->url, $requestJson);
 
         if (!$response->ok()) {
             throw new Exception('Failed to connect to AnkiConnect.');

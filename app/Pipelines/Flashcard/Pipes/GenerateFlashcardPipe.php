@@ -55,13 +55,13 @@ class GenerateFlashcardPipe
 
                 $data = $response->json();
 
-                if (!isset($data->flashcards)) {
-                    return collect();
+                if (isset($data->flashcards)) {
+                    return $this->toDto($data->flashcards);
                 }
 
-                return $this->toDto($data->flashcards);
+                return collect();
             } catch (Exception $e) {
-                Log::error($e->getMessage());
+                Log::error("Gemini Flashcard Generation Error: " . $e->getMessage());
                 return collect();
             }
         });

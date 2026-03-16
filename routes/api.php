@@ -10,4 +10,5 @@ Route::prefix('summary')->group(function () {
 
 Route::prefix('flashcard')->group(function () {
     Route::post('generate', [FlashcardController::class, 'generate']);
+    Route::post('reprocess', [FlashcardController::class, 'reprocess']);
 });

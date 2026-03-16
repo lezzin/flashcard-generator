@@ -2,7 +2,9 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\AddFlashcardAction;
+use App\Actions\Anki\CreateDeckAction;
+use App\Actions\Anki\AddNotesAction;
+use App\Actions\Flashcard\HighlightKeywordsAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardTypes;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
@@ -13,14 +15,28 @@ class AddToAnkiPipe
 {
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
-        $context->results->each(function ($flashcard) {
-            (new AddFlashcardAction)(self::buildPayload($flashcard));
-        });
+        if ($context->results->isEmpty()) {
+            return $next($context);
+        }
+
+        $payloads = $context->results
+            ->map(fn($card) => $this->buildPayload($card));
+
+        $improvedPayloads = $payloads
+            ->chunk(50)
+            ->flatMap(
+                fn($chunk) => (new HighlightKeywordsAction)($chunk)
+            );
+
+        $deckName = $payloads->first()['deckName'] ?? 'Teste';
+
+        (new CreateDeckAction)($deckName);
+        (new AddNotesAction)($improvedPayloads->values()->toArray());
 
         return $next($context);
     }
 
-    private static function buildPayload(GeneratedFlashcardDto $flashcard): array
+    private function buildPayload(GeneratedFlashcardDto $flashcard): array
     {
         $fields = [
             'ID'    => Str::uuid()->toString(),

@@ -3,13 +3,11 @@
 namespace App\Pipelines\Flashcard;
 
 use App\Pipelines\Flashcard\Pipes\AddToAnkiPipe;
-use App\Pipelines\Flashcard\Pipes\GenerateFlashcardPipe;
-use App\Pipelines\Flashcard\Pipes\GetContentPipe;
-use App\Pipelines\Flashcard\Pipes\SaveFlashcardResultPipe;
+use App\Pipelines\Flashcard\Pipes\GetContentFromJsonPipe;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 
-class FlashcardPipeline
+class FlashcardReprocessPipeline
 {
     public static function handle(string $content): Collection
     {
@@ -27,9 +25,7 @@ class FlashcardPipeline
     private static function pipes(): array
     {
         return [
-            GetContentPipe::class,
-            GenerateFlashcardPipe::class,
-            SaveFlashcardResultPipe::class,
+            GetContentFromJsonPipe::class,
             AddToAnkiPipe::class,
         ];
     }
