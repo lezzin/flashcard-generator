@@ -22,7 +22,7 @@ class GenerateFlashcardPipe
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
-        $context->results = $context->sources->flatMap(function (SourceContentDto $source) {
+        $context->results = $context->sources->flatMap(function (SourceContentDto $source) use ($context) {
             try {
                 $schema = new Schema(
                     type: DataType::OBJECT,
@@ -53,7 +53,7 @@ class GenerateFlashcardPipe
                 );
 
                 if (isset($data->flashcards)) {
-                    return $this->toDto($data->flashcards);
+                    return $this->toDto($data->flashcards, $context->title, $source->title);
                 }
 
                 return collect();
@@ -65,10 +65,12 @@ class GenerateFlashcardPipe
         return $next($context);
     }
 
-    private function toDto(array $flashcards): Collection
+    private function toDto(array $flashcards, string $title, string $subtitle): Collection
     {
         return collect($flashcards)
-            ->map(function ($card) {
+            ->map(function ($card) use ($title, $subtitle) {
+                $card->deck = "{$title}::$subtitle";
+
                 return match ($card->type) {
                     CardTypes::CARD_OMIT->value => GeneratedFlashcardDto::omitFromObject($card),
                     CardTypes::CARD_SIMPLE->value => GeneratedFlashcardDto::simpleFromObject($card),

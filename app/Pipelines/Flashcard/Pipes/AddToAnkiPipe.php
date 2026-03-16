@@ -27,12 +27,12 @@ class AddToAnkiPipe
         }
 
         $payloads = $context->results
-            ->map(fn ($card) => $this->buildPayload($card));
+            ->map(fn($card) => $this->buildPayload($card));
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn ($chunk) => $this->highlightKeywordsAction->execute($chunk)
+                fn($chunk) => $this->highlightKeywordsAction->execute($chunk)
             );
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
@@ -64,10 +64,10 @@ class AddToAnkiPipe
         }
 
         return [
-            'deckName' => 'Teste',
+            'deckName' => $flashcard->deck,
             'modelName' => $flashcard->type->value,
             'tags' => [],
-            'fields' => array_filter($fields, fn ($v) => ! is_null($v)),
+            'fields' => array_filter($fields, fn($v) => ! is_null($v)),
         ];
     }
 }

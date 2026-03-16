@@ -11,9 +11,9 @@ use Illuminate\Support\Collection;
 
 class FlashcardPipeline
 {
-    public static function handle(string $content): Collection
+    public static function handle(string $content, string $title): Collection
     {
-        $context = new FlashcardPipelineContext(content: $content);
+        $context = new FlashcardPipelineContext(content: $content, title: $title);
 
         /** @var FlashcardPipelineContext $result */
         $result = app(Pipeline::class)

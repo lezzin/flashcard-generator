@@ -17,7 +17,8 @@ class FlashcardPipelineContext
     public ?string $filename;
 
     public function __construct(
-        public readonly string $content
+        public readonly string $content,
+        public readonly string $title,
     ) {
         $this->sources = collect();
         $this->results = collect();

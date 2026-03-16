@@ -15,10 +15,11 @@ class GetContentFromJsonPipe
 
         foreach ($parsedContent as $flashcard) {
             $context->results->add(new GeneratedFlashcardDto(
-                CardTypes::tryFrom($flashcard->type),
-                $flashcard->front,
-                $flashcard->back ?? null,
-                $flashcard->extra ?? null,
+                type: CardTypes::tryFrom($flashcard->type),
+                deck: $flashcard->deck,
+                front: $flashcard->front,
+                back: $flashcard->back ?? null,
+                extra: $flashcard->extra ?? null,
             ));
         }
 

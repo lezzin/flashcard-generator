@@ -10,6 +10,7 @@ class FlashcardGenerateRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string'],
+            'title'   => ['required', 'string'],
         ];
     }
 }
