@@ -12,19 +12,19 @@ class GetContentPipe
 {
     public function handle(SummaryPipelineContext $context, Closure $next)
     {
-        $parser = new Parser();
+        $parser = new Parser;
 
         try {
             $pdf = $parser->parseFile($context->file->path());
-            
-            $fullText = "";
+
+            $fullText = '';
             foreach ($pdf->getPages() as $page) {
-                $fullText .= $page->getText() . "\n";
+                $fullText .= $page->getText()."\n";
             }
-            
+
             $context->content = $this->cleanExtractedText($fullText);
         } catch (Exception $e) {
-            throw new Exception("Error parsing PDF: " . $e->getMessage());
+            throw new Exception('Error parsing PDF: '.$e->getMessage());
         }
 
         return $next($context);

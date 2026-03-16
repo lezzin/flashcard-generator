@@ -2,8 +2,8 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\CreateDeckAction;
 use App\Actions\Anki\AddNotesAction;
+use App\Actions\Anki\CreateDeckAction;
 use App\Actions\Flashcard\HighlightKeywordsAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardTypes;
@@ -27,12 +27,12 @@ class AddToAnkiPipe
         }
 
         $payloads = $context->results
-            ->map(fn($card) => $this->buildPayload($card));
+            ->map(fn ($card) => $this->buildPayload($card));
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn($chunk) => $this->highlightKeywordsAction->execute($chunk)
+                fn ($chunk) => $this->highlightKeywordsAction->execute($chunk)
             );
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
@@ -48,7 +48,7 @@ class AddToAnkiPipe
     private function buildPayload(GeneratedFlashcardDto $flashcard): array
     {
         $fields = [
-            'ID'    => Str::uuid()->toString(),
+            'ID' => Str::uuid()->toString(),
             'Extra' => $flashcard->extra,
         ];
 
@@ -59,15 +59,15 @@ class AddToAnkiPipe
 
             case CardTypes::CARD_SIMPLE:
                 $fields['Frente'] = $flashcard->front;
-                $fields['Verso']  = $flashcard->back;
+                $fields['Verso'] = $flashcard->back;
                 break;
         }
 
         return [
-            'deckName'  => 'Teste',
+            'deckName' => 'Teste',
             'modelName' => $flashcard->type->value,
-            'tags'      => [],
-            'fields'    => array_filter($fields, fn($v) => !is_null($v)),
+            'tags' => [],
+            'fields' => array_filter($fields, fn ($v) => ! is_null($v)),
         ];
     }
 }

@@ -35,9 +35,9 @@ class GeneratedFlashcardDto
     public function toArray()
     {
         return [
-            'type'  => $this->type,
+            'type' => $this->type,
             'front' => $this->front,
-            'back'  => $this?->back ?? null,
+            'back' => $this?->back ?? null,
             'extra' => $this?->extra ?? null,
         ];
     }

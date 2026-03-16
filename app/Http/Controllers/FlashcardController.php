@@ -11,12 +11,14 @@ class FlashcardController extends Controller
     public function generate(FlashcardGenerateRequest $request)
     {
         FlashcardPipeline::handle($request->post('content'));
+
         return response()->noContent();
     }
 
     public function reprocess(FlashcardGenerateRequest $request)
     {
         FlashcardReprocessPipeline::handle($request->post('content'));
+
         return response()->noContent();
     }
 }

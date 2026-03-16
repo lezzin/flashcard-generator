@@ -10,6 +10,7 @@ class SummaryController extends Controller
     public function generate(SummaryGenerateRequest $request)
     {
         SummaryPipeline::handle($request->file('file'));
+
         return response()->noContent();
     }
 }

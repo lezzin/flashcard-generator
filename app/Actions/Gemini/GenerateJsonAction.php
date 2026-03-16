@@ -2,12 +2,12 @@
 
 namespace App\Actions\Gemini;
 
+use Exception;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\Schema;
 use Gemini\Enums\ResponseMimeType;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class GenerateJsonAction
 {
@@ -42,9 +42,9 @@ class GenerateJsonAction
 
             return $schema ? $response->json() : $response->text();
         } catch (Exception $e) {
-            Log::error("Gemini Generation Error: " . $e->getMessage(), [
+            Log::error('Gemini Generation Error: '.$e->getMessage(), [
                 'prompt' => $prompt,
-                'exception' => $e
+                'exception' => $e,
             ]);
 
             throw $e;

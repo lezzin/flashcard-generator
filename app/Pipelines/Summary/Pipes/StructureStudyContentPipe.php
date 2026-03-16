@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class StructureStudyContentPipe
 {
     private const MAX_BLOCK_CHARS = 6000;
+
     private const MIN_BLOCK_CHARS = 2000;
 
     public function handle(SummaryPipelineContext $context, Closure $next)
@@ -23,7 +24,7 @@ class StructureStudyContentPipe
     private function extractBlocks(string $text): Collection
     {
         $lines = collect(explode("\n", $text))
-            ->map(fn($line) => trim($line))
+            ->map(fn ($line) => trim($line))
             ->filter();
 
         $blocks = collect();
@@ -32,7 +33,7 @@ class StructureStudyContentPipe
 
         foreach ($lines as $line) {
             if ($this->isHeading($line)) {
-                if (!empty($currentContent)) {
+                if (! empty($currentContent)) {
                     $blocks->push([
                         'title' => $currentTitle ?? 'Introdução',
                         'content' => implode("\n", $currentContent),
@@ -40,19 +41,20 @@ class StructureStudyContentPipe
                 }
                 $currentTitle = $line;
                 $currentContent = [];
+
                 continue;
             }
             $currentContent[] = $line;
         }
 
-        if (!empty($currentContent)) {
+        if (! empty($currentContent)) {
             $blocks->push([
                 'title' => $currentTitle ?? 'Introdução',
                 'content' => implode("\n", $currentContent),
             ]);
         }
 
-        if ($blocks->isEmpty() && !empty($text)) {
+        if ($blocks->isEmpty() && ! empty($text)) {
             $blocks->push([
                 'title' => 'Conteúdo Principal',
                 'content' => $text,
@@ -60,7 +62,7 @@ class StructureStudyContentPipe
         }
 
         $blocks = $this->groupSmallBlocks($blocks);
-        
+
         return $this->chunkLargeBlocks($blocks);
     }
 
@@ -86,13 +88,14 @@ class StructureStudyContentPipe
         foreach ($blocks as $block) {
             if ($temp === null) {
                 $temp = $block;
+
                 continue;
             }
 
             if (strlen($temp['content']) + strlen($block['content']) < self::MIN_BLOCK_CHARS) {
-                $temp['content'] .= "\n\n" . $block['content'];
+                $temp['content'] .= "\n\n".$block['content'];
                 if ($block['title'] && $block['title'] !== 'Introdução') {
-                    $temp['title'] .= " & " . $block['title'];
+                    $temp['title'] .= ' & '.$block['title'];
                 }
             } else {
                 $grouped->push($temp);
@@ -117,7 +120,7 @@ class StructureStudyContentPipe
                 foreach ($chunks as $index => $chunk) {
                     $title = $block['title'] ?? 'Continuação';
                     $chunkedBlocks->push([
-                        'title' => $title . " (Parte " . ($index + 1) . ")",
+                        'title' => $title.' (Parte '.($index + 1).')',
                         'content' => $chunk,
                     ]);
                 }

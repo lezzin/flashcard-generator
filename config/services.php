@@ -36,6 +36,6 @@ return [
     ],
 
     'anki' => [
-        'host' => env('ANKI_CONNECTION', 'http://127.0.0.1:8765')
+        'host' => env('ANKI_CONNECTION', 'http://127.0.0.1:8765'),
     ],
 ];

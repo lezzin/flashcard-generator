@@ -2,8 +2,8 @@
 
 namespace App\Actions\Anki;
 
-use Illuminate\Support\Facades\Http;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 class InvokeAction
 {
@@ -19,13 +19,13 @@ class InvokeAction
         $requestJson = $this->getRequestPayload($action, $params);
         $response = Http::timeout(60)->post($this->url, $requestJson);
 
-        if (!$response->ok()) {
+        if (! $response->ok()) {
             throw new Exception('Failed to connect to AnkiConnect.');
         }
 
         $data = $response->json();
 
-        if (!is_null($data['error'])) {
+        if (! is_null($data['error'])) {
             throw new Exception($data['error']);
         }
 
@@ -36,17 +36,17 @@ class InvokeAction
     {
         $version = 6;
 
-        if ($action == "deckNames") {
+        if ($action == 'deckNames') {
             return [
                 'action' => $action,
-                'version' => $version
+                'version' => $version,
             ];
         }
 
         return [
             'action' => $action,
             'params' => $params,
-            'version' => $version
+            'version' => $version,
         ];
     }
 }

@@ -21,7 +21,7 @@ class AddFlashcardAction
         $deckName = $payloads->first()['deckName'] ?? 'Default';
         app(CreateDeckAction::class)->execute($deckName);
 
-        $improvedNotes = $payloads->map(fn($note) => $this->improveNote($note))->toArray();
+        $improvedNotes = $payloads->map(fn ($note) => $this->improveNote($note))->toArray();
 
         return app(AddNotesAction::class)->execute($improvedNotes);
     }

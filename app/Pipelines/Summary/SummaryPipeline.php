@@ -13,7 +13,6 @@ use Illuminate\Support\Collection;
 class SummaryPipeline
 {
     /**
-     * @param UploadedFile $file
      * @return Collection<int, array{title: string, summary: string}>
      */
     public static function handle(UploadedFile $file): Collection
@@ -35,7 +34,7 @@ class SummaryPipeline
             GetContentPipe::class,
             StructureStudyContentPipe::class,
             GenerateSummaryPipe::class,
-            SaveSummaryResultPipe::class
+            SaveSummaryResultPipe::class,
         ];
     }
 }

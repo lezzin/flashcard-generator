@@ -4,14 +4,9 @@ namespace App\Prompts;
 
 class SummaryGeneratePrompt
 {
-    /**
-     * @param string|null $context
-     * @param string $text
-     * @return string
-     */
     public static function handle(?string $context, string $text): string
     {
-        $prompt = <<<PROMPT
+        $prompt = <<<'PROMPT'
 Você é um assistente especializado em educação e criação de materiais de estudo.
 Sua tarefa é analisar o texto fornecido e criar um resumo altamente estruturado, objetivo e focado em facilitar a criação de flashcards (estilo Anki).
 

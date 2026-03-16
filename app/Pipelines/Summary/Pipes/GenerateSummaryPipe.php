@@ -2,13 +2,13 @@
 
 namespace App\Pipelines\Summary\Pipes;
 
+use App\Actions\Gemini\GenerateJsonAction;
 use App\Pipelines\Summary\SummaryPipelineContext;
 use App\Prompts\SummaryGeneratePrompt;
-use App\Actions\Gemini\GenerateJsonAction;
 use Closure;
+use Exception;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
-use Exception;
 
 class GenerateSummaryPipe
 {
@@ -38,7 +38,7 @@ class GenerateSummaryPipe
                 // In a real scenario, we might want to log this or retry.
                 return [
                     'title' => $block['title'] ?? 'Erro no processamento',
-                    'summary' => 'Não foi possível gerar o resumo para este bloco: ' . $e->getMessage()
+                    'summary' => 'Não foi possível gerar o resumo para este bloco: '.$e->getMessage(),
                 ];
             }
         });

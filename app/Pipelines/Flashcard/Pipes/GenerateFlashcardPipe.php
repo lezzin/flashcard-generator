@@ -2,16 +2,16 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
+use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\DTOs\RawFlashcardDto;
 use App\Enums\CardTypes;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use App\Prompts\FlashcardGeneratePrompt;
-use App\Actions\Gemini\GenerateJsonAction;
 use Closure;
+use Exception;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
-use Exception;
 use Illuminate\Support\Collection;
 
 class GenerateFlashcardPipe
@@ -42,7 +42,7 @@ class GenerateFlashcardPipe
                                 ],
                                 required: ['type', 'front']
                             )
-                        )
+                        ),
                     ],
                     required: ['flashcards']
                 );

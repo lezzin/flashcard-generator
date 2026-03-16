@@ -6,10 +6,6 @@ use App\DTOs\RawFlashcardDto;
 
 class FlashcardGeneratePrompt
 {
-    /**
-     * @param RawFlashcardDto $flashcard
-     * @return string
-     */
     public static function handle(RawFlashcardDto $flashcard): string
     {
         return <<<PROMPT

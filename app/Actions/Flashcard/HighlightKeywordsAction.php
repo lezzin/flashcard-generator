@@ -2,9 +2,9 @@
 
 namespace App\Actions\Flashcard;
 
+use App\Actions\Gemini\GenerateJsonAction;
 use App\Enums\CardTypes;
 use App\Prompts\FlashcardHighlightPrompt;
-use App\Actions\Gemini\GenerateJsonAction;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 use Illuminate\Support\Collection;
@@ -12,9 +12,9 @@ use Illuminate\Support\Collection;
 class HighlightKeywordsAction
 {
     private const COLORS = [
-        "background-color: #FFE0B2; color: #D84315;",
-        "background-color: #E1F5FE; color: #0277BD;",
-        "background-color: #F1F8E9; color: #33691E;"
+        'background-color: #FFE0B2; color: #D84315;',
+        'background-color: #E1F5FE; color: #0277BD;',
+        'background-color: #F1F8E9; color: #33691E;',
     ];
 
     public function __construct(
@@ -71,11 +71,11 @@ class HighlightKeywordsAction
                                 items: new Schema(type: DataType::STRING),
                                 minItems: 1,
                                 maxItems: 3
-                            )
+                            ),
                         ],
                         required: ['keywords']
                     )
-                )
+                ),
             ],
             required: ['results']
         );
@@ -99,7 +99,7 @@ class HighlightKeywordsAction
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            $pattern = '/\b(' . preg_quote($keyword, '/') . ')\b/i';
+            $pattern = '/\b('.preg_quote($keyword, '/').')\b/i';
             $replacement = "<span style=\"$style\">$1</span>";
 
             $text = preg_replace($pattern, $replacement, $text, 1);

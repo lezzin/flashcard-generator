@@ -10,7 +10,7 @@ class SummaryGenerateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', File::types(['pdf', 'txt'])]
+            'file' => ['required', File::types(['pdf', 'txt'])],
         ];
     }
 }
