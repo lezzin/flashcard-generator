@@ -3,7 +3,7 @@
 namespace App\Actions\Anki;
 
 use App\Actions\Flashcard\HighlightKeywordsAction;
-use App\Enums\CardTypes;
+use App\Enums\CardType;
 use Illuminate\Support\Collection;
 
 class AddFlashcardAction
@@ -21,7 +21,7 @@ class AddFlashcardAction
         $deckName = $payloads->first()['deckName'] ?? 'Default';
         app(CreateDeckAction::class)->execute($deckName);
 
-        $improvedNotes = $payloads->map(fn ($note) => $this->improveNote($note))->toArray();
+        $improvedNotes = $payloads->map(fn($note) => $this->improveNote($note))->toArray();
 
         return app(AddNotesAction::class)->execute($improvedNotes);
     }
@@ -29,11 +29,11 @@ class AddFlashcardAction
     private function improveNote(array $note): array
     {
         switch ($note['modelName']) {
-            case CardTypes::CARD_OMIT->value:
+            case CardType::CLOZE->value:
                 $note['fields']['Texto'] = $this->highlightKeywordsAction->execute($note['fields']['Texto']);
                 break;
 
-            case CardTypes::CARD_SIMPLE->value:
+            case CardType::SIMPLE->value:
                 $note['fields']['Frente'] = $this->highlightKeywordsAction->execute($note['fields']['Frente']);
                 $note['fields']['Verso'] = $this->highlightKeywordsAction->execute($note['fields']['Verso']);
                 break;

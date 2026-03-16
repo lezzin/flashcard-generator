@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum CardTypes: string
+enum CardType: string
 {
-    case CARD_SIMPLE = 'MeF - Card simples';
-    case CARD_OMIT = 'MeF - Omitir palavras';
+    case SIMPLE = 'MeF - Card simples';
+    case CLOZE = 'MeF - Omitir palavras';
 
     public static function values(): array
     {

@@ -2,12 +2,12 @@
 
 namespace App\DTOs;
 
-use App\Enums\CardTypes;
+use App\Enums\CardType;
 
 class GeneratedFlashcardDto
 {
     public function __construct(
-        public readonly CardTypes $type,
+        public readonly CardType $type,
         public readonly string $front,
         public readonly string $deck,
         public readonly ?string $back = null,
@@ -17,7 +17,7 @@ class GeneratedFlashcardDto
     public static function omitFromObject(object $card)
     {
         return new self(
-            type: CardTypes::CARD_OMIT,
+            type: CardType::CLOZE,
             deck: $card->deck,
             front: $card->front,
             extra: $card?->extra ?? null,
@@ -27,7 +27,7 @@ class GeneratedFlashcardDto
     public static function simpleFromObject(object $card)
     {
         return new self(
-            type: CardTypes::CARD_SIMPLE,
+            type: CardType::SIMPLE,
             deck: $card->deck,
             front: $card->front,
             back: $card?->back ?? null,

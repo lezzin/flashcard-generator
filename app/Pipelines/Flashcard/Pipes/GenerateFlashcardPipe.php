@@ -4,7 +4,7 @@ namespace App\Pipelines\Flashcard\Pipes;
 
 use App\DTOs\GeneratedFlashcardDto;
 use App\DTOs\SourceContentDto;
-use App\Enums\CardTypes;
+use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use App\Prompts\FlashcardGeneratePrompt;
 use App\Actions\Gemini\GenerateJsonAction;
@@ -34,7 +34,7 @@ class GenerateFlashcardPipe
                                 properties: [
                                     'type' => new Schema(
                                         type: DataType::STRING,
-                                        enum: CardTypes::values()
+                                        enum: CardType::values()
                                     ),
                                     'front' => new Schema(type: DataType::STRING),
                                     'back' => new Schema(type: DataType::STRING),
@@ -72,8 +72,8 @@ class GenerateFlashcardPipe
                 $card->deck = "{$title}::$subtitle";
 
                 return match ($card->type) {
-                    CardTypes::CARD_OMIT->value => GeneratedFlashcardDto::omitFromObject($card),
-                    CardTypes::CARD_SIMPLE->value => GeneratedFlashcardDto::simpleFromObject($card),
+                    CardType::CLOZE->value => GeneratedFlashcardDto::omitFromObject($card),
+                    CardType::SIMPLE->value => GeneratedFlashcardDto::simpleFromObject($card),
                     default => null,
                 };
             })

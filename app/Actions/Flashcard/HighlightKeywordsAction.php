@@ -3,7 +3,7 @@
 namespace App\Actions\Flashcard;
 
 use App\Actions\Gemini\GenerateJsonAction;
-use App\Enums\CardTypes;
+use App\Enums\CardType;
 use App\Prompts\FlashcardHighlightPrompt;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
@@ -29,11 +29,11 @@ class HighlightKeywordsAction
         return $notes->values()->map(function ($note, $index) use ($keywordsList) {
             $keywords = $keywordsList[$index]->keywords ?? [];
 
-            if ($note['modelName'] === CardTypes::CARD_SIMPLE->value) {
+            if ($note['modelName'] === CardType::SIMPLE->value) {
                 $note['fields']['Frente'] = $this->applyStyling($note['fields']['Frente'], $keywords);
             }
 
-            if ($note['modelName'] === CardTypes::CARD_OMIT->value) {
+            if ($note['modelName'] === CardType::CLOZE->value) {
                 $note['fields']['Texto'] = $this->applyStyling($note['fields']['Texto'], $keywords);
             }
 
@@ -44,11 +44,11 @@ class HighlightKeywordsAction
     private function extractTexts(Collection $notes): array
     {
         return $notes->map(function ($note) {
-            if ($note['modelName'] === CardTypes::CARD_SIMPLE->value) {
+            if ($note['modelName'] === CardType::SIMPLE->value) {
                 return $note['fields']['Frente'];
             }
 
-            if ($note['modelName'] === CardTypes::CARD_OMIT->value) {
+            if ($note['modelName'] === CardType::CLOZE->value) {
                 return $note['fields']['Texto'];
             }
 
@@ -99,7 +99,7 @@ class HighlightKeywordsAction
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            $pattern = '/\b('.preg_quote($keyword, '/').')\b/i';
+            $pattern = '/\b(' . preg_quote($keyword, '/') . ')\b/i';
             $replacement = "<span style=\"$style\">$1</span>";
 
             $text = preg_replace($pattern, $replacement, $text, 1);

@@ -6,7 +6,7 @@ use App\Actions\Anki\AddNotesAction;
 use App\Actions\Anki\CreateDeckAction;
 use App\Actions\Flashcard\HighlightKeywordsAction;
 use App\DTOs\GeneratedFlashcardDto;
-use App\Enums\CardTypes;
+use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
 use Illuminate\Support\Facades\Storage;
@@ -53,11 +53,11 @@ class AddToAnkiPipe
         ];
 
         switch ($flashcard->type) {
-            case CardTypes::CARD_OMIT:
+            case CardType::CLOZE:
                 $fields['Texto'] = $flashcard->front;
                 break;
 
-            case CardTypes::CARD_SIMPLE:
+            case CardType::SIMPLE:
                 $fields['Frente'] = $flashcard->front;
                 $fields['Verso'] = $flashcard->back;
                 break;
