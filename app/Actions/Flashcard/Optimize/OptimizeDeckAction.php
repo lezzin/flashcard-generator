@@ -1,24 +1,19 @@
 <?php
 
-namespace App\Actions\Flashcard;
+namespace App\Actions\Flashcard\Optimize;
 
 use App\Actions\Anki\FindNotesByDeckNameAction;
-use App\Actions\Anki\UpdateNoteFieldsAction;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-class ImproveFlashcardsAction
+class OptimizeDeckAction extends BaseOptimizeAction
 {
-    public function __construct(
-        private readonly FindNotesByDeckNameAction $findNotesByDeckNameAction,
-        private readonly HighlightManyAction $HighlightManyAction,
-        private readonly UpdateNoteFieldsAction $updateNoteFieldsAction,
-    ) {}
-
     public function execute(string $deckName, int $perPage = 100): Collection
     {
-        $firstPage = $this->findNotesByDeckNameAction->execute($deckName, $perPage, page: 1);
+        $findNotesByDeckNameAction = app(FindNotesByDeckNameAction::class);
+
+        $firstPage = $findNotesByDeckNameAction->execute($deckName, $perPage, page: 1);
 
         if ($firstPage->isEmpty()) {
             throw new Exception('Nenhum registro encontrado para essa busca.');
@@ -29,13 +24,14 @@ class ImproveFlashcardsAction
 
     private function processAllPages(string $deckName, int $perPage, LengthAwarePaginator $firstPage): Collection
     {
+        $findNotesByDeckNameAction = app(FindNotesByDeckNameAction::class);
         $totalPages = (int) ceil($firstPage->total() / $perPage);
         $allImproved = collect();
         $currentPage = $firstPage;
 
         for ($page = 1; $page <= $totalPages; $page++) {
             if ($page > 1) {
-                $currentPage = $this->findNotesByDeckNameAction->execute($deckName, $perPage, $page);
+                $currentPage = $findNotesByDeckNameAction->execute($deckName, $perPage, $page);
             }
 
             $allImproved = $allImproved->concat(
@@ -49,21 +45,10 @@ class ImproveFlashcardsAction
     private function processPage(LengthAwarePaginator $paginator): Collection
     {
         $notes = collect($paginator->items());
-        $improvedNotes = $this->HighlightManyAction->execute($notes);
+        $improvedNotes = $this->highlightNoteAction->execute($notes);
 
         $improvedNotes->each(fn ($note) => $this->updateNoteIfHasFields($note));
 
         return $improvedNotes;
-    }
-
-    private function updateNoteIfHasFields(array $note): void
-    {
-        $fields = $this->HighlightManyAction->extractFieldsToUpdate($note);
-
-        if (empty($fields)) {
-            return;
-        }
-
-        $this->updateNoteFieldsAction->execute($note['noteId'], $fields);
     }
 }

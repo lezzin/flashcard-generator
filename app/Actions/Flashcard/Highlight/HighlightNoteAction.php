@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Actions\Flashcard;
+namespace App\Actions\Flashcard\Highlight;
 
 use App\Actions\Gemini\GenerateJsonAction;
 use App\Enums\CardType;
 use App\Prompts\FlashcardHighlightPrompt;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
+use Illuminate\Support\Collection;
 
-abstract class BaseHighlightAction
+class HighlightNoteAction
 {
     protected const COLORS = [
         'background-color: #FFE0B2; color: #D84315; font-weight: bold;',
@@ -19,6 +20,23 @@ abstract class BaseHighlightAction
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
     ) {}
+
+    public function execute(array|Collection $notes): array|Collection
+    {
+        $isCollection = $notes instanceof Collection;
+        $notesCollection = $isCollection ? $notes : collect([$notes]);
+
+        $texts = $this->extractTexts($notesCollection);
+        $keywordsList = $this->getKeywords($texts);
+
+        $results = $notesCollection->values()->map(function ($note, $index) use ($keywordsList) {
+            $keywords = $keywordsList[$index]->keywords ?? [];
+
+            return $this->applyStylingToFields($note, $keywords);
+        });
+
+        return $isCollection ? $results : $results->first();
+    }
 
     protected function applyStyling(string $text, array $keywords): string
     {
@@ -31,21 +49,18 @@ abstract class BaseHighlightAction
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            // Match tags OR the keyword
-            $pattern = '/(<[^>]+>)|(\b'.preg_quote($keyword, '/').'\b)/i';
+            $pattern = '/(<[^>]+>)|(\b' . preg_quote($keyword, '/') . '\b)/i';
 
             $replaced = false;
             $text = preg_replace_callback($pattern, function ($matches) use ($style, &$replaced) {
-                // If it's a tag (Group 1 matched), return it as is
                 if (! empty($matches[1])) {
                     return $matches[1];
                 }
 
-                // If it's the keyword (Group 2 matched) and not yet replaced
                 if (! $replaced) {
                     $replaced = true;
 
-                    return "<span style=\"$style\">".$matches[2].'</span>';
+                    return "<span style=\"$style\">" . $matches[2] . '</span>';
                 }
 
                 return $matches[2];
@@ -72,20 +87,16 @@ abstract class BaseHighlightAction
         return $note;
     }
 
-    public function extractFieldsToUpdate(array $note): array
+    private function extractTexts(Collection $notes): array
     {
-        $type = CardType::tryFrom($note['modelName']);
-
-        $fields = match ($type) {
-            CardType::CLOZE => ['Texto' => $note['fields']['Texto'] ?? null],
-            CardType::SIMPLE => ['Frente' => $note['fields']['Frente'] ?? null],
-            default => [],
-        };
-
-        return array_filter($fields);
+        return $notes
+            ->map(fn($note) => $this->extractTextFromNote($note))
+            ->filter()
+            ->values()
+            ->toArray();
     }
 
-    protected function extractText(array $note): ?string
+    protected function extractTextFromNote(array $note): ?string
     {
         $type = CardType::tryFrom($note['modelName']);
 
@@ -102,6 +113,10 @@ abstract class BaseHighlightAction
 
     protected function getKeywords(array $texts): array
     {
+        if (empty($texts)) {
+            return [];
+        }
+
         $schema = new Schema(
             type: DataType::OBJECT,
             properties: [

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Anki\FindNotesByDeckNameAction;
 use App\Actions\Anki\GetDeckNamesAction;
-use App\Actions\Flashcard\ImproveFlashcardAction;
-use App\Actions\Flashcard\ImproveFlashcardsAction;
+use App\Actions\Flashcard\Optimize\OptimizeDeckAction;
+use App\Actions\Flashcard\Optimize\OptimizeNoteAction;
 use App\Http\Requests\Flashcard\FindNotesRequest;
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardRequest;
@@ -40,14 +40,14 @@ class FlashcardController extends Controller
         return response()->noContent();
     }
 
-    public function improveMany(ImproveFlashcardsRequest $request, ImproveFlashcardsAction $manyAction)
+    public function improveMany(ImproveFlashcardsRequest $request, OptimizeDeckAction $action)
     {
-        return $manyAction->execute($request->post('deck_name'));
+        return $action->execute($request->post('deck_name'));
     }
 
-    public function improveSingle(ImproveFlashcardRequest $request, ImproveFlashcardAction $singleAction)
+    public function improveSingle(ImproveFlashcardRequest $request, OptimizeNoteAction $action)
     {
-        return $singleAction->execute($request->post('note_id'));
+        return $action->execute($request->post('note_id'));
     }
 
     public function getDeckNames(GetDeckNamesAction $action)

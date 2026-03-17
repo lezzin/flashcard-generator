@@ -4,7 +4,7 @@ namespace App\Pipelines\Flashcard\Pipes;
 
 use App\Actions\Anki\AddNotesAction;
 use App\Actions\Anki\CreateDeckAction;
-use App\Actions\Flashcard\HighlightManyAction;
+use App\Actions\Flashcard\Highlight\HighlightNoteAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
@@ -17,7 +17,7 @@ class AddToAnkiPipe
     private const CHUNK_SIZE = 50;
 
     public function __construct(
-        private readonly HighlightManyAction $HighlightManyAction
+        private readonly HighlightNoteAction $highlightNoteAction
     ) {}
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
@@ -33,14 +33,14 @@ class AddToAnkiPipe
         ]);
 
         $payloads = $context->results
-            ->map(fn($card) => $this->buildPayload($card));
+            ->map(fn ($card) => $this->buildPayload($card));
 
         $context->log('Highlighting keywords');
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn($chunk) => $this->HighlightManyAction->execute($chunk)
+                fn ($chunk) => $this->highlightNoteAction->execute($chunk)
             );
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
@@ -83,7 +83,7 @@ class AddToAnkiPipe
             'deckName' => $flashcard->deck,
             'modelName' => $flashcard->type->value,
             'tags' => [],
-            'fields' => array_filter($fields, fn($v) => ! is_null($v)),
+            'fields' => array_filter($fields, fn ($v) => ! is_null($v)),
         ];
     }
 }
