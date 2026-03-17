@@ -15,7 +15,7 @@ class GetDeckNamesAction
         $deckNames = $this->invokeAction->execute('deckNames');
 
         return collect($deckNames)->map(
-            fn(string $deckName) => AnkiFormatter::deckName($deckName)
+            fn (string $deckName) => AnkiFormatter::deckName($deckName)
         );
     }
 }

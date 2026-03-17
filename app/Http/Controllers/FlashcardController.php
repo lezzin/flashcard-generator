@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Anki\FindNotesByDeckNameAction;
 use App\Actions\Anki\GetDeckNamesAction;
-use App\Actions\Flashcard\ImproveFlashcardsAction;
 use App\Actions\Anki\ValidateConnectionAction;
+use App\Actions\Flashcard\ImproveFlashcardsAction;
 use App\Http\Requests\Flashcard\FindNotesRequest;
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardsRequest;

@@ -24,7 +24,7 @@ class FlashcardPipeline
             ->thenReturn();
 
         $context->log('Finished Flashcard Pipeline', [
-            'total_flashcards' => $result->results->count()
+            'total_flashcards' => $result->results->count(),
         ]);
 
         return $result->results;

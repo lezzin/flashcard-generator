@@ -27,7 +27,7 @@ class GetContentFromJsonPipe
             }
 
             $context->log('Parsed content from JSON successfully', [
-                'count' => count($parsedContent)
+                'count' => count($parsedContent),
             ]);
         } else {
             $context->log('Failed to parse content from JSON');

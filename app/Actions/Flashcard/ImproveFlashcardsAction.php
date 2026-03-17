@@ -4,7 +4,6 @@ namespace App\Actions\Flashcard;
 
 use App\Actions\Anki\FindNotesByDeckNameAction;
 use App\Actions\Anki\UpdateNoteFieldsAction;
-use App\Actions\Flashcard\HighlightKeywordsAction;
 use App\Enums\CardType;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -23,7 +22,7 @@ class ImproveFlashcardsAction
         $firstPage = $this->findNotesByDeckNameAction->execute($deckName, $perPage, page: 1);
 
         if ($firstPage->isEmpty()) {
-            throw new Exception("Nenhum registro encontrado para essa busca.");
+            throw new Exception('Nenhum registro encontrado para essa busca.');
         }
 
         return $this->processAllPages($deckName, $perPage, $firstPage);
@@ -31,9 +30,9 @@ class ImproveFlashcardsAction
 
     private function processAllPages(string $deckName, int $perPage, LengthAwarePaginator $firstPage): Collection
     {
-        $totalPages   = (int) ceil($firstPage->total() / $perPage);
-        $allImproved  = collect();
-        $currentPage  = $firstPage;
+        $totalPages = (int) ceil($firstPage->total() / $perPage);
+        $allImproved = collect();
+        $currentPage = $firstPage;
 
         for ($page = 1; $page <= $totalPages; $page++) {
             if ($page > 1) {
@@ -50,10 +49,10 @@ class ImproveFlashcardsAction
 
     private function processPage(LengthAwarePaginator $paginator): Collection
     {
-        $notes         = collect($paginator->items());
+        $notes = collect($paginator->items());
         $improvedNotes = $this->highlightKeywordsAction->execute($notes);
 
-        $improvedNotes->each(fn($note) => $this->updateNoteIfHasFields($note));
+        $improvedNotes->each(fn ($note) => $this->updateNoteIfHasFields($note));
 
         return $improvedNotes;
     }
@@ -74,9 +73,9 @@ class ImproveFlashcardsAction
         $type = CardType::tryFrom($note['modelName']);
 
         $fields = match ($type) {
-            CardType::CLOZE  => ['Texto'  => $note['fields']['Texto']  ?? null],
+            CardType::CLOZE => ['Texto' => $note['fields']['Texto'] ?? null],
             CardType::SIMPLE => ['Frente' => $note['fields']['Frente'] ?? null],
-            default          => [],
+            default => [],
         };
 
         return array_filter($fields);

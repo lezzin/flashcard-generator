@@ -14,17 +14,17 @@ class FindNotesByDeckNameAction
     public function execute(string $deckName, int $perPage = 100, int $page = 1): LengthAwarePaginator
     {
         $noteIds = $this->invokeAction->execute('findNotes', [
-            'query' => "\"deck:{$deckName}\""
+            'query' => "\"deck:{$deckName}\"",
         ]);
 
         $offset = ($page - 1) * $perPage;
         $pagedNoteIds = array_slice($noteIds, $offset, $perPage);
 
         $noteInfos = $this->invokeAction->execute('notesInfo', [
-            'notes' => $pagedNoteIds
+            'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn($note) => AnkiFormatter::note($note));
+        $notes = collect($noteInfos)->map(fn ($note) => AnkiFormatter::note($note));
 
         return new LengthAwarePaginator(
             $notes,

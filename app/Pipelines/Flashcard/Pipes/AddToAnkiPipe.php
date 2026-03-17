@@ -29,31 +29,31 @@ class AddToAnkiPipe
         }
 
         $context->log('AddToAnkiPipe started', [
-            'card_count' => $context->results->count()
+            'card_count' => $context->results->count(),
         ]);
 
         $payloads = $context->results
-            ->map(fn($card) => $this->buildPayload($card));
+            ->map(fn ($card) => $this->buildPayload($card));
 
         $context->log('Highlighting keywords');
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn($chunk) => $this->highlightKeywordsAction->execute($chunk)
+                fn ($chunk) => $this->highlightKeywordsAction->execute($chunk)
             );
 
         $deckName = $payloads->first()['deckName'] ?? 'Teste';
 
-        $context->log("Adding cards to Anki", [
-            'deck' => $deckName
+        $context->log('Adding cards to Anki', [
+            'deck' => $deckName,
         ]);
 
         app(CreateDeckAction::class)->execute($deckName);
         app(AddNotesAction::class)->execute($improvedPayloads->values()->toArray());
 
-        $context->log("Cleaning up temporary file", [
-            'filename' => "{$context->filename}.json"
+        $context->log('Cleaning up temporary file', [
+            'filename' => "{$context->filename}.json",
         ]);
 
         Storage::disk('public')->delete("flashcards/{$context->filename}.json");
@@ -83,7 +83,7 @@ class AddToAnkiPipe
             'deckName' => $flashcard->deck,
             'modelName' => $flashcard->type->value,
             'tags' => [],
-            'fields' => array_filter($fields, fn($v) => ! is_null($v)),
+            'fields' => array_filter($fields, fn ($v) => ! is_null($v)),
         ];
     }
 }

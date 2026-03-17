@@ -10,13 +10,13 @@ class UploadFileAction
 {
     public function execute(UploadedFile $file): string
     {
-        $client = (new GetAuthenticatedGoogleClientAction())->execute();
+        $client = (new GetAuthenticatedGoogleClientAction)->execute();
 
         $service = new Google_Service_Drive($client);
 
         $driveFile = new Google_Service_Drive_DriveFile([
             'name' => $file->getClientOriginalName(),
-            'parents' => [config('filesystems.disks.google.folderId')]
+            'parents' => [config('filesystems.disks.google.folderId')],
         ]);
 
         $result = $service->files->create($driveFile, [

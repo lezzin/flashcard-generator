@@ -29,7 +29,7 @@ class FlashcardPipelineContext
     {
         Log::channel('flashcard')->info($message, [
             'title' => $this->title,
-            ...$context
+            ...$context,
         ]);
     }
 }

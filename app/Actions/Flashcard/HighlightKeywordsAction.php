@@ -99,7 +99,7 @@ class HighlightKeywordsAction
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            $pattern = '/\b(' . preg_quote($keyword, '/') . ')\b/i';
+            $pattern = '/\b('.preg_quote($keyword, '/').')\b/i';
             $replacement = "<span style=\"$style\">$1</span>";
 
             $text = preg_replace($pattern, $replacement, $text, 1);

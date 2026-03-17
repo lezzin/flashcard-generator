@@ -24,7 +24,7 @@ class AnkiFormatter
 
             if (str_contains($part, ' ')) {
                 return collect(explode(' ', $part))
-                    ->map(fn($word) => Str::substr($word, 0, 1) . '.')
+                    ->map(fn ($word) => Str::substr($word, 0, 1).'.')
                     ->join(' ');
             }
 
@@ -35,7 +35,7 @@ class AnkiFormatter
     public static function note(array $note): array
     {
         $note['fields'] = collect($note['fields'])
-            ->mapWithKeys(fn($field, $name) => [$name => strip_tags($field['value'])])
+            ->mapWithKeys(fn ($field, $name) => [$name => strip_tags($field['value'])])
             ->all();
 
         unset(

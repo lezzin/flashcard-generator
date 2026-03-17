@@ -27,8 +27,9 @@ class GetContentPipe
 
             if (count($parts) < 2) {
                 $context->log('Skipping malformed summary part', [
-                    'part' => Str::limit($summaryText, 100)
+                    'part' => Str::limit($summaryText, 100),
                 ]);
+
                 continue;
             }
 
@@ -36,7 +37,7 @@ class GetContentPipe
             $body = trim($parts[1]);
 
             $context->log('Extracted summary source', [
-                'title' => $title
+                'title' => $title,
             ]);
 
             $context->sources->add(new SourceContentDto(
@@ -46,7 +47,7 @@ class GetContentPipe
         }
 
         $context->log('Finished extracting content', [
-            'sources_count' => $context->sources->count()
+            'sources_count' => $context->sources->count(),
         ]);
 
         return $next($context);

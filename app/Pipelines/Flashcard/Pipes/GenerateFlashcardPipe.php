@@ -2,16 +2,16 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
+use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\DTOs\SourceContentDto;
 use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use App\Prompts\FlashcardGeneratePrompt;
-use App\Actions\Gemini\GenerateJsonAction;
 use Closure;
+use Exception;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
-use Exception;
 use Illuminate\Support\Collection;
 
 class GenerateFlashcardPipe
@@ -23,13 +23,13 @@ class GenerateFlashcardPipe
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
         $context->log('GenerateFlashcardPipe started', [
-            'sources_count' => $context->sources->count()
+            'sources_count' => $context->sources->count(),
         ]);
 
         $context->results = $context->sources->flatMap(function (SourceContentDto $source) use ($context) {
             try {
-                $context->log("Generating flashcards for source", [
-                    'source_title' => $source->title
+                $context->log('Generating flashcards for source', [
+                    'source_title' => $source->title,
                 ]);
 
                 $schema = new Schema(
@@ -50,7 +50,7 @@ class GenerateFlashcardPipe
                                 ],
                                 required: ['type', 'front']
                             )
-                        )
+                        ),
                     ],
                     required: ['flashcards']
                 );
@@ -63,23 +63,23 @@ class GenerateFlashcardPipe
                 if (isset($data->flashcards)) {
                     $dtos = $this->toDto($data->flashcards, $context->title, $source->title);
 
-                    $context->log("Generated flashcards successfully", [
+                    $context->log('Generated flashcards successfully', [
                         'source' => $source->title,
-                        'count' => $dtos->count()
+                        'count' => $dtos->count(),
                     ]);
 
                     return $dtos;
                 }
 
-                $context->log("No flashcards found in response for source", [
-                    'source' => $source->title
+                $context->log('No flashcards found in response for source', [
+                    'source' => $source->title,
                 ]);
 
                 return collect();
             } catch (Exception $e) {
-                $context->log("Error generating flashcards for source", [
+                $context->log('Error generating flashcards for source', [
                     'source' => $source->title,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
 
                 return collect();

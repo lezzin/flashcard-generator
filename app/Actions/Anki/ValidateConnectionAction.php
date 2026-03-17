@@ -33,7 +33,9 @@ class ValidateConnectionAction
     private function validateConnection()
     {
         $response = Http::timeout(10)->get($this->url);
-        if ($response->ok()) return;
+        if ($response->ok()) {
+            return;
+        }
         throw new Exception('Failed to connect to AnkiConnect.');
     }
 }

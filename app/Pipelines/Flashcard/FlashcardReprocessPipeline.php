@@ -22,7 +22,7 @@ class FlashcardReprocessPipeline
             ->thenReturn();
 
         $context->log('Finished Flashcard Reprocess Pipeline', [
-            'total_flashcards' => $result->results->count()
+            'total_flashcards' => $result->results->count(),
         ]);
 
         return $result->results;

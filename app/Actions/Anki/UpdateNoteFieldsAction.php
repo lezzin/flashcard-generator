@@ -11,10 +11,10 @@ class UpdateNoteFieldsAction
     public function execute(int $noteId, array $fields): void
     {
         $this->invokeAction->execute('updateNoteFields', [
-            "note" => [
-                "id"     => $noteId,
-                "fields" => $fields
-            ]
+            'note' => [
+                'id' => $noteId,
+                'fields' => $fields,
+            ],
         ]);
     }
 }
