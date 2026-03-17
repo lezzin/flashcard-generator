@@ -4,7 +4,10 @@ import { onClickOutside } from "@vueuse/core"
 
 const props = defineProps<{
     modelValue: string
-    options: string[]
+    options: {
+        raw: string
+        formatted: string
+    }[]
     placeholder?: string
     disabled?: boolean
 }>()
@@ -18,15 +21,20 @@ const search = ref('')
 
 const filteredOptions = computed(() => {
     return props.options.filter(option =>
-        option.toLowerCase().includes(search.value.toLowerCase())
+        option.formatted.toLowerCase().includes(search.value.toLowerCase())
     )
 })
 
-const selectOption = (option: string) => {
-    emit('update:modelValue', option)
+const selectOption = (option: { raw: string; formatted: string }) => {
+    emit('update:modelValue', option.raw)
     isOpen.value = false
     search.value = ''
 }
+
+const selectedLabel = computed(() => {
+    const found = props.options.find(o => o.raw === props.modelValue)
+    return found?.formatted || ''
+})
 
 onClickOutside(containerRef, () => {
     isOpen.value = false
@@ -38,7 +46,7 @@ onClickOutside(containerRef, () => {
         <button type="button"
             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-left bg-white focus:ring-2 focus:ring-blue-500"
             @click="isOpen = !isOpen" :disabled="disabled">
-            {{ modelValue || placeholder || 'Select an option' }}
+            {{ selectedLabel || placeholder || 'Select an option' }}
         </button>
 
         <div v-if="isOpen && !disabled"
@@ -47,9 +55,9 @@ onClickOutside(containerRef, () => {
                 class="w-full px-3 py-2 text-sm border-b border-gray-200 focus:outline-none" />
 
             <ul class="max-h-48 overflow-y-auto">
-                <li v-for="option in filteredOptions" :key="option" @click="selectOption(option)"
+                <li v-for="option in filteredOptions" :key="option.raw" @click="selectOption(option)"
                     class="px-3 py-2 text-sm cursor-pointer hover:bg-blue-100">
-                    {{ option }}
+                    {{ option.formatted }}
                 </li>
 
                 <li v-if="filteredOptions.length === 0" class="px-3 py-2 text-sm text-gray-500">

@@ -8,9 +8,14 @@ import SelectInput from '@/components/SelectInput.vue'
 import InputError from '@/components/InputError.vue'
 import PrimaryButton from '@/components/PrimaryButton.vue'
 
+type DeckName = {
+    raw: string;
+    formatted: string;
+}
+
 const successMessage = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
-const deckNames = ref<string[]>([])
+const deckNames = ref<DeckName[]>([])
 const loadingDecks = ref(true)
 
 const form = useForm({
@@ -47,7 +52,7 @@ const submit = async () => {
     form.processing = true
 
     try {
-        const response = await fetch('/api/flashcard/improve', {
+        const response = await fetch('/api/flashcard/improve/many', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +77,7 @@ const submit = async () => {
             return
         }
 
-        successMessage.value = 'Successfully queued. Your flashcards are being optimized!'
+        successMessage.value = 'Your flashcards are successfully optimized!'
         form.reset()
     } catch (error) {
         errorMessage.value = 'An unexpected error occurred. Please check your connection and try again.'
