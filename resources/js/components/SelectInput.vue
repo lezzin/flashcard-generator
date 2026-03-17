@@ -1,17 +1,61 @@
 <script setup lang="ts">
-defineProps<{
-    modelValue: string;
-}>();
+import { ref, computed } from 'vue'
+import { onClickOutside } from "@vueuse/core"
 
-defineEmits(['update:modelValue']);
+const props = defineProps<{
+    modelValue: string
+    options: string[]
+    placeholder?: string
+    disabled?: boolean
+}>()
+
+const emit = defineEmits(['update:modelValue'])
+
+const containerRef = ref<HTMLElement | null>(null)
+
+const isOpen = ref(false)
+const search = ref('')
+
+const filteredOptions = computed(() => {
+    return props.options.filter(option =>
+        option.toLowerCase().includes(search.value.toLowerCase())
+    )
+})
+
+const selectOption = (option: string) => {
+    emit('update:modelValue', option)
+    isOpen.value = false
+    search.value = ''
+}
+
+onClickOutside(containerRef, () => {
+    isOpen.value = false
+})
 </script>
 
 <template>
-    <select
-        class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm w-full px-3 py-2 text-sm"
-        :value="modelValue"
-        @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
-    >
-        <slot />
-    </select>
+    <div class="relative w-full" ref="containerRef">
+        <button type="button"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-left bg-white focus:ring-2 focus:ring-blue-500"
+            @click="isOpen = !isOpen" :disabled="disabled">
+            {{ modelValue || placeholder || 'Select an option' }}
+        </button>
+
+        <div v-if="isOpen && !disabled"
+            class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
+            <input v-model="search" type="text" placeholder="Search..."
+                class="w-full px-3 py-2 text-sm border-b border-gray-200 focus:outline-none" />
+
+            <ul class="max-h-48 overflow-y-auto">
+                <li v-for="option in filteredOptions" :key="option" @click="selectOption(option)"
+                    class="px-3 py-2 text-sm cursor-pointer hover:bg-blue-100">
+                    {{ option }}
+                </li>
+
+                <li v-if="filteredOptions.length === 0" class="px-3 py-2 text-sm text-gray-500">
+                    No results found
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>

@@ -86,6 +86,7 @@ onMounted(fetchDecks)
 
 <template>
     <Layout>
+
         <Head title="Improve Flashcards" />
 
         <div class="mx-auto max-w-2xl px-4">
@@ -104,31 +105,22 @@ onMounted(fetchDecks)
                 <Alert v-if="errorMessage" type="error">
                     <div class="flex items-center justify-between">
                         <span>{{ errorMessage }}</span>
-                        <button
-                            v-if="!loadingDecks && deckNames.length === 0"
-                            @click="fetchDecks"
-                            class="ml-4 underline hover:no-underline"
-                        >
+                        <button v-if="!loadingDecks && deckNames.length === 0" @click="fetchDecks"
+                            class="ml-4 underline hover:no-underline">
                             Retry
                         </button>
                     </div>
                 </Alert>
 
-                <form @submit.prevent="submit" class="space-y-6 rounded-xl bg-white p-8 shadow-sm border border-gray-100">
+                <form @submit.prevent="submit"
+                    class="space-y-6 rounded-xl bg-white p-8 shadow-sm border border-gray-100">
                     <div class="space-y-1.5">
                         <InputLabel for="deck_name" value="Select Anki Deck" />
-                        <SelectInput
-                            id="deck_name"
-                            v-model="form.deck_name"
+
+                        <SelectInput v-model="form.deck_name" :options="deckNames"
                             :disabled="loadingDecks || deckNames.length === 0"
-                        >
-                            <option value="" disabled>
-                                {{ loadingDecks ? 'Loading decks...' : 'Choose a deck to optimize' }}
-                            </option>
-                            <option v-for="name in deckNames" :key="name" :value="name">
-                                {{ name }}
-                            </option>
-                        </SelectInput>
+                            :placeholder="loadingDecks ? 'Loading decks...' : 'Choose a deck to optimize'" />
+
                         <p v-if="!loadingDecks && deckNames.length === 0" class="text-xs text-amber-600">
                             No decks found. Make sure Anki is open with the AnkiConnect plugin installed.
                         </p>
@@ -144,8 +136,10 @@ onMounted(fetchDecks)
 
                 <div class="rounded-lg border border-blue-100 bg-blue-50 p-6">
                     <h3 class="text-sm font-semibold text-blue-900 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-blue-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                         </svg>
                         What happens next?
                     </h3>
