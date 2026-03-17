@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FlashcardController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\SummaryController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,11 @@ Route::prefix('flashcard')->group(function () {
         Route::get('/', [FlashcardController::class, 'getDeckNames']);
         Route::get('notes', [FlashcardController::class, 'findNotes']);
     });
+});
+
+Route::prefix('google')->group(function () {
+    Route::post('auth', [GoogleController::class, 'auth']);
+    Route::get('callback', [GoogleController::class, 'callback']);
+
+    Route::post('upload', [GoogleController::class, 'uploadFile']);
 });
