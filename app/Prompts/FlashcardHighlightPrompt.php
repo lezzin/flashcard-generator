@@ -9,17 +9,23 @@ class FlashcardHighlightPrompt
         $json = json_encode($texts, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         return <<<PROMPT
-Extraia até 3 palavras-chave (1-3 palavras) que aparecem em cada texto.
+Você é um especialista em memorização e técnica de flashcards.
+Sua tarefa é identificar os termos mais importantes de cada texto para destaque (highlight).
 
-Retorne apenas JSON no formato:
+Instruções:
+- Selecione de 1 a 3 termos ou expressões curtas (máximo 3 palavras) por texto.
+- Priorize substantivos, verbos de ação ou conceitos centrais que ajudem a gatilhar a memória sobre o conteúdo total.
+- Os termos DEVEM existir exatamente como estão escritos no texto original.
+- Retorne apenas o JSON solicitado.
 
+Formato de Saída:
 {
  "results":[
-   {"keywords":[]}
+   {"keywords": ["termo1", "termo2"]}
  ]
 }
 
-Textos:
+Textos para analisar:
 {$json}
 PROMPT;
     }

@@ -12,7 +12,8 @@ Route::prefix('summary')->group(function () {
 Route::prefix('flashcard')->group(function () {
     Route::post('generate', [FlashcardController::class, 'generate']);
     Route::post('reprocess', [FlashcardController::class, 'reprocess']);
-    Route::post('improve', [FlashcardController::class, 'improve']);
+    Route::post('improve/single', [FlashcardController::class, 'improveSingle']);
+    Route::post('improve/many', [FlashcardController::class, 'improveMany']);
 
     Route::prefix('deck')->group(function () {
         Route::get('/', [FlashcardController::class, 'getDeckNames']);
