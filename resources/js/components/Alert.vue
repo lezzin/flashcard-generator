@@ -15,7 +15,12 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <div :class="['rounded-md px-4 py-3 text-sm font-medium shadow-sm border border-transparent', classes]">
+    <div
+        :class="[
+            'rounded-md border border-transparent px-4 py-3 text-sm font-medium shadow-sm',
+            classes,
+        ]"
+    >
         <slot />
     </div>
 </template>

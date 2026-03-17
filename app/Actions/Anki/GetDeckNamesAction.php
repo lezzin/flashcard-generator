@@ -16,9 +16,9 @@ class GetDeckNamesAction
         $deckNames = $this->ankiClient->invoke('deckNames');
 
         return collect($deckNames)->map(
-            fn(string $deckName) => [
-                "formatted" => AnkiFormatter::deckName($deckName),
-                "raw"       => $deckName,
+            fn (string $deckName) => [
+                'formatted' => AnkiFormatter::deckName($deckName),
+                'raw' => $deckName,
             ]
         )->toArray();
     }

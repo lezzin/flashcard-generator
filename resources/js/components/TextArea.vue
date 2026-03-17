@@ -20,9 +20,14 @@ defineExpose({ focus: () => input.value?.focus() });
 
 <template>
     <textarea
-        class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm w-full px-3 py-2 text-sm resize-none"
+        class="w-full resize-none rounded-md border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
         :value="modelValue"
-        @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+        @input="
+            $emit(
+                'update:modelValue',
+                ($event.target as HTMLTextAreaElement).value,
+            )
+        "
         ref="input"
     ></textarea>
 </template>

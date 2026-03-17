@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
     <div class="min-h-screen bg-gray-50">
-        <!-- Navigation Bar -->
-        <nav class="bg-white border-b border-gray-100 shadow-sm">
+        <nav class="border-b border-gray-100 bg-white shadow-sm">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-16 justify-between items-center">
+                <div class="flex h-16 items-center justify-between">
                     <div class="flex shrink-0 items-center">
                         <Link href="/" class="text-xl font-bold text-blue-600">
                             Flashcard AI
@@ -15,13 +14,17 @@ import { Link, router } from '@inertiajs/vue3';
                     </div>
 
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <Link href="/flashcard/generate"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">
+                        <Link
+                            href="/flashcard/generate"
+                            class="hover:text-gray-700inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300"
+                        >
                             Generate
                         </Link>
 
-                        <Link href="/flashcard/improve"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">
+                        <Link
+                            href="/flashcard/improve"
+                            class="hover:text-gray-700inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300"
+                        >
                             Improve
                         </Link>
                     </div>
@@ -32,7 +35,6 @@ import { Link, router } from '@inertiajs/vue3';
             </div>
         </nav>
 
-        <!-- Page Content -->
         <main class="py-12">
             <slot />
         </main>

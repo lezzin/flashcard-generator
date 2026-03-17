@@ -49,7 +49,7 @@ class HighlightNoteAction
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            $pattern = '/(<[^>]+>)|(\b' . preg_quote($keyword, '/') . '\b)/i';
+            $pattern = '/(<[^>]+>)|(\b'.preg_quote($keyword, '/').'\b)/i';
 
             $replaced = false;
             $text = preg_replace_callback($pattern, function ($matches) use ($style, &$replaced) {
@@ -60,7 +60,7 @@ class HighlightNoteAction
                 if (! $replaced) {
                     $replaced = true;
 
-                    return "<span style=\"$style\">" . $matches[2] . '</span>';
+                    return "<span style=\"$style\">".$matches[2].'</span>';
                 }
 
                 return $matches[2];
@@ -90,7 +90,7 @@ class HighlightNoteAction
     private function extractTexts(Collection $notes): array
     {
         return $notes
-            ->map(fn($note) => $this->extractTextFromNote($note))
+            ->map(fn ($note) => $this->extractTextFromNote($note))
             ->filter()
             ->values()
             ->toArray();

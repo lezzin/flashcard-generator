@@ -25,7 +25,7 @@ class FindNotesByDeckNameAction
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn($note) => AnkiFormatter::note($note));
+        $notes = collect($noteInfos)->map(fn ($note) => AnkiFormatter::note($note));
 
         return new LengthAwarePaginator(
             $notes,

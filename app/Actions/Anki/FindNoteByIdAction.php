@@ -3,9 +3,8 @@
 namespace App\Actions\Anki;
 
 use App\Formatters\AnkiFormatter;
-use Exception;
-
 use App\Services\Anki\AnkiConnectClient;
+use Exception;
 
 class FindNoteByIdAction
 {
@@ -20,7 +19,7 @@ class FindNoteByIdAction
         ])[0];
 
         if (empty($note)) {
-            throw new Exception("Failed to get note with the provided ID.");
+            throw new Exception('Failed to get note with the provided ID.');
         }
 
         return AnkiFormatter::note($note);
