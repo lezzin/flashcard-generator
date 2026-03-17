@@ -17,39 +17,47 @@ class ImproveFlashcardsAction
         private readonly UpdateNoteFieldsAction $updateNoteFieldsAction,
     ) {}
 
-    public function execute(string $deckName): Collection
+    public function execute(string $deckName, int $perPage = 100): Collection
     {
-        $notes = $this->findNotesByDeckNameAction->execute($deckName);
+        $allImprovedNotes = collect();
 
-        if ($notes->isEmpty()) {
+        $page = 1;
+        $paginated = $this->findNotesByDeckNameAction->execute($deckName, $perPage, $page);
+
+        if ($paginated->isEmpty()) {
             throw new Exception("Nenhum registro encontrado para essa busca.");
         }
 
-        $improvedNotes = $this->highlightKeywordsAction->execute($notes);
+        $totalPages = (int) ceil($paginated->total() / $perPage);
 
-        $improvedNotes->each(function ($improvedNote) {
-            $fields = [];
+        do {
+            $improvedNotes = $this->highlightKeywordsAction->execute(collect($paginated->items()));
 
-            $type = CardType::tryFrom($improvedNote['modelName']);
+            $improvedNotes->each(function ($note) {
+                $fields = [];
+                $type = CardType::tryFrom($note['modelName']);
 
-            match ($type) {
-                CardType::CLOZE  => $fields['Texto']  = $improvedNote['fields']['Texto'] ?? null,
-                CardType::SIMPLE => $fields['Frente'] = $improvedNote['fields']['Frente'] ?? null,
-                default => null
-            };
+                match ($type) {
+                    CardType::CLOZE  => $fields['Texto']  = $note['fields']['Texto'] ?? null,
+                    CardType::SIMPLE => $fields['Frente'] = $note['fields']['Frente'] ?? null,
+                    default => null
+                };
 
-            $fields = array_filter($fields);
+                $fields = array_filter($fields);
 
-            if (empty($fields)) {
-                throw new Exception("Erro ao obter campo a ser atualizado");
+                if (!empty($fields)) {
+                    $this->updateNoteFieldsAction->execute($note['noteId'], $fields);
+                }
+            });
+
+            $allImprovedNotes = $allImprovedNotes->concat($improvedNotes);
+
+            $page++;
+            if ($page <= $totalPages) {
+                $paginated = $this->findNotesByDeckNameAction->execute($deckName, $perPage, $page);
             }
+        } while ($page <= $totalPages);
 
-            $this->updateNoteFieldsAction->execute(
-                $improvedNote['noteId'],
-                $fields
-            );
-        });
-
-        return $improvedNotes;
+        return $allImprovedNotes;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Actions\Anki;
 
-use Illuminate\Support\Collection;
+use App\Formatters\AnkiFormatter;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FindNotesByDeckNameAction
 {
@@ -10,29 +11,27 @@ class FindNotesByDeckNameAction
         private readonly InvokeAction $invokeAction,
     ) {}
 
-    public function execute(string $deckName): Collection
+    public function execute(string $deckName, int $perPage = 100, int $page = 1): LengthAwarePaginator
     {
         $noteIds = $this->invokeAction->execute('findNotes', [
             'query' => "\"deck:{$deckName}\""
         ]);
 
+        $offset = ($page - 1) * $perPage;
+        $pagedNoteIds = array_slice($noteIds, $offset, $perPage);
+
         $noteInfos = $this->invokeAction->execute('notesInfo', [
-            'notes' => $noteIds
+            'notes' => $pagedNoteIds
         ]);
 
-        return collect($noteInfos)->map(function (array $note) {
-            $note['fields'] = collect($note['fields'])
-                ->mapWithKeys(fn($field, $name) => [$name => strip_tags($field['value'])])
-                ->all();
+        $notes = collect($noteInfos)->map(fn($note) => AnkiFormatter::note($note));
 
-            unset(
-                $note['tags'],
-                $note['profile'],
-                $note['mod'],
-                $note['cards'],
-            );
-
-            return $note;
-        });
+        return new LengthAwarePaginator(
+            $notes,
+            count($noteIds),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
     }
 }

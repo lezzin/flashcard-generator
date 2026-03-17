@@ -50,6 +50,10 @@ class FlashcardController extends Controller
 
     public function findNotes(FindNotesRequest $request, FindNotesByDeckNameAction $action)
     {
-        return $action->execute($request->input('deck_name'));
+        return $action->execute(
+            $request->input('deck_name'),
+            $request->input('per_page', 100),
+            $request->input('page'),
+        );
     }
 }
