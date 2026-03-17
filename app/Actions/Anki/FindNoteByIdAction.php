@@ -5,15 +5,17 @@ namespace App\Actions\Anki;
 use App\Formatters\AnkiFormatter;
 use Exception;
 
+use App\Services\Anki\AnkiConnectClient;
+
 class FindNoteByIdAction
 {
     public function __construct(
-        private readonly InvokeAction $invokeAction,
+        private readonly AnkiConnectClient $ankiClient,
     ) {}
 
     public function execute(int $noteId): array
     {
-        $note = $this->invokeAction->execute('notesInfo', [
+        $note = $this->ankiClient->invoke('notesInfo', [
             'notes' => [$noteId],
         ])[0];
 

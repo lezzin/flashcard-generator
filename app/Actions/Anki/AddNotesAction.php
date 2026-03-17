@@ -2,10 +2,12 @@
 
 namespace App\Actions\Anki;
 
+use App\Services\Anki\AnkiConnectClient;
+
 class AddNotesAction
 {
     public function __construct(
-        private readonly InvokeAction $invokeAction
+        private readonly AnkiConnectClient $ankiClient
     ) {}
 
     public function execute(array $notes): array
@@ -14,6 +16,6 @@ class AddNotesAction
             return [];
         }
 
-        return $this->invokeAction->execute('addNotes', ['notes' => $notes]);
+        return $this->ankiClient->invoke('addNotes', ['notes' => $notes]);
     }
 }

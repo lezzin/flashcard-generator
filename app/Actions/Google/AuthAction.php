@@ -2,13 +2,17 @@
 
 namespace App\Actions\Google;
 
+use App\Services\Google\GoogleClientFactory;
+
 class AuthAction
 {
+    public function __construct(
+        private readonly GoogleClientFactory $factory
+    ) {}
+
     public function execute(): string
     {
-        $client = GoogleClientFactory::create();
-
-        $client->addScope('https://www.googleapis.com/auth/drive');
+        $client = $this->factory->create();
 
         return $client->createAuthUrl();
     }

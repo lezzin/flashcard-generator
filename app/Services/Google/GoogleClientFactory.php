@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Google;
+namespace App\Services\Google;
 
 use Google_Client;
 
 class GoogleClientFactory
 {
-    public static function create(): Google_Client
+    public function create(): Google_Client
     {
         $client = new Google_Client;
 

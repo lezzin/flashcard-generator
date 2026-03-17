@@ -2,29 +2,37 @@
 
 namespace App\Actions\Google;
 
-use Google_Service_Drive;
-use Google_Service_Drive_DriveFile;
+use App\Services\Google\GoogleAuthService;
+use Google\Service\Drive;
+use Google\Service\Drive\DriveFile;
 use Illuminate\Http\UploadedFile;
 
 class UploadFileAction
 {
+    public function __construct(
+        private readonly GoogleAuthService $authService
+    ) {}
+
     public function execute(UploadedFile $file): string
     {
-        $client = (new GetAuthenticatedGoogleClientAction)->execute();
+        $client = $this->authService->getAuthenticatedClient();
 
-        $service = new Google_Service_Drive($client);
+        $driveService = new Drive($client);
 
-        $driveFile = new Google_Service_Drive_DriveFile([
+        $fileMetadata = new DriveFile([
             'name' => $file->getClientOriginalName(),
             'parents' => [config('filesystems.disks.google.folderId')],
         ]);
 
-        $result = $service->files->create($driveFile, [
-            'data' => file_get_contents($file->getRealPath()),
-            'mimeType' => $file->getMimeType(),
+        $content = file_get_contents($file->getRealPath());
+
+        $file = $driveService->files->create($fileMetadata, [
+            'data' => $content,
+            'mimeType' => $file->getClientMimeType(),
             'uploadType' => 'multipart',
+            'fields' => 'id',
         ]);
 
-        return $result->id;
+        return $file->id;
     }
 }

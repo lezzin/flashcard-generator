@@ -2,14 +2,16 @@
 
 namespace App\Actions\Anki;
 
+use App\Services\Anki\AnkiConnectClient;
+
 class CreateDeckAction
 {
     public function __construct(
-        private readonly InvokeAction $invokeAction
+        private readonly AnkiConnectClient $ankiClient
     ) {}
 
     public function execute(string $deckName): void
     {
-        $this->invokeAction->execute('createDeck', ['deck' => $deckName]);
+        $this->ankiClient->invoke('createDeck', ['deck' => $deckName]);
     }
 }

@@ -3,28 +3,29 @@
 namespace App\Actions\Anki;
 
 use App\Formatters\AnkiFormatter;
+use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FindNotesByDeckNameAction
 {
     public function __construct(
-        private readonly InvokeAction $invokeAction,
+        private readonly AnkiConnectClient $ankiClient,
     ) {}
 
     public function execute(string $deckName, int $perPage = 100, int $page = 1): LengthAwarePaginator
     {
-        $noteIds = $this->invokeAction->execute('findNotes', [
+        $noteIds = $this->ankiClient->invoke('findNotes', [
             'query' => "\"deck:{$deckName}\"",
         ]);
 
         $offset = ($page - 1) * $perPage;
         $pagedNoteIds = array_slice($noteIds, $offset, $perPage);
 
-        $noteInfos = $this->invokeAction->execute('notesInfo', [
+        $noteInfos = $this->ankiClient->invoke('notesInfo', [
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn ($note) => AnkiFormatter::note($note));
+        $notes = collect($noteInfos)->map(fn($note) => AnkiFormatter::note($note));
 
         return new LengthAwarePaginator(
             $notes,

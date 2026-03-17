@@ -3,19 +3,20 @@
 namespace App\Actions\Anki;
 
 use App\Formatters\AnkiFormatter;
+use App\Services\Anki\AnkiConnectClient;
 
 class GetDeckNamesAction
 {
     public function __construct(
-        private readonly InvokeAction $invokeAction
+        private readonly AnkiConnectClient $ankiClient
     ) {}
 
-    public function execute()
+    public function execute(): array
     {
-        $deckNames = $this->invokeAction->execute('deckNames');
+        $deckNames = $this->ankiClient->invoke('deckNames');
 
         return collect($deckNames)->map(
             fn (string $deckName) => AnkiFormatter::deckName($deckName)
-        );
+        )->toArray();
     }
 }

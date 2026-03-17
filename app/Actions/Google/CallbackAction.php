@@ -2,24 +2,27 @@
 
 namespace App\Actions\Google;
 
-use Illuminate\Support\Facades\Cache;
+use App\Services\Google\GoogleAuthService;
+use App\Services\Google\GoogleClientFactory;
 
 class CallbackAction
 {
+    public function __construct(
+        private readonly GoogleClientFactory $factory,
+        private readonly GoogleAuthService $authService
+    ) {}
+
     public function execute(string $code): array
     {
-        $client = GoogleClientFactory::create();
+        $client = $this->factory->create();
 
-        $result = $client->fetchAccessTokenWithAuthCode($code);
+        $token = $client->fetchAccessTokenWithAuthCode($code);
 
-        if (isset($result['refresh_token'])) {
-            Cache::put('google:drive:refresh-token', $result['refresh_token']);
-        }
+        $this->authService->saveToken($token);
 
-        if (isset($result['access_token'])) {
-            Cache::put('google:drive:access-token', $result['access_token'], $result['expires_in']);
-        }
-
-        return $result;
+        return [
+            'status' => 'success',
+            'message' => 'Connected successfully!',
+        ];
     }
 }
