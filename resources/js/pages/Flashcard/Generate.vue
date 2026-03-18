@@ -74,7 +74,7 @@ const submit = async () => {
     <Layout>
         <Head title="Gerar Flashcards" />
 
-        <Card class="max-w-xl mx-auto border-gray-200 shadow-sm">
+        <Card class="mx-auto max-w-xl border-gray-200 shadow-sm">
             <CardHeader class="text-center">
                 <CardTitle>Gerar Flashcards</CardTitle>
                 <CardDescription>
@@ -100,9 +100,12 @@ const submit = async () => {
                             type="text"
                             placeholder="ex: Biologia - Células"
                             autofocus
-                            :class="{'border-red-500': form.errors.title}"
+                            :class="{ 'border-red-500': form.errors.title }"
                         />
-                        <p v-if="form.errors.title" class="text-sm text-red-500 font-medium">
+                        <p
+                            v-if="form.errors.title"
+                            class="text-sm font-medium text-red-500"
+                        >
                             {{ form.errors.title }}
                         </p>
                     </div>
@@ -114,16 +117,28 @@ const submit = async () => {
                             v-model="form.content"
                             rows="8"
                             placeholder="Cole o texto aqui..."
-                            :class="{'border-red-500': form.errors.content}"
+                            :class="{ 'border-red-500': form.errors.content }"
                         />
-                        <p v-if="form.errors.content" class="text-sm text-red-500 font-medium">
+                        <p
+                            v-if="form.errors.content"
+                            class="text-sm font-medium text-red-500"
+                        >
                             {{ form.errors.content }}
                         </p>
                     </div>
 
                     <div class="pt-4">
-                        <Button class="w-full" :disabled="form.processing || !form.title || !form.content">
-                            {{ form.processing ? 'Processando...' : 'Gerar Agora' }}
+                        <Button
+                            class="w-full"
+                            :disabled="
+                                form.processing || !form.title || !form.content
+                            "
+                        >
+                            {{
+                                form.processing
+                                    ? 'Processando...'
+                                    : 'Gerar Agora'
+                            }}
                         </Button>
                     </div>
                 </form>

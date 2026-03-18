@@ -103,11 +103,12 @@ onMounted(fetchDecks);
     <Layout>
         <Head title="Otimizar Deck" />
 
-        <Card class="max-w-xl mx-auto border-gray-200 shadow-sm">
+        <Card class="mx-auto max-w-xl border-gray-200 shadow-sm">
             <CardHeader class="text-center">
                 <CardTitle>Otimizar Deck</CardTitle>
                 <CardDescription>
-                    A IA irá destacar palavras-chave e simplificar sentenças complexas.
+                    A IA irá destacar palavras-chave e simplificar sentenças
+                    complexas.
                 </CardDescription>
             </CardHeader>
 
@@ -117,12 +118,12 @@ onMounted(fetchDecks);
                 </Alert>
 
                 <Alert v-if="errorMessage" variant="destructive">
-                    <div class="flex items-center justify-between w-full">
+                    <div class="flex w-full items-center justify-between">
                         <span>{{ errorMessage }}</span>
                         <button
                             v-if="!loadingDecks && deckNames.length === 0"
                             @click="fetchDecks"
-                            class="ml-4 underline hover:no-underline font-medium text-white"
+                            class="ml-4 font-medium text-white underline hover:no-underline"
                         >
                             Tentar Novamente
                         </button>
@@ -142,20 +143,37 @@ onMounted(fetchDecks);
                                     ? 'Carregando decks...'
                                     : 'Escolha um deck para otimizar'
                             "
-                            :class="{'border-red-500 ring-red-500': form.errors.deck_name}"
+                            :class="{
+                                'border-red-500 ring-red-500':
+                                    form.errors.deck_name,
+                            }"
                         />
 
-                        <p v-if="!loadingDecks && deckNames.length === 0" class="text-xs text-amber-600 font-medium">
-                            Nenhum deck encontrado. Abra o Anki com o plugin AnkiConnect.
+                        <p
+                            v-if="!loadingDecks && deckNames.length === 0"
+                            class="text-xs font-medium text-amber-600"
+                        >
+                            Nenhum deck encontrado. Abra o Anki com o plugin
+                            AnkiConnect.
                         </p>
-                        <p v-if="form.errors.deck_name" class="text-sm text-red-500 font-medium">
+                        <p
+                            v-if="form.errors.deck_name"
+                            class="text-sm font-medium text-red-500"
+                        >
                             {{ form.errors.deck_name }}
                         </p>
                     </div>
 
                     <div class="pt-4">
-                        <Button class="w-full" :disabled="form.processing || !form.deck_name">
-                            {{ form.processing ? 'Otimizando...' : 'Otimizar Agora' }}
+                        <Button
+                            class="w-full"
+                            :disabled="form.processing || !form.deck_name"
+                        >
+                            {{
+                                form.processing
+                                    ? 'Otimizando...'
+                                    : 'Otimizar Agora'
+                            }}
                         </Button>
                     </div>
                 </form>

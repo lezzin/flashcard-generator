@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\DeckController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FlashcardController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\NoteController;
-use App\Http\Controllers\ContentController;
-use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('contents')->group(function () {

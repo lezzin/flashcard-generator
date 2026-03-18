@@ -17,7 +17,7 @@ class GetDeckNamesAction
 
         return collect($deckNames)
             ->map(
-                fn($deck) => DeckDto::fromRequest($deck)->toArray()
+                fn ($deck) => DeckDto::fromRequest($deck)->toArray()
             )
             ->toArray();
     }

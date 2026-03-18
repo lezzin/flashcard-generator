@@ -56,10 +56,10 @@ class ExportPackageAction
     {
         $localFilePath = $this->buildFilePath($deckName);
 
-        $this->ankiClient->invoke("exportPackage", [
-            "deck" => $deckName,
-            "path" => $localFilePath,
-            "includeSched" => false,
+        $this->ankiClient->invoke('exportPackage', [
+            'deck' => $deckName,
+            'path' => $localFilePath,
+            'includeSched' => false,
         ]);
 
         if (! file_exists($localFilePath)) {
@@ -86,7 +86,8 @@ class ExportPackageAction
     private function buildFilePath(string $deckName): string
     {
         $safeName = Str::slug($deckName, '_');
-        return $this->tempPath . DIRECTORY_SEPARATOR . "{$safeName}_" . time() . ".apkg";
+
+        return $this->tempPath.DIRECTORY_SEPARATOR."{$safeName}_".time().'.apkg';
     }
 
     private function wrapInUploadedFile(string $path): UploadedFile

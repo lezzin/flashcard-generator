@@ -46,14 +46,17 @@ onMounted(fetchTree);
 
 <template>
     <Layout>
-
         <Head title="Arquivos" />
 
-        <Card class="max-w-5xl mx-auto border-gray-200 shadow-sm">
-            <CardContent class="p-8 space-y-4">
-                <Breadcrumbs v-if="currentPath.length > 0" :path="currentPath" @navigate="goToPath" />
+        <Card class="mx-auto max-w-5xl border-gray-200 shadow-sm">
+            <CardContent class="space-y-4 p-8">
+                <Breadcrumbs
+                    v-if="currentPath.length > 0"
+                    :path="currentPath"
+                    @navigate="goToPath"
+                />
 
-                <div v-if="loading" class="text-center py-8 text-gray-500">
+                <div v-if="loading" class="py-8 text-center text-gray-500">
                     Carregando arquivos...
                 </div>
 
@@ -62,11 +65,22 @@ onMounted(fetchTree);
                 </Alert>
 
                 <div v-else>
-                    <TreeNode v-for="child in currentPath[currentPath.length - 1].children" :key="child.id"
-                        :node="child" @enterFolder="enterFolder" class="first:rounded-t-md last:rounded-b-md" />
+                    <TreeNode
+                        v-for="child in currentPath[currentPath.length - 1]
+                            .children"
+                        :key="child.id"
+                        :node="child"
+                        @enterFolder="enterFolder"
+                        class="first:rounded-t-md last:rounded-b-md"
+                    />
 
-                    <div v-if="currentPath[currentPath.length - 1].children.length === 0"
-                        class="p-8 text-center text-gray-400 italic">
+                    <div
+                        v-if="
+                            currentPath[currentPath.length - 1].children
+                                .length === 0
+                        "
+                        class="p-8 text-center text-gray-400 italic"
+                    >
                         Esta pasta está vazia.
                     </div>
                 </div>

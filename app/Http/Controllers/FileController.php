@@ -21,12 +21,12 @@ class FileController extends Controller
         $file = $result['file'];
 
         return response()->stream(function () use ($stream) {
-            while (!$stream->eof()) {
+            while (! $stream->eof()) {
                 echo $stream->read(1024 * 8);
             }
         }, Response::HTTP_OK, [
             'Content-Type' => $file->mimeType ?? 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="' . $file->name . '"',
+            'Content-Disposition' => 'attachment; filename="'.$file->name.'"',
         ]);
     }
 }

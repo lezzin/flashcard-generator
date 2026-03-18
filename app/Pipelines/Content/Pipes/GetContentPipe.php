@@ -19,12 +19,12 @@ class GetContentPipe
 
             $fullText = '';
             foreach ($pdf->getPages() as $page) {
-                $fullText .= $page->getText() . "\n";
+                $fullText .= $page->getText()."\n";
             }
 
             $context->content = $this->cleanExtractedText($fullText);
         } catch (Exception $e) {
-            throw new Exception('Error parsing PDF: ' . $e->getMessage());
+            throw new Exception('Error parsing PDF: '.$e->getMessage());
         }
 
         return $next($context);

@@ -35,6 +35,7 @@ class GetFilesAction
 
             if ($file->id === $rootId) {
                 $root = $node;
+
                 continue;
             }
 

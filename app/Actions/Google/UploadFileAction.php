@@ -50,14 +50,14 @@ class UploadFileAction
         $mainDeck = $parts[0];
         $folders = [$mainDeck];
 
-        $fileName = Str::slug($mainDeck) . '.apkg';
+        $fileName = Str::slug($mainDeck).'.apkg';
 
         if (count($parts) > 1) {
             $folders[] = 'Separados';
 
             $subName = $parts[1];
             $firstSub = explode('::', $subName)[0];
-            $fileName = Str::slug(Str::before($firstSub, ' ')) . '.apkg';
+            $fileName = Str::slug(Str::before($firstSub, ' ')).'.apkg';
         }
 
         return [

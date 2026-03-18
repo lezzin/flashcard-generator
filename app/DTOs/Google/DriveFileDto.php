@@ -54,7 +54,7 @@ class DriveFileDTO
             'mimeType' => $this->mimeType,
             'url' => $this->url,
             'downloadUrl' => $this->downloadUrl,
-            'children' => array_map(fn($c) => $c->toArray(), $this->children),
+            'children' => array_map(fn ($c) => $c->toArray(), $this->children),
         ];
     }
 }

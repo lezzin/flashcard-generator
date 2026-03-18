@@ -25,7 +25,7 @@ class FindNotesByDeckNameAction
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn($note) => NoteDto::fromRequest($note)->toArray());
+        $notes = collect($noteInfos)->map(fn ($note) => NoteDto::fromRequest($note)->toArray());
 
         return new LengthAwarePaginator(
             $notes,

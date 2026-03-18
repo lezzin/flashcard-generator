@@ -17,7 +17,7 @@ class DownloadFileAction
         $drive = new Drive($client);
 
         $file = $drive->files->get($id, [
-            'fields' => 'name, mimeType'
+            'fields' => 'name, mimeType',
         ]);
 
         $httpClient = $client->authorize();

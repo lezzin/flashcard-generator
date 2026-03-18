@@ -4,7 +4,7 @@ import FolderIcon from './FolderIcon.vue';
 import FileIcon from './FileIcon.vue';
 
 const props = defineProps<{
-    node: any
+    node: any;
 }>();
 
 const emit = defineEmits<{
@@ -24,8 +24,10 @@ const handleClick = () => {
 </script>
 
 <template>
-    <div class="flex items-center gap-2 p-2 border border-gray-200 hover:bg-gray-100 px-4 cursor-pointer"
-        @click="handleClick">
+    <div
+        class="flex cursor-pointer items-center gap-2 border border-gray-200 p-2 px-4 hover:bg-gray-100"
+        @click="handleClick"
+    >
         <span class="text-blue-500">
             <FolderIcon v-if="isFolder" />
             <FileIcon class="text-gray-500" v-else />

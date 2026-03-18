@@ -30,13 +30,13 @@ class NoteDto
     public function toArray(): array
     {
         $formattedFields = collect($this->fields)
-            ->mapWithKeys(fn($field, $name) => [$name => strip_tags($field['value'])])
+            ->mapWithKeys(fn ($field, $name) => [$name => strip_tags($field['value'])])
             ->all();
 
         return [
-            'noteId'    => $this->noteId,
+            'noteId' => $this->noteId,
             'modelName' => $this->modelName,
-            'fields'    => $formattedFields,
+            'fields' => $formattedFields,
         ];
     }
 }

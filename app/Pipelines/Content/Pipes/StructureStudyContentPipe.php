@@ -24,7 +24,7 @@ class StructureStudyContentPipe
     private function extractBlocks(string $text): Collection
     {
         $lines = collect(explode("\n", $text))
-            ->map(fn($line) => trim($line))
+            ->map(fn ($line) => trim($line))
             ->filter();
 
         $blocks = collect();
@@ -93,9 +93,9 @@ class StructureStudyContentPipe
             }
 
             if (strlen($temp['content']) + strlen($block['content']) < self::MIN_BLOCK_CHARS) {
-                $temp['content'] .= "\n\n" . $block['content'];
+                $temp['content'] .= "\n\n".$block['content'];
                 if ($block['title'] && $block['title'] !== 'Introdução') {
-                    $temp['title'] .= ' & ' . $block['title'];
+                    $temp['title'] .= ' & '.$block['title'];
                 }
             } else {
                 $grouped->push($temp);
@@ -120,7 +120,7 @@ class StructureStudyContentPipe
                 foreach ($chunks as $index => $chunk) {
                     $title = $block['title'] ?? 'Continuação';
                     $chunkedBlocks->push([
-                        'title' => $title . ' (Parte ' . ($index + 1) . ')',
+                        'title' => $title.' (Parte '.($index + 1).')',
                         'content' => $chunk,
                     ]);
                 }

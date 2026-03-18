@@ -20,7 +20,7 @@ class DeckDto
     public function toArray(): array
     {
         return [
-            'raw'       => $this->name,
+            'raw' => $this->name,
             'formatted' => $this->formattedName(),
         ];
     }
@@ -43,7 +43,7 @@ class DeckDto
 
             if (str_contains($part, ' ')) {
                 return collect(explode(' ', $part))
-                    ->map(fn($word) => Str::substr($word, 0, 1) . '.')
+                    ->map(fn ($word) => Str::substr($word, 0, 1).'.')
                     ->join(' ');
             }
 
