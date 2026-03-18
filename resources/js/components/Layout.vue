@@ -25,6 +25,10 @@ import { Link } from '@inertiajs/vue3';
                                 class="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
                                 Otimizar Note
                             </Link>
+                            <Link href="/files"
+                                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
+                                Arquivos
+                            </Link>
                         </div>
                     </div>
                     <div class="text-xs text-gray-400 font-mono">v1.0</div>
