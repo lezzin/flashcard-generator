@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import Alert from '@/components/Alert.vue';
-import InputError from '@/components/InputError.vue';
-import InputLabel from '@/components/InputLabel.vue';
 import Layout from '@/components/Layout.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
-import TextInput from '@/components/TextInput.vue';
+import Button from '@/components/ui/button.vue';
+import Input from '@/components/ui/input.vue';
+import Label from '@/components/ui/label.vue';
+import Alert from '@/components/ui/alert.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardHeader from '@/components/ui/card/CardHeader.vue';
+import CardTitle from '@/components/ui/card/CardTitle.vue';
+import CardDescription from '@/components/ui/card/CardDescription.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
 
 const successMessage = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
@@ -65,37 +69,44 @@ const submit = async () => {
     <Layout>
         <Head title="Otimizar Nota" />
 
-        <div class="max-w-xl mx-auto space-y-8 bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-            <header class="text-center">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Otimizar Nota Única
-                </h1>
-                <p class="mt-1 text-sm text-gray-500">
+        <Card class="max-w-xl mx-auto border-gray-200 shadow-sm">
+            <CardHeader class="text-center">
+                <CardTitle>Otimizar Nota Única</CardTitle>
+                <CardDescription>
                     Insira o ID da nota do Anki para otimização individual.
-                </p>
-            </header>
+                </CardDescription>
+            </CardHeader>
 
-            <Alert v-if="successMessage" type="success">
-                {{ successMessage }}
-            </Alert>
+            <CardContent class="space-y-6">
+                <Alert v-if="successMessage" variant="success">
+                    {{ successMessage }}
+                </Alert>
 
-            <Alert v-if="errorMessage" type="error">
-                {{ errorMessage }}
-            </Alert>
+                <Alert v-if="errorMessage" variant="destructive">
+                    {{ errorMessage }}
+                </Alert>
 
-            <form @submit.prevent="submit" class="space-y-6">
-                <div class="space-y-1.5">
-                    <InputLabel for="note_id" value="ID da Nota" />
-                    <TextInput id="note_id" v-model="form.note_id" placeholder="ex: 123456789" />
-                    <InputError :message="form.errors.note_id" />
-                </div>
+                <form @submit.prevent="submit" class="space-y-6">
+                    <div class="space-y-2">
+                        <Label for="note_id">ID da Nota</Label>
+                        <Input
+                            id="note_id"
+                            v-model="form.note_id"
+                            placeholder="ex: 123456789"
+                            :class="{'border-red-500': form.errors.note_id}"
+                        />
+                        <p v-if="form.errors.note_id" class="text-sm text-red-500 font-medium">
+                            {{ form.errors.note_id }}
+                        </p>
+                    </div>
 
-                <div class="flex pt-4">
-                    <PrimaryButton class="w-full justify-center" :disabled="form.processing || !form.note_id">
-                        {{ form.processing ? 'Processando...' : 'Otimizar Nota' }}
-                    </PrimaryButton>
-                </div>
-            </form>
-        </div>
+                    <div class="pt-4">
+                        <Button class="w-full" :disabled="form.processing || !form.note_id">
+                            {{ form.processing ? 'Processando...' : 'Otimizar Nota' }}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     </Layout>
 </template>

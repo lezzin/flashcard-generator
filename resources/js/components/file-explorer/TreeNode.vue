@@ -24,7 +24,7 @@ const handleClick = () => {
 </script>
 
 <template>
-    <div class="flex items-center gap-2 p-2 cursor-pointer border-b border-b-gray-300 hover:bg-gray-100 px-4"
+    <div class="flex items-center gap-2 p-2 border border-gray-200 hover:bg-gray-100 px-4 cursor-pointer"
         @click="handleClick">
         <span class="text-blue-500">
             <FolderIcon v-if="isFolder" />

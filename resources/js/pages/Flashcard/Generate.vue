@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import Alert from '@/components/Alert.vue';
-import InputError from '@/components/InputError.vue';
-import InputLabel from '@/components/InputLabel.vue';
 import Layout from '@/components/Layout.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
-import TextArea from '@/components/TextArea.vue';
-import TextInput from '@/components/TextInput.vue';
+import Button from '@/components/ui/button.vue';
+import Input from '@/components/ui/input.vue';
+import Textarea from '@/components/ui/textarea.vue';
+import Label from '@/components/ui/label.vue';
+import Alert from '@/components/ui/alert.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardHeader from '@/components/ui/card/CardHeader.vue';
+import CardTitle from '@/components/ui/card/CardTitle.vue';
+import CardDescription from '@/components/ui/card/CardDescription.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
+import CardFooter from '@/components/ui/card/CardFooter.vue';
 
 const successMessage = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
@@ -69,45 +74,60 @@ const submit = async () => {
     <Layout>
         <Head title="Gerar Flashcards" />
 
-        <div class="max-w-xl mx-auto space-y-8 bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-            <header class="text-center">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Gerar Flashcards
-                </h1>
-                <p class="mt-1 text-sm text-gray-500">
+        <Card class="max-w-xl mx-auto border-gray-200 shadow-sm">
+            <CardHeader class="text-center">
+                <CardTitle>Gerar Flashcards</CardTitle>
+                <CardDescription>
                     Cole o conteúdo e a IA fará o resto.
-                </p>
-            </header>
+                </CardDescription>
+            </CardHeader>
 
-            <Alert v-if="successMessage" type="success">
-                {{ successMessage }}
-            </Alert>
+            <CardContent class="space-y-6">
+                <Alert v-if="successMessage" variant="success">
+                    {{ successMessage }}
+                </Alert>
 
-            <Alert v-if="errorMessage" type="error">
-                {{ errorMessage }}
-            </Alert>
+                <Alert v-if="errorMessage" variant="destructive">
+                    {{ errorMessage }}
+                </Alert>
 
-            <form @submit.prevent="submit" class="space-y-6">
-                <div class="space-y-1.5">
-                    <InputLabel for="title" value="Nome do Deck" />
-                    <TextInput id="title" v-model="form.title" type="text"
-                        placeholder="ex: Biologia - Células" autofocus />
-                    <InputError :message="form.errors.title" />
-                </div>
+                <form @submit.prevent="submit" class="space-y-6">
+                    <div class="space-y-2">
+                        <Label for="title">Nome do Deck</Label>
+                        <Input
+                            id="title"
+                            v-model="form.title"
+                            type="text"
+                            placeholder="ex: Biologia - Células"
+                            autofocus
+                            :class="{'border-red-500': form.errors.title}"
+                        />
+                        <p v-if="form.errors.title" class="text-sm text-red-500 font-medium">
+                            {{ form.errors.title }}
+                        </p>
+                    </div>
 
-                <div class="space-y-1.5">
-                    <InputLabel for="content" value="Conteúdo para Estudo" />
-                    <TextArea id="content" v-model="form.content" rows="8"
-                        placeholder="Cole o texto aqui..." />
-                    <InputError :message="form.errors.content" />
-                </div>
+                    <div class="space-y-2">
+                        <Label for="content">Conteúdo para Estudo</Label>
+                        <Textarea
+                            id="content"
+                            v-model="form.content"
+                            rows="8"
+                            placeholder="Cole o texto aqui..."
+                            :class="{'border-red-500': form.errors.content}"
+                        />
+                        <p v-if="form.errors.content" class="text-sm text-red-500 font-medium">
+                            {{ form.errors.content }}
+                        </p>
+                    </div>
 
-                <div class="flex pt-4">
-                    <PrimaryButton class="w-full justify-center" :disabled="form.processing || !form.title || !form.content">
-                        {{ form.processing ? 'Processando...' : 'Gerar Agora' }}
-                    </PrimaryButton>
-                </div>
-            </form>
-        </div>
+                    <div class="pt-4">
+                        <Button class="w-full" :disabled="form.processing || !form.title || !form.content">
+                            {{ form.processing ? 'Processando...' : 'Gerar Agora' }}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     </Layout>
 </template>

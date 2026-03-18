@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import Breadcrumbs from '@/components/File/Breadcrumbs.vue';
-import TreeNode from '@/components/File/TreeNode.vue';
+import Breadcrumbs from '@/components/file-explorer/Breadcrumbs.vue';
+import TreeNode from '@/components/file-explorer/TreeNode.vue';
 import Layout from '@/components/Layout.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
+import Alert from '@/components/ui/alert.vue';
 import { Head } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
@@ -46,16 +49,28 @@ onMounted(fetchTree);
 
         <Head title="Arquivos" />
 
-        <div class="max-w-5xl mx-auto space-y-8 bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-            <Breadcrumbs :path="currentPath" @navigate="goToPath" />
+        <Card class="max-w-5xl mx-auto border-gray-200 shadow-sm">
+            <CardContent class="p-8 space-y-4">
+                <Breadcrumbs v-if="currentPath.length > 0" :path="currentPath" @navigate="goToPath" />
 
-            <div v-if="loading" class="text-center">Carregando...</div>
-            <div v-else-if="errorMessage">{{ errorMessage }}</div>
+                <div v-if="loading" class="text-center py-8 text-gray-500">
+                    Carregando arquivos...
+                </div>
 
-            <div v-else>
-                <TreeNode v-for="child in currentPath[currentPath.length - 1].children" :key="child.id" :node="child"
-                    @enterFolder="enterFolder" />
-            </div>
-        </div>
+                <Alert v-else-if="errorMessage" variant="destructive">
+                    {{ errorMessage }}
+                </Alert>
+
+                <div v-else>
+                    <TreeNode v-for="child in currentPath[currentPath.length - 1].children" :key="child.id"
+                        :node="child" @enterFolder="enterFolder" class="first:rounded-t-md last:rounded-b-md" />
+
+                    <div v-if="currentPath[currentPath.length - 1].children.length === 0"
+                        class="p-8 text-center text-gray-400 italic">
+                        Esta pasta está vazia.
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     </Layout>
 </template>

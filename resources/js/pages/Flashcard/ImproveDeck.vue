@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
-import Alert from '@/components/Alert.vue';
-import InputError from '@/components/InputError.vue';
-import InputLabel from '@/components/InputLabel.vue';
 import Layout from '@/components/Layout.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import Button from '@/components/ui/button.vue';
+import Label from '@/components/ui/label.vue';
+import Alert from '@/components/ui/alert.vue';
+import SelectSearch from '@/components/ui/select-search.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardHeader from '@/components/ui/card/CardHeader.vue';
+import CardTitle from '@/components/ui/card/CardTitle.vue';
+import CardDescription from '@/components/ui/card/CardDescription.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
 
 type DeckName = {
     raw: string;
@@ -99,60 +103,63 @@ onMounted(fetchDecks);
     <Layout>
         <Head title="Otimizar Deck" />
 
-        <div class="max-w-xl mx-auto space-y-8 bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-            <header class="text-center">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Otimizar Deck
-                </h1>
-                <p class="mt-1 text-sm text-gray-500">
+        <Card class="max-w-xl mx-auto border-gray-200 shadow-sm">
+            <CardHeader class="text-center">
+                <CardTitle>Otimizar Deck</CardTitle>
+                <CardDescription>
                     A IA irá destacar palavras-chave e simplificar sentenças complexas.
-                </p>
-            </header>
+                </CardDescription>
+            </CardHeader>
 
-            <Alert v-if="successMessage" type="success">
-                {{ successMessage }}
-            </Alert>
+            <CardContent class="space-y-6">
+                <Alert v-if="successMessage" variant="success">
+                    {{ successMessage }}
+                </Alert>
 
-            <Alert v-if="errorMessage" type="error">
-                <div class="flex items-center justify-between">
-                    <span>{{ errorMessage }}</span>
-                    <button
-                        v-if="!loadingDecks && deckNames.length === 0"
-                        @click="fetchDecks"
-                        class="ml-4 underline hover:no-underline"
-                    >
-                        Tentar Novamente
-                    </button>
-                </div>
-            </Alert>
+                <Alert v-if="errorMessage" variant="destructive">
+                    <div class="flex items-center justify-between w-full">
+                        <span>{{ errorMessage }}</span>
+                        <button
+                            v-if="!loadingDecks && deckNames.length === 0"
+                            @click="fetchDecks"
+                            class="ml-4 underline hover:no-underline font-medium text-white"
+                        >
+                            Tentar Novamente
+                        </button>
+                    </div>
+                </Alert>
 
-            <form @submit.prevent="submit" class="space-y-6">
-                <div class="space-y-1.5">
-                    <InputLabel for="deck_name" value="Selecione o Deck do Anki" />
+                <form @submit.prevent="submit" class="space-y-6">
+                    <div class="space-y-2">
+                        <Label for="deck_name">Selecione o Deck do Anki</Label>
 
-                    <SelectInput
-                        v-model="form.deck_name"
-                        :options="deckNames"
-                        :disabled="loadingDecks || deckNames.length === 0"
-                        :placeholder="
-                            loadingDecks
-                                ? 'Carregando decks...'
-                                : 'Escolha um deck para otimizar'
-                        "
-                    />
+                        <SelectSearch
+                            v-model="form.deck_name"
+                            :options="deckNames"
+                            :disabled="loadingDecks || deckNames.length === 0"
+                            :placeholder="
+                                loadingDecks
+                                    ? 'Carregando decks...'
+                                    : 'Escolha um deck para otimizar'
+                            "
+                            :class="{'border-red-500 ring-red-500': form.errors.deck_name}"
+                        />
 
-                    <p v-if="!loadingDecks && deckNames.length === 0" class="text-xs text-amber-600">
-                        Nenhum deck encontrado. Abra o Anki com o plugin AnkiConnect.
-                    </p>
-                    <InputError :message="form.errors.deck_name" />
-                </div>
+                        <p v-if="!loadingDecks && deckNames.length === 0" class="text-xs text-amber-600 font-medium">
+                            Nenhum deck encontrado. Abra o Anki com o plugin AnkiConnect.
+                        </p>
+                        <p v-if="form.errors.deck_name" class="text-sm text-red-500 font-medium">
+                            {{ form.errors.deck_name }}
+                        </p>
+                    </div>
 
-                <div class="flex pt-4">
-                    <PrimaryButton class="w-full justify-center" :disabled="form.processing || !form.deck_name">
-                        {{ form.processing ? 'Otimizando...' : 'Otimizar Agora' }}
-                    </PrimaryButton>
-                </div>
-            </form>
-        </div>
+                    <div class="pt-4">
+                        <Button class="w-full" :disabled="form.processing || !form.deck_name">
+                            {{ form.processing ? 'Otimizando...' : 'Otimizar Agora' }}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     </Layout>
 </template>

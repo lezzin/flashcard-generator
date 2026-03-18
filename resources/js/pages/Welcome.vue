@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
+import Button from '@/components/ui/button.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
+import CardHeader from '@/components/ui/card/CardHeader.vue';
+import CardTitle from '@/components/ui/card/CardTitle.vue';
+import CardDescription from '@/components/ui/card/CardDescription.vue';
+import CardFooter from '@/components/ui/card/CardFooter.vue';
 
 const isConnecting = ref(false);
 
@@ -26,31 +32,34 @@ const connectGoogle = async () => {
 
     <Head title="FlashIA - Estude mais rápido com IA" />
 
-    <div class="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center px-4">
-        <main
-            class="max-w-3xl w-full text-center space-y-10 bg-white p-10 sm:p-14 rounded-3xl shadow-md border border-gray-200">
-
-            <header class="space-y-4">
-                <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-gray-900">
+    <div class="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center px-4 py-12">
+        <Card class="max-w-3xl w-full border-gray-200 shadow-xl">
+            <CardHeader class="text-center space-y-4 pt-10 sm:pt-14 pb-8">
+                <CardTitle class="text-5xl sm:text-6xl font-extrabold tracking-tight text-gray-900">
                     Flash<span class="text-blue-600">IA</span>
-                </h1>
-
-                <p class="text-xl text-gray-600 max-w-xl mx-auto">
+                </CardTitle>
+                <CardDescription class="text-xl text-gray-600 max-w-xl mx-auto">
                     Transforme qualquer conteúdo em flashcards inteligentes e acelere seu aprendizado com IA.
-                </p>
-            </header>
+                </CardDescription>
+            </CardHeader>
 
-            <div class="flex flex-col items-center gap-5">
+            <CardContent class="flex flex-col items-center gap-8 px-8 sm:px-14 pb-10">
                 <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
                     <Link href="/flashcard/generate" class="w-full sm:w-auto">
-                        <PrimaryButton
-                            class="w-full sm:w-auto px-10 py-4 text-lg font-semibold justify-center shadow-sm hover:scale-[1.02] transition">
+                        <Button
+                            size="lg"
+                            class="w-full sm:w-auto text-lg px-8 py-6 shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
                             🚀 Gerar Flashcards
-                        </PrimaryButton>
+                        </Button>
                     </Link>
 
-                    <PrimaryButton @click="connectGoogle" :disabled="isConnecting"
-                        class="w-full sm:w-auto px-10 py-4 text-lg font-semibold justify-center bg-white! text-gray-700! border border-gray-300 hover:bg-gray-50 hover:scale-[1.02] transition shadow-sm">
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        @click="connectGoogle"
+                        :disabled="isConnecting"
+                        class="w-full sm:w-auto text-lg px-8 py-6 border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm hover:scale-[1.02] transition-all"
+                    >
                         <template v-if="isConnecting">
                             Conectando...
                         </template>
@@ -67,10 +76,10 @@ const connectGoogle = async () => {
                             </svg>
                             Conectar Google
                         </template>
-                    </PrimaryButton>
+                    </Button>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-6 pt-2">
+                <div class="flex flex-wrap justify-center gap-6">
                     <Link href="/deck/improve"
                         class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition">
                         ✨ Melhorar Decks
@@ -81,31 +90,37 @@ const connectGoogle = async () => {
                         📝 Melhorar Nota
                     </Link>
                 </div>
-            </div>
+            </CardContent>
 
-            <div class="pt-10 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-8 text-left">
+            <CardFooter class="bg-gray-50/50 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-8 p-10 text-left rounded-b-xl">
                 <div class="space-y-2">
-                    <h3 class="font-bold text-gray-900">⚡ Rápido</h3>
-                    <p class="text-sm text-gray-600">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <span class="text-xl">⚡</span> Rápido
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
                         Gere decks completos em segundos, sem esforço manual.
                     </p>
                 </div>
 
                 <div class="space-y-2">
-                    <h3 class="font-bold text-gray-900">🧠 Inteligente</h3>
-                    <p class="text-sm text-gray-600">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <span class="text-xl">🧠</span> Inteligente
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
                         IA identifica conceitos importantes automaticamente.
                     </p>
                 </div>
 
                 <div class="space-y-2">
-                    <h3 class="font-bold text-gray-900">🔄 Integrado</h3>
-                    <p class="text-sm text-gray-600">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <span class="text-xl">🔄</span> Integrado
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
                         Envie direto para o Anki sem complicação.
                     </p>
                 </div>
-            </div>
-        </main>
+            </CardFooter>
+        </Card>
 
         <footer class="mt-8 text-sm text-gray-400">
             © 2026 FlashIA • Estude melhor, não mais difícil
