@@ -19,10 +19,12 @@ class GoogleController extends Controller
 
     public function callback(Request $request, CallbackAction $action)
     {
-        $result = $action->execute($request->code);
+        if (! $request->has('code')) {
+            return redirect()->route('home');
+        }
 
-        return response()->json([
-            ...$result,
-        ]);
+        $action->execute($request->code);
+
+        return inertia('Auth/GoogleSuccess');
     }
 }

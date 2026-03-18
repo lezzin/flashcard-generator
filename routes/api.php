@@ -28,5 +28,4 @@ Route::prefix('notes')->group(function () {
 
 Route::prefix('google')->group(function () {
     Route::get('auth', [GoogleController::class, 'auth']);
-    Route::get('callback', [GoogleController::class, 'callback']);
 });
