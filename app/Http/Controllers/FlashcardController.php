@@ -68,11 +68,11 @@ class FlashcardController extends Controller
 
     public function exportDeck(ExportPackageRequest $request, ExportPackageAction $action)
     {
-        $uploadedId = $action->execute($request->post('deck_name', null));
+        $result = $action->execute($request->post('deck_name', null));
 
         return response()->json([
             'message' => 'Exported successfully!',
-            'file_id' => $uploadedId,
+            ...$result,
         ]);
     }
 }

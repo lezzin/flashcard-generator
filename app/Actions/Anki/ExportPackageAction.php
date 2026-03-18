@@ -5,74 +5,91 @@ namespace App\Actions\Anki;
 use App\Actions\Google\UploadFileAction;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ExportPackageAction
 {
-    private const PATH = 'C:\\AnkiExports';
+    private string $tempPath;
 
     public function __construct(
-        private readonly AnkiConnectClient $ankiClient
-    ) {}
-
-    public function execute(string $deckName): string
-    {
-        $newName = $this->formatDeckName($deckName);
-        $path = $this->buildPath($newName);
-
-        $this->prepareDeck($deckName, $newName);
-        $this->exportDeck($newName, $path);
-
-        try {
-            $file = $this->makeUploadedFile($path, $newName);
-
-            return app(UploadFileAction::class)->execute($file);
-        } finally {
-            $this->deleteFile($path);
-        }
+        private readonly AnkiConnectClient $ankiClient,
+        private readonly GetDeckNamesAction $getDeckNamesAction,
+        private readonly UploadFileAction $uploadFileAction
+    ) {
+        $this->tempPath = storage_path('app/temp_exports');
     }
 
-    private function formatDeckName(string $deckName): string
+    public function execute(?string $deckName = null): array
     {
-        return "MeF - {$deckName}";
-    }
+        $this->ensureTempDirectoryExists();
 
-    private function buildPath(string $deckName): string
-    {
-        $safeName = Str::slug($deckName, '_');
-        return self::PATH . DIRECTORY_SEPARATOR . "{$safeName}.apkg";
-    }
+        $results = [
+            'success' => [],
+            'failed' => [],
+        ];
 
-    private function prepareDeck(string $original, string $new): void
-    {
-        $this->ankiClient->invoke("createDeck", [
-            "deck" => $new,
-        ]);
+        $decksToProcess = $deckName
+            ? collect([['raw' => $deckName]])
+            : collect($this->getDeckNamesAction->execute());
 
-        $cardIds = $this->ankiClient->invoke("findCards", [
-            "query" => "deck:\"{$original}\""
-        ]);
+        foreach ($decksToProcess as $deck) {
+            $rawName = $deck['raw'];
 
-        if (empty($cardIds)) {
-            return;
+            try {
+                $this->processDeck($rawName);
+                $results['success'][] = $rawName;
+            } catch (Throwable $e) {
+                Log::error("Failed to export deck: {$rawName}", [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                $results['failed'][] = $rawName;
+            }
         }
 
-        $this->ankiClient->invoke("changeDeck", [
-            "cards" => $cardIds,
-            "deck" => $new,
-        ]);
+        return $results;
     }
 
-    private function exportDeck(string $deckName, string $path): void
+    private function processDeck(string $deckName): void
     {
+        $localFilePath = $this->buildFilePath($deckName);
+
         $this->ankiClient->invoke("exportPackage", [
             "deck" => $deckName,
-            "path" => $path,
+            "path" => $localFilePath,
             "includeSched" => false,
         ]);
+
+        if (! file_exists($localFilePath)) {
+            throw new \Exception("Export file was not created by Anki at: {$localFilePath}");
+        }
+
+        try {
+            $uploadedFile = $this->wrapInUploadedFile($localFilePath);
+            $this->uploadFileAction->execute($uploadedFile, $deckName);
+        } finally {
+            if (file_exists($localFilePath)) {
+                @unlink($localFilePath);
+            }
+        }
     }
 
-    private function makeUploadedFile(string $path, string $deckName): UploadedFile
+    private function ensureTempDirectoryExists(): void
+    {
+        if (! is_dir($this->tempPath)) {
+            mkdir($this->tempPath, 0755, true);
+        }
+    }
+
+    private function buildFilePath(string $deckName): string
+    {
+        $safeName = Str::slug($deckName, '_');
+        return $this->tempPath . DIRECTORY_SEPARATOR . "{$safeName}_" . time() . ".apkg";
+    }
+
+    private function wrapInUploadedFile(string $path): UploadedFile
     {
         return new UploadedFile(
             $path,
@@ -81,12 +98,5 @@ class ExportPackageAction
             null,
             true
         );
-    }
-
-    private function deleteFile(string $path): void
-    {
-        if (file_exists($path)) {
-            @unlink($path);
-        }
     }
 }

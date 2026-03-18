@@ -25,6 +25,4 @@ Route::prefix('flashcard')->group(function () {
 Route::prefix('google')->group(function () {
     Route::post('auth', [GoogleController::class, 'auth']);
     Route::get('callback', [GoogleController::class, 'callback']);
-
-    Route::post('upload', [GoogleController::class, 'uploadFile']);
 });
