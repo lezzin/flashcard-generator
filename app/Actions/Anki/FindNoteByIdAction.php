@@ -2,7 +2,7 @@
 
 namespace App\Actions\Anki;
 
-use App\Formatters\AnkiFormatter;
+use App\DTOs\Anki\NoteDto;
 use App\Services\Anki\AnkiConnectClient;
 use Exception;
 
@@ -22,6 +22,6 @@ class FindNoteByIdAction
             throw new Exception('Failed to get note with the provided ID.');
         }
 
-        return AnkiFormatter::note($note);
+        return NoteDto::fromRequest($note)->toArray();
     }
 }

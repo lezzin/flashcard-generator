@@ -2,7 +2,7 @@
 
 namespace App\Actions\Anki;
 
-use App\Formatters\AnkiFormatter;
+use App\DTOs\Anki\NoteDto;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -25,7 +25,7 @@ class FindNotesByDeckNameAction
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn ($note) => AnkiFormatter::note($note));
+        $notes = collect($noteInfos)->map(fn($note) => NoteDto::fromRequest($note)->toArray());
 
         return new LengthAwarePaginator(
             $notes,

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Anki;
 
-use App\Formatters\AnkiFormatter;
+use App\DTOs\Anki\DeckDto;
 use App\Services\Anki\AnkiConnectClient;
 
 class GetDeckNamesAction
@@ -15,11 +15,10 @@ class GetDeckNamesAction
     {
         $deckNames = $this->ankiClient->invoke('deckNames');
 
-        return collect($deckNames)->map(
-            fn (string $deckName) => [
-                'formatted' => AnkiFormatter::deckName($deckName),
-                'raw' => $deckName,
-            ]
-        )->toArray();
+        return collect($deckNames)
+            ->map(
+                fn($deck) => DeckDto::fromRequest($deck)->toArray()
+            )
+            ->toArray();
     }
 }
