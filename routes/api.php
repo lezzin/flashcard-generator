@@ -18,6 +18,7 @@ Route::prefix('flashcard')->group(function () {
     Route::prefix('deck')->group(function () {
         Route::get('/', [FlashcardController::class, 'getDeckNames']);
         Route::get('notes', [FlashcardController::class, 'findNotes']);
+        Route::post('export', [FlashcardController::class, 'exportDeck']);
     });
 });
 
