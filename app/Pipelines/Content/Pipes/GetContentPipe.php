@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Pipelines\Summary\Pipes;
+namespace App\Pipelines\Content\Pipes;
 
-use App\Pipelines\Summary\SummaryPipelineContext;
+use App\Pipelines\Content\ContentPipelineContext;
 use Closure;
 use Exception;
 use Illuminate\Support\Str;
@@ -10,7 +10,7 @@ use Smalot\PdfParser\Parser;
 
 class GetContentPipe
 {
-    public function handle(SummaryPipelineContext $context, Closure $next)
+    public function handle(ContentPipelineContext $context, Closure $next)
     {
         $parser = new Parser;
 
@@ -19,12 +19,12 @@ class GetContentPipe
 
             $fullText = '';
             foreach ($pdf->getPages() as $page) {
-                $fullText .= $page->getText()."\n";
+                $fullText .= $page->getText() . "\n";
             }
 
             $context->content = $this->cleanExtractedText($fullText);
         } catch (Exception $e) {
-            throw new Exception('Error parsing PDF: '.$e->getMessage());
+            throw new Exception('Error parsing PDF: ' . $e->getMessage());
         }
 
         return $next($context);

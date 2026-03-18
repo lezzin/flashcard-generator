@@ -1,28 +1,32 @@
 <?php
 
+use App\Http\Controllers\DeckController;
 use App\Http\Controllers\FlashcardController;
 use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\SummaryController;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ContentController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('summary')->group(function () {
-    Route::post('generate', [SummaryController::class, 'generate']);
+Route::prefix('contents')->group(function () {
+    Route::post('/', [ContentController::class, 'store']);
 });
 
-Route::prefix('flashcard')->group(function () {
-    Route::post('generate', [FlashcardController::class, 'generate']);
-    Route::post('reprocess', [FlashcardController::class, 'reprocess']);
-    Route::post('improve/single', [FlashcardController::class, 'improveSingle']);
-    Route::post('improve/many', [FlashcardController::class, 'improveMany']);
+Route::prefix('flashcards')->group(function () {
+    Route::post('/', [FlashcardController::class, 'store']);
+});
 
-    Route::prefix('deck')->group(function () {
-        Route::get('/', [FlashcardController::class, 'getDeckNames']);
-        Route::get('notes', [FlashcardController::class, 'findNotes']);
-        Route::post('export', [FlashcardController::class, 'exportDeck']);
-    });
+Route::prefix('decks')->group(function () {
+    Route::get('/', [DeckController::class, 'index']);
+    Route::post('export', [DeckController::class, 'export']);
+    Route::post('improve', [DeckController::class, 'improve']);
+});
+
+Route::prefix('notes')->group(function () {
+    Route::get('/', [NoteController::class, 'index']);
+    Route::post('improve', [NoteController::class, 'improve']);
 });
 
 Route::prefix('google')->group(function () {
-    Route::post('auth', [GoogleController::class, 'auth']);
+    Route::get('auth', [GoogleController::class, 'auth']);
     Route::get('callback', [GoogleController::class, 'callback']);
 });

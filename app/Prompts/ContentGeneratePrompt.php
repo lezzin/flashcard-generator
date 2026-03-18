@@ -2,7 +2,7 @@
 
 namespace App\Prompts;
 
-class SummaryGeneratePrompt
+class ContentGeneratePrompt
 {
     public static function handle(?string $context, string $text): string
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Pipelines\Summary;
+namespace App\Pipelines\Content;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
-class SummaryPipelineContext
+class ContentPipelineContext
 {
     /**
      * @var Collection<int, array{title: ?string, content: string}>
@@ -15,7 +15,7 @@ class SummaryPipelineContext
     public ?string $content;
 
     /**
-     * @var Collection<int, array{title: string, summary: string}>
+     * @var Collection<int, array{title: string, content: string}>
      */
     public Collection $results;
 

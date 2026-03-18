@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Requests\Summary;
+namespace App\Http\Requests\Content;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
-class SummaryGenerateRequest extends FormRequest
+class ContentGenerateRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'file' => ['required', File::types(['pdf', 'txt'])],
+            'file' => ['required', File::types(['pdf'])],
         ];
     }
 }

@@ -9,8 +9,7 @@ class FlashcardGenerateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string'],
-            'title' => ['required', 'string'],
+            'filename' => ['required', 'string'],
         ];
     }
 }

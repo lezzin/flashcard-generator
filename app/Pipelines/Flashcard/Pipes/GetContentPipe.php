@@ -13,8 +13,7 @@ class GetContentPipe
     {
         $context->log('GetContentPipe started');
 
-        $content = trim($context->content);
-        $rawSummaries = explode('{{FIM_RESUMO}}', $content);
+        $rawSummaries = explode('{{FIM_RESUMO}}', trim($context->content));
 
         foreach ($rawSummaries as $summaryText) {
             $summaryText = trim(str_replace('{{INICIO_RESUMO}}', '', $summaryText));

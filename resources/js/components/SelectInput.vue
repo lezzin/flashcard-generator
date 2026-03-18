@@ -50,7 +50,7 @@ onClickOutside(containerRef, () => {
             @click="isOpen = !isOpen"
             :disabled="disabled"
         >
-            {{ selectedLabel || placeholder || 'Select an option' }}
+            {{ selectedLabel || placeholder || 'Selecione uma opção' }}
         </button>
 
         <div
@@ -60,7 +60,7 @@ onClickOutside(containerRef, () => {
             <input
                 v-model="search"
                 type="text"
-                placeholder="Search..."
+                placeholder="Pesquisar..."
                 class="w-full border-b border-gray-200 px-3 py-2 text-sm focus:outline-none"
             />
 
@@ -78,7 +78,7 @@ onClickOutside(containerRef, () => {
                     v-if="filteredOptions.length === 0"
                     class="px-3 py-2 text-sm text-gray-500"
                 >
-                    No results found
+                    Nenhum resultado encontrado
                 </li>
             </ul>
         </div>
