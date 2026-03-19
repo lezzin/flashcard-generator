@@ -5,6 +5,7 @@ namespace App\Actions\Google;
 use App\DTOs\Google\DriveFileDTO;
 use App\Services\Google\GoogleAuthService;
 use Google\Service\Drive;
+use Google\Service\Drive\FileList;
 
 class GetFilesAction
 {
@@ -12,7 +13,7 @@ class GetFilesAction
         private readonly GoogleAuthService $authService
     ) {}
 
-    public function execute(): DriveFileDTO
+    public function execute(): array
     {
         $drive = new Drive($this->authService->getAuthenticatedClient());
         $rootId = config('filesystems.disks.google.folderId');
@@ -41,7 +42,7 @@ class GetFilesAction
             }
         }
 
-        return $root ?? throw new \Exception('Root folder not found');
+        return $root->toArray() ?? throw new \Exception('Root folder not found');
     }
 
     private function fetchAllFiles(Drive $drive): array
@@ -52,7 +53,7 @@ class GetFilesAction
         do {
             $response = $drive->files->listFiles([
                 'q' => 'trashed = false',
-                'fields' => 'nextPageToken, files(id, name, mimeType, parents, webViewLink)',
+                'fields' => 'nextPageToken, files(id, name, mimeType, parents, webViewLink, createdTime)',
                 'pageSize' => 1000,
                 'pageToken' => $pageToken,
             ]);

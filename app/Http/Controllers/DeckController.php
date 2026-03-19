@@ -8,6 +8,7 @@ use App\Actions\Flashcard\Optimize\OptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardsRequest;
 use App\Jobs\Deck\ExportPackageJob;
+use App\Services\Anki\AnkiConnectClient;
 
 class DeckController extends Controller
 {
@@ -16,8 +17,10 @@ class DeckController extends Controller
         return $action->execute();
     }
 
-    public function export(ExportPackageRequest $request, ExportPackageAction $action)
+    public function export(ExportPackageRequest $request, ExportPackageAction $action, AnkiConnectClient $anki)
     {
+        $anki->validateConnection();
+
         dispatch(new ExportPackageJob(
             deckName: $request->post('deck_name', null),
         ))->onQueue('deck:export');

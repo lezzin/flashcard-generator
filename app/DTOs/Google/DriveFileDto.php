@@ -2,12 +2,15 @@
 
 namespace App\DTOs\Google;
 
+use Illuminate\Support\Carbon;
+
 class DriveFileDTO
 {
     public function __construct(
         public readonly string $id,
         public readonly string $name,
         public readonly string $type,
+        public readonly string $createdTime,
         public readonly ?string $mimeType,
         public readonly ?string $url,
         public readonly ?string $downloadUrl,
@@ -23,6 +26,7 @@ class DriveFileDTO
             mimeType: $folder->mimeType,
             url: $folder->webViewLink ?? null,
             downloadUrl: null,
+            createdTime: $folder->createdTime,
             children: []
         );
     }
@@ -36,6 +40,7 @@ class DriveFileDTO
             mimeType: $file->mimeType,
             url: $file->webViewLink ?? null,
             downloadUrl: route('files.download', $file->id),
+            createdTime: $file->createdTime,
             children: []
         );
     }
@@ -54,7 +59,20 @@ class DriveFileDTO
             'mimeType' => $this->mimeType,
             'url' => $this->url,
             'downloadUrl' => $this->downloadUrl,
-            'children' => array_map(fn ($c) => $c->toArray(), $this->children),
+            'createdTime' => Carbon::parse($this->createdTime)->format('d/m/Y H:i:s'),
+            'children' => $this->sortChildren()
         ];
+    }
+
+    private function sortChildren()
+    {
+        return collect($this->children)
+            ->sortBy([
+                fn($item) => $item->type !== 'folder',
+                fn($item) => strtolower($item->name),
+            ])
+            ->map(fn($c) => $c->toArray())
+            ->values()
+            ->all();
     }
 }

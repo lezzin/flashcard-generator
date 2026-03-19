@@ -62,7 +62,7 @@ class UploadFileAction
 
         return [
             'folders' => $folders,
-            'fileName' => Str::slug($mainDeck . '-' . $firstSubDeck) . '.apkg',
+            'fileName' => Str::slug($firstSubDeck) . '.apkg',
         ];
     }
 
