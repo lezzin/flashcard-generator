@@ -17,16 +17,13 @@ class GetFilesAction
         $drive = new Drive($this->authService->getAuthenticatedClient());
         $rootId = config('filesystems.disks.google.folderId');
 
-        // 🔥 busca tudo de uma vez
         $files = $this->fetchAllFiles($drive);
 
-        // indexar
         $nodes = [];
         foreach ($files as $file) {
             $nodes[$file->id] = $this->mapToDTO($file);
         }
 
-        // montar árvore
         $root = null;
 
         foreach ($files as $file) {

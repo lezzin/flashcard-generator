@@ -7,6 +7,7 @@ use App\Actions\Anki\GetDeckNamesAction;
 use App\Actions\Flashcard\Optimize\OptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardsRequest;
+use App\Jobs\Deck\ExportPackageJob;
 
 class DeckController extends Controller
 {
@@ -17,12 +18,11 @@ class DeckController extends Controller
 
     public function export(ExportPackageRequest $request, ExportPackageAction $action)
     {
-        $result = $action->execute($request->post('deck_name', null));
+        dispatch(new ExportPackageJob(
+            deckName: $request->post('deck_name', null),
+        ))->onQueue('deck:export');
 
-        return response()->json([
-            'message' => 'Exported successfully!',
-            ...$result,
-        ]);
+        return response()->noContent();
     }
 
     public function improve(ImproveFlashcardsRequest $request, OptimizeDeckAction $action)

@@ -11,14 +11,20 @@ class GetDeckNamesAction
         private readonly AnkiConnectClient $ankiClient
     ) {}
 
-    public function execute(): array
+    public function execute(bool $onlyFirstLevel = false): array
     {
         $deckNames = $this->ankiClient->invoke('deckNames');
 
         return collect($deckNames)
-            ->map(
-                fn ($deck) => DeckDto::fromRequest($deck)->toArray()
-            )
+            ->filter(function ($deck) use ($onlyFirstLevel) {
+                if (! $onlyFirstLevel) {
+                    return true;
+                }
+
+                return substr_count($deck, '::') <= 1;
+            })
+            ->map(fn($deck) => DeckDto::fromRequest($deck)->toArray())
+            ->values()
             ->toArray();
     }
 }

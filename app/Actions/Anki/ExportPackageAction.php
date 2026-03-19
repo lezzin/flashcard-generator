@@ -32,7 +32,7 @@ class ExportPackageAction
 
         $decksToProcess = $deckName
             ? collect([['raw' => $deckName]])
-            : collect($this->getDeckNamesAction->execute());
+            : collect($this->getDeckNamesAction->execute(true));
 
         foreach ($decksToProcess as $deck) {
             $rawName = $deck['raw'];
@@ -87,7 +87,7 @@ class ExportPackageAction
     {
         $safeName = Str::slug($deckName, '_');
 
-        return $this->tempPath.DIRECTORY_SEPARATOR."{$safeName}_".time().'.apkg';
+        return $this->tempPath . DIRECTORY_SEPARATOR . "{$safeName}_" . time() . '.apkg';
     }
 
     private function wrapInUploadedFile(string $path): UploadedFile
