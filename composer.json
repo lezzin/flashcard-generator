@@ -16,6 +16,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.11",
+        "marvinlabs/laravel-discord-logger": "^1.4",
         "masbug/flysystem-google-drive-ext": "^2.4",
         "smalot/pdfparser": "^2.12"
     },

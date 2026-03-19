@@ -52,6 +52,14 @@ return [
 
     'channels' => [
 
+        'discord' => [
+            'driver' => 'custom',
+            'via'    => MarvinLabs\DiscordLogger\Logger::class,
+            'level'  => 'debug',
+            'url'    => env('LOG_DISCORD_WEBHOOK_URL'),
+            'ignore_exceptions' => env('LOG_DISCORD_IGNORE_EXCEPTIONS', false),
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),
@@ -89,7 +97,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
@@ -132,6 +140,10 @@ return [
             'path' => storage_path('logs/flashcard.log'),
             'level' => 'debug',
             'replace_placeholders' => true,
+        ],
+
+        'dicord' => [
+            'channels' => ['discord'],
         ],
 
     ],
