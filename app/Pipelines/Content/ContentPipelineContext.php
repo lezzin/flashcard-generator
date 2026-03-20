@@ -3,7 +3,6 @@
 namespace App\Pipelines\Content;
 
 use App\DTOs\Parser\PdfDataDto;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
 class ContentPipelineContext

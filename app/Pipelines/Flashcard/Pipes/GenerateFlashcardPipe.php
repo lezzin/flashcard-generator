@@ -53,7 +53,12 @@ class GenerateFlashcardPipe
                 );
 
                 if (isset($data->flashcards)) {
-                    $dtos = $this->toDto($data->flashcards, $context->title, $source->title);
+                    $dtos = $this->toDto(
+                        flashcards: $data->flashcards,
+                        title: $context->title,
+                        subtitle: $source->title,
+                    );
+
                     return $dtos;
                 }
 
@@ -66,11 +71,11 @@ class GenerateFlashcardPipe
         return $next($context);
     }
 
-    private function toDto(array $flashcards, string $title, string $subtitle): Collection
+    private function toDto(array $flashcards, string $subtitle, ?string $title = null): Collection
     {
         return collect($flashcards)
             ->map(function ($card) use ($title, $subtitle) {
-                $card->deck = "{$title}::$subtitle";
+                $card->deck = !is_null($title) ? "{$title}::$subtitle" : $subtitle;
 
                 return match ($card->type) {
                     CardType::CLOZE->value => GeneratedFlashcardDto::omitFromObject($card),

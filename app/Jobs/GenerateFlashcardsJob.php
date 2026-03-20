@@ -12,12 +12,16 @@ class GenerateFlashcardsJob implements ShouldQueue
 
     public function __construct(
         private readonly string $content,
-        private readonly string $title,
+        private readonly ?string $title = null,
         private readonly bool $isPath = false,
     ) {}
 
     public function handle(): void
     {
-        FlashcardPipeline::handle($this->content, $this->title, $this->isPath);
+        FlashcardPipeline::handle(
+            content: $this->content,
+            title: $this->title,
+            isPath: $this->isPath
+        );
     }
 }

@@ -10,18 +10,23 @@ class FindNoteByIdAction
 {
     public function __construct(
         private readonly AnkiConnectClient $ankiClient,
+        private readonly GetDeckNamesFromCardIdsAction $getDeckNames,
     ) {}
 
     public function execute(int $noteId): array
     {
         $note = $this->ankiClient->invoke('notesInfo', [
             'notes' => [$noteId],
-        ])[0];
+        ])[0] ?? null;
 
         if (empty($note)) {
             throw new Exception('Failed to get note with the provided ID.');
         }
 
-        return NoteDto::fromRequest($note)->toArray();
+        $deckNames = $this->getDeckNames->execute($note['cards'] ?? []);
+
+        return NoteDto::fromRequest($note)
+            ->withDeckNames($deckNames)
+            ->toArray();
     }
 }

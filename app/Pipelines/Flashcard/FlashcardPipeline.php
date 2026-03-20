@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class FlashcardPipeline
 {
-    public static function handle(string $content, string $title, bool $isPath = false): Collection
+    public static function handle(string $content, ?string $title = null, bool $isPath = false): Collection
     {
         $context = new FlashcardPipelineContext(content: $content, title: $title, isPath: $isPath);
 

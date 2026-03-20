@@ -10,6 +10,7 @@ class FindNotesByDeckNameAction
 {
     public function __construct(
         private readonly AnkiConnectClient $ankiClient,
+        private readonly GetDeckNamesFromCardIdsAction $getDeckNames,
     ) {}
 
     public function execute(string $deckName, int $perPage = 100, int $page = 1): LengthAwarePaginator
@@ -25,7 +26,13 @@ class FindNotesByDeckNameAction
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn ($note) => NoteDto::fromRequest($note)->toArray());
+        $notes = collect($noteInfos)->map(function ($note) {
+            $deckNames = $this->getDeckNames->execute($note['cards'] ?? []);
+
+            return NoteDto::fromRequest($note)
+                ->withDeckNames($deckNames)
+                ->toArray();
+        });
 
         return new LengthAwarePaginator(
             $notes,

@@ -20,6 +20,7 @@ Route::prefix('decks')->group(function () {
     Route::get('/', [DeckController::class, 'index']);
     Route::post('export', [DeckController::class, 'export']);
     Route::post('improve', [DeckController::class, 'improve']);
+    Route::post('generate', [DeckController::class, 'generate']);
 });
 
 Route::prefix('notes')->group(function () {
