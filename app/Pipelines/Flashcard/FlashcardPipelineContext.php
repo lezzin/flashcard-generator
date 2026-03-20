@@ -20,16 +20,9 @@ class FlashcardPipelineContext
     public function __construct(
         public readonly string $content,
         public readonly string $title,
+        public readonly bool $isPath = false,
     ) {
         $this->sources = collect();
         $this->results = collect();
-    }
-
-    public function log(string $message, array $context = []): void
-    {
-        Log::channel('flashcard')->info($message, [
-            'title' => $this->title,
-            ...$context,
-        ]);
     }
 }

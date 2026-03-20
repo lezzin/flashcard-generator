@@ -9,6 +9,7 @@ use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -23,38 +24,23 @@ class AddToAnkiPipe
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
         if ($context->results->isEmpty()) {
-            $context->log('AddToAnkiPipe skipped: No cards to add');
-
             return $next($context);
         }
 
-        $context->log('AddToAnkiPipe started', [
-            'card_count' => $context->results->count(),
-        ]);
-
         $payloads = $context->results
-            ->map(fn ($card) => $this->buildPayload($card));
-
-        $context->log('Highlighting keywords');
+            ->map(fn($card) => $this->buildPayload($card));
 
         $improvedPayloads = $payloads
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(
-                fn ($chunk) => $this->highlightNoteAction->execute($chunk)
+                fn($chunk) => $this->highlightNoteAction->execute($chunk)
             );
 
-        $deckName = $payloads->first()['deckName'] ?? 'Teste';
+        $improvedPayloads->each(function ($payload) {
+            app(CreateDeckAction::class)->execute($payload['deckName']);
+        });
 
-        $context->log('Adding cards to Anki', [
-            'deck' => $deckName,
-        ]);
-
-        app(CreateDeckAction::class)->execute($deckName);
         app(AddNotesAction::class)->execute($improvedPayloads->values()->toArray());
-
-        $context->log('Cleaning up temporary file', [
-            'filename' => "{$context->filename}.json",
-        ]);
 
         Storage::disk('public')->delete("flashcards/{$context->filename}.json");
 
@@ -83,7 +69,7 @@ class AddToAnkiPipe
             'deckName' => $flashcard->deck,
             'modelName' => $flashcard->type->value,
             'tags' => [],
-            'fields' => array_filter($fields, fn ($v) => ! is_null($v)),
+            'fields' => array_filter($fields, fn($v) => ! is_null($v)),
         ];
     }
 }

@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Content\ContentGenerateRequest;
-use App\Pipelines\Content\ContentPipeline;
-use App\Services\Anki\AnkiConnectClient;
+use App\Jobs\GenerateContentJob;
+use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
-    public function store(ContentGenerateRequest $request, AnkiConnectClient $anki)
+    public function store(ContentGenerateRequest $request)
     {
-        $anki->validateConnection();
+        $file = $request->file('file');
+        $uploaded = $file->move(Storage::path('output'), 'temp.pdf');
 
-        ContentPipeline::handle($request->file('file'));
+        dispatch(new GenerateContentJob(
+            filePath: $uploaded->getRealPath(),
+        ))->onQueue('content:generate');
 
         return response()->noContent();
     }

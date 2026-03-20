@@ -2,32 +2,21 @@
 
 namespace App\Pipelines\Content;
 
+use App\DTOs\Parser\PdfDataDto;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
 class ContentPipelineContext
 {
-    /**
-     * @var Collection<int, array{title: ?string, content: string}>
-     */
-    public Collection $blocks;
+    public PdfDataDto $pdf;
 
-    public ?string $content;
-
-    /**
-     * @var Collection<int, array{title: string, content: string}>
-     */
     public Collection $results;
 
-    public function __construct(
-        public readonly UploadedFile $file
-    ) {
-        $this->blocks = collect();
-        $this->results = collect();
-    }
+    public array $documentTree = [];
 
-    public function cleanContent(): void
-    {
-        $this->content = null;
+    public function __construct(
+        public readonly string $filePath
+    ) {
+        $this->results = collect();
     }
 }
