@@ -2,27 +2,21 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\GeneratedFlashcardDto;
-use App\DTOs\SourceContentDto;
 use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
-use App\Prompts\FlashcardGeneratePrompt;
+use App\Prompts\FlashcardFromDeckPrompt;
 use Closure;
 use Exception;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 use Illuminate\Support\Collection;
 
-class GenerateFlashcardPipe
+class GenerateFlashcardFromDeckPipe extends GenerateFlashcardPipe
 {
-    public function __construct(
-        protected readonly GenerateJsonAction $generateJsonAction
-    ) {}
-
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
-        $context->results = $context->sources->flatMap(function (SourceContentDto $source) use ($context) {
+        $context->results = $context->sources->flatMap(function ($source) use ($context) {
             try {
                 $schema = new Schema(
                     type: DataType::OBJECT,
@@ -39,6 +33,7 @@ class GenerateFlashcardPipe
                                     'front' => new Schema(type: DataType::STRING),
                                     'back' => new Schema(type: DataType::STRING),
                                     'extra' => new Schema(type: DataType::STRING),
+                                    'deck' => new Schema(type: DataType::STRING),
                                 ],
                                 required: ['type', 'front']
                             )
@@ -47,18 +42,16 @@ class GenerateFlashcardPipe
                     required: ['flashcards']
                 );
 
-                $prompt = FlashcardGeneratePrompt::handle($source);
+                $prompt = FlashcardFromDeckPrompt::handle($source);
 
                 $data = $this->generateJsonAction->execute($prompt, $schema);
 
                 if (isset($data->flashcards)) {
-                    $dtos = $this->toDto(
+                    return $this->toDto(
                         flashcards: $data->flashcards,
-                        title: $context->title,
                         subtitle: $source->title,
+                        title: $context->title,
                     );
-
-                    return $dtos;
                 }
 
                 return collect();
@@ -74,7 +67,7 @@ class GenerateFlashcardPipe
     {
         return collect($flashcards)
             ->map(function ($card) use ($title, $subtitle) {
-                $card->deck = !is_null($title) ? "{$title}::$subtitle" : $subtitle;
+                $card->deck = $card->deck ?? (!is_null($title) ? "{$title}::$subtitle" : $subtitle);
 
                 return match ($card->type) {
                     CardType::CLOZE->value => GeneratedFlashcardDto::omitFromObject($card),
