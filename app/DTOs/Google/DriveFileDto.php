@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Google;
 
+use App\Helpers\Date;
 use Illuminate\Support\Carbon;
 
 class DriveFileDto
@@ -59,7 +60,7 @@ class DriveFileDto
             'mimeType' => $this->mimeType,
             'url' => $this->url,
             'downloadUrl' => $this->downloadUrl,
-            'createdTime' => Carbon::parse($this->createdTime)->format('d/m/Y H:i:s'),
+            'createdTime' => Date::toTimezone($this->createdTime),
             'children' => $this->sortChildren()
         ];
     }

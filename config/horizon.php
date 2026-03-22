@@ -232,15 +232,6 @@ return [
                 'timeout' => 180,
             ],
 
-            'deck-optimize' => [
-                'connection' => 'redis',
-                'queue' => ['deck:optimize'],
-                'balance' => 'auto',
-                'processes' => 1,
-                'tries' => 3,
-                'timeout' => 60,
-            ],
-
             'deck-batch-optimize' => [
                 'connection' => 'redis',
                 'queue' => ['deck:batch:optimize'],
@@ -250,13 +241,13 @@ return [
                 'timeout' => 120,
             ],
 
-            'deck-export' => [
+            'deck-batch-export' => [
                 'connection' => 'redis',
-                'queue' => ['deck:export'],
+                'queue' => ['deck:batch:export'],
                 'balance' => 'auto',
-                'processes' => 1,
+                'processes' => 5,
                 'tries' => 3,
-                'timeout' => 600,
+                'timeout' => 120,
             ],
         ],
     ],
