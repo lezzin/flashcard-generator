@@ -4,7 +4,7 @@ namespace App\DTOs\Google;
 
 use Illuminate\Support\Carbon;
 
-class DriveFileDTO
+class DriveFileDto
 {
     public function __construct(
         public readonly string $id,

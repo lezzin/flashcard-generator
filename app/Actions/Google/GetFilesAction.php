@@ -2,7 +2,7 @@
 
 namespace App\Actions\Google;
 
-use App\DTOs\Google\DriveFileDTO;
+use App\DTOs\Google\DriveFileDto;
 use App\Services\Google\GoogleAuthService;
 use Google\Service\Drive;
 use Google\Service\Drive\FileList;
@@ -65,10 +65,10 @@ class GetFilesAction
         return $files;
     }
 
-    private function mapToDTO(object $file): DriveFileDTO
+    private function mapToDTO(object $file): DriveFileDto
     {
         return str_contains($file->mimeType, 'folder')
-            ? DriveFileDTO::folder($file)
-            : DriveFileDTO::file($file);
+            ? DriveFileDto::folder($file)
+            : DriveFileDto::file($file);
     }
 }

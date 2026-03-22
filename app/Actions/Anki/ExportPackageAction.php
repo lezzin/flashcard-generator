@@ -3,6 +3,7 @@
 namespace App\Actions\Anki;
 
 use App\Actions\Google\UploadFileAction;
+use App\Helpers\File;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -54,24 +55,25 @@ class ExportPackageAction
 
     private function processDeck(string $deckName): void
     {
-        $localFilePath = $this->buildFilePath($deckName);
+        $windowsLocalFilePath = $this->buildFilePath($deckName);
+        $linuxLocalFilePath = File::convertWindowsToLinuxPath($windowsLocalFilePath);
 
         $this->ankiClient->invoke('exportPackage', [
             'deck' => $deckName,
-            'path' => $localFilePath,
+            'path' => $windowsLocalFilePath,
             'includeSched' => false,
         ]);
 
-        if (! file_exists($localFilePath)) {
-            throw new \Exception("Export file was not created by Anki at: {$localFilePath}");
+        if (! file_exists($linuxLocalFilePath)) {
+            throw new \Exception("Export file was not created by Anki at: {$windowsLocalFilePath}");
         }
 
         try {
-            $uploadedFile = $this->wrapInUploadedFile($localFilePath);
+            $uploadedFile = $this->wrapInUploadedFile($linuxLocalFilePath);
             $this->uploadFileAction->execute($uploadedFile, $deckName);
         } finally {
-            if (file_exists($localFilePath)) {
-                @unlink($localFilePath);
+            if (file_exists($linuxLocalFilePath)) {
+                @unlink($linuxLocalFilePath);
             }
         }
     }
@@ -87,7 +89,7 @@ class ExportPackageAction
     {
         $safeName = Str::slug($deckName, '_');
 
-        return $this->tempPath . DIRECTORY_SEPARATOR . "{$safeName}_" . time() . '.apkg';
+        return "C:/Anki/{$safeName}_" . time() . ".apkg";
     }
 
     private function wrapInUploadedFile(string $path): UploadedFile

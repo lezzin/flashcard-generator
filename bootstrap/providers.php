@@ -1,9 +1,7 @@
 <?php
 
-use App\Providers\AppServiceProvider;
-use MarvinLabs\DiscordLogger\ServiceProvider;
-
 return [
-    AppServiceProvider::class,
-    ServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
+    App\Providers\HorizonServiceProvider::class,
+    MarvinLabs\DiscordLogger\ServiceProvider::class,
 ];
