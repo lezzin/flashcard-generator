@@ -78,10 +78,13 @@ class HighlightNoteAction
 
         if ($type === CardType::SIMPLE) {
             $note['fields']['Frente'] = $this->applyStyling($note['fields']['Frente'], $keywords);
+            $note['fields']['Verso'] = strip_tags($note['fields']['Verso']);
+            $note['fields']['Extra'] = strip_tags($note['fields']['Extra']);
         }
 
         if ($type === CardType::CLOZE) {
             $note['fields']['Texto'] = $this->applyStyling($note['fields']['Texto'], $keywords);
+            $note['fields']['Extra'] = strip_tags($note['fields']['Extra']);
         }
 
         return $note;

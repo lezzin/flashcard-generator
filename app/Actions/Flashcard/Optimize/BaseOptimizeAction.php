@@ -29,8 +29,15 @@ abstract class BaseOptimizeAction
         $type = CardType::tryFrom($note['modelName']);
 
         $fields = match ($type) {
-            CardType::CLOZE => ['Texto' => $note['fields']['Texto'] ?? null],
-            CardType::SIMPLE => ['Frente' => $note['fields']['Frente'] ?? null],
+            CardType::CLOZE => [
+                'Texto' => $note['fields']['Texto'] ?? null,
+                'Extra' => $note['fields']['Extra'] ?? null,
+            ],
+            CardType::SIMPLE => [
+                'Frente' => $note['fields']['Frente'] ?? null,
+                'Verso' => $note['fields']['Verso'] ?? null,
+                'Extra' => $note['fields']['Extra'] ?? null,
+            ],
             default => [],
         };
 

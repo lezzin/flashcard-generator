@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Deck;
 
-use App\Actions\Flashcard\Optimize\OptimizeDeckAction;
+use App\Actions\Flashcard\Optimize\DispatchOptimizeDeckAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -14,7 +14,7 @@ class ImproveDeckJob implements ShouldQueue
         private readonly string $deckName,
     ) {}
 
-    public function handle(OptimizeDeckAction $action): void
+    public function handle(DispatchOptimizeDeckAction $action): void
     {
         $action->execute($this->deckName);
     }

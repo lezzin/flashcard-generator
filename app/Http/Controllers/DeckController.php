@@ -35,7 +35,7 @@ class DeckController extends Controller
 
         dispatch(new ImproveDeckJob(
             deckName: $request->input('deck_name'),
-        ))->onQueue('deck:improve');
+        ))->onQueue('deck:optimize');
 
         return response()->noContent();
     }
