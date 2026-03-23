@@ -4,7 +4,7 @@ namespace App\Actions\Anki\Highlighting;
 
 use App\Actions\Gemini\GenerateJsonAction;
 use App\Enums\CardType;
-use App\Prompts\FlashcardHighlightPrompt;
+use App\Prompts\FlashcardEnhancePrompt;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 use Illuminate\Support\Collection;
@@ -26,11 +26,33 @@ class HighlightNoteAction
         $isCollection = $notes instanceof Collection;
         $notesCollection = $isCollection ? $notes : collect([$notes]);
 
-        $texts = $this->extractTexts($notesCollection);
-        $keywordsList = $this->getKeywords($texts);
+        $payloads = $this->buildPayloads($notesCollection);
+        $resultsFromAI = $this->enhance($payloads);
 
-        $results = $notesCollection->values()->map(function ($note, $index) use ($keywordsList) {
-            $keywords = $keywordsList[$index]->keywords ?? [];
+        $results = $notesCollection->values()->map(function ($note, $index) use ($resultsFromAI) {
+            $ai = $resultsFromAI[$index] ?? null;
+
+            if (!$ai) {
+                return $note;
+            }
+
+            $improvedText = trim($ai->improved_text ?? '');
+            $keywords = $ai->keywords ?? [];
+
+            $note['ai'] = [
+                'valid' => $ai->valid ?? null,
+                'recoverable' => $ai->recoverable ?? null,
+                'reason' => $ai->reason ?? null,
+            ];
+
+            if (!($ai->recoverable ?? true)) {
+                $note['invalid'] = true;
+                return $note;
+            }
+
+            if (!empty($improvedText)) {
+                $note = $this->applyImprovedText($note, $improvedText);
+            }
 
             return $this->applyStylingToFields($note, $keywords);
         });
@@ -38,32 +60,112 @@ class HighlightNoteAction
         return $isCollection ? $results : $results->first();
     }
 
+    protected function buildPayloads(Collection $notes): array
+    {
+        return $notes->map(function ($note) {
+            $type = CardType::tryFrom($note['modelName']);
+
+            if ($type === CardType::SIMPLE) {
+                return [
+                    'type' => 'qa',
+                    'front' => $note['fields']['Frente'] ?? '',
+                    'back' => $note['fields']['Verso'] ?? '',
+                ];
+            }
+
+            if ($type === CardType::CLOZE) {
+                return [
+                    'type' => 'cloze',
+                    'text' => $note['fields']['Texto'] ?? '',
+                ];
+            }
+
+            return null;
+        })->filter()->values()->toArray();
+    }
+
+    protected function applyImprovedText(array $note, string $improvedText): array
+    {
+        $type = CardType::tryFrom($note['modelName']);
+
+        if ($type === CardType::SIMPLE) {
+            if (preg_match('/Pergunta:\s*(.*?)\s*Resposta:\s*(.*)/is', $improvedText, $matches)) {
+                $note['fields']['Frente'] = trim($matches[1]);
+                $note['fields']['Verso'] = trim($matches[2]);
+            }
+        }
+
+        if ($type === CardType::CLOZE) {
+            if ($this->isValidCloze($improvedText)) {
+                $note['fields']['Texto'] = $improvedText;
+            }
+        }
+
+        return $note;
+    }
+
+    protected function isValidCloze(string $text): bool
+    {
+        return preg_match('/\{\{c\d+::.+?\}\}/', $text);
+    }
+
+    protected function enhance(array $payloads): array
+    {
+        if (empty($payloads)) {
+            return [];
+        }
+
+        $schema = new Schema(
+            type: DataType::OBJECT,
+            properties: [
+                'results' => new Schema(
+                    type: DataType::ARRAY,
+                    items: new Schema(
+                        type: DataType::OBJECT,
+                        properties: [
+                            'valid' => new Schema(type: DataType::BOOLEAN),
+                            'recoverable' => new Schema(type: DataType::BOOLEAN),
+                            'reason' => new Schema(type: DataType::STRING),
+                            'improved_text' => new Schema(type: DataType::STRING),
+                            'keywords' => new Schema(
+                                type: DataType::ARRAY,
+                                items: new Schema(type: DataType::STRING),
+                                minItems: 0,
+                                maxItems: 3
+                            ),
+                        ],
+                        required: ['valid', 'recoverable', 'reason', 'improved_text', 'keywords']
+                    )
+                ),
+            ],
+            required: ['results']
+        );
+
+        $data = $this->generateJsonAction->execute(
+            FlashcardEnhancePrompt::handle($payloads),
+            $schema
+        );
+
+        return $data->results ?? [];
+    }
+
     protected function applyStyling(string $text, array $keywords): string
     {
         $colorIndex = 0;
 
         foreach ($keywords as $keyword) {
-            if (empty($keyword)) {
-                continue;
-            }
+            if (empty($keyword)) continue;
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 
-            $pattern = '/(<[^>]+>)|(\b'.preg_quote($keyword, '/').'\b)/i';
+            $pattern = '/(<[^>]+>)|(\b' . preg_quote($keyword, '/') . '\b)/iu';
 
-            $replaced = false;
-            $text = preg_replace_callback($pattern, function ($matches) use ($style, &$replaced) {
-                if (! empty($matches[1])) {
+            $text = preg_replace_callback($pattern, function ($matches) use ($style) {
+                if (!empty($matches[1])) {
                     return $matches[1];
                 }
 
-                if (! $replaced) {
-                    $replaced = true;
-
-                    return "<span style=\"$style\">".$matches[2].'</span>';
-                }
-
-                return $matches[2];
+                return "<span style=\"$style\">{$matches[2]}</span>";
             }, $text);
 
             $colorIndex++;
@@ -88,65 +190,5 @@ class HighlightNoteAction
         }
 
         return $note;
-    }
-
-    private function extractTexts(Collection $notes): array
-    {
-        return $notes
-            ->map(fn ($note) => $this->extractTextFromNote($note))
-            ->filter()
-            ->values()
-            ->toArray();
-    }
-
-    protected function extractTextFromNote(array $note): ?string
-    {
-        $type = CardType::tryFrom($note['modelName']);
-
-        if ($type === CardType::SIMPLE) {
-            return $note['fields']['Frente'] ?? null;
-        }
-
-        if ($type === CardType::CLOZE) {
-            return $note['fields']['Texto'] ?? null;
-        }
-
-        return null;
-    }
-
-    protected function getKeywords(array $texts): array
-    {
-        if (empty($texts)) {
-            return [];
-        }
-
-        $schema = new Schema(
-            type: DataType::OBJECT,
-            properties: [
-                'results' => new Schema(
-                    type: DataType::ARRAY,
-                    items: new Schema(
-                        type: DataType::OBJECT,
-                        properties: [
-                            'keywords' => new Schema(
-                                type: DataType::ARRAY,
-                                items: new Schema(type: DataType::STRING),
-                                minItems: 1,
-                                maxItems: 3
-                            ),
-                        ],
-                        required: ['keywords']
-                    )
-                ),
-            ],
-            required: ['results']
-        );
-
-        $data = $this->generateJsonAction->execute(
-            FlashcardHighlightPrompt::handle($texts),
-            $schema
-        );
-
-        return $data->results ?? [];
     }
 }
