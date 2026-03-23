@@ -42,11 +42,12 @@ Considere como PROBLEMA de contexto:
 Regra prática:
 
 - O texto deve fazer sentido para alguém que nunca viu o material original
+- Referências a "prova", "exame", "aula" ou "material" NÃO contam como contexto
 
 Se faltar contexto:
 - valid = false
 - recoverable = true
-- improved_text deve adicionar o contexto necessário
+- improved_text deve adicionar o contexto conceitual/factual, removendo a referência meta (ex: substituir "Na prova cai..." por "No Direito Constitucional...")
 
 ========================
 REGRAS DE FORMATO (CRÍTICO)
@@ -81,8 +82,10 @@ INVALIDAR (valid = false) quando:
 
 - Texto genérico ("isso é importante")
 - Muito curto ou vazio
-- Sem informação factual
-- Conteúdo meta ("o professor explica...")
+- Sem informação factual clara
+- Conteúdo meta: referências a "a prova", "o exame", "a aula", "o professor disse", "cai no concurso"
+- Frases que descrevem o que estudar em vez do conhecimento em si (ex: "Os temas da prova incluem...")
+- Quando o conhecimento depende de saber de qual "prova" ou "material" se fala
 
 ========================
 REGRAS DE RECOVERABLE

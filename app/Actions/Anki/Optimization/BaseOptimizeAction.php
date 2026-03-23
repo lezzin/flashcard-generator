@@ -15,6 +15,10 @@ abstract class BaseOptimizeAction
 
     protected function updateNoteIfHasFields(array $note): void
     {
+        if (isset($note['invalid']) && $note['invalid']) {
+            return;
+        }
+
         $fields = $this->extractFieldsToUpdate($note);
 
         if (empty($fields)) {

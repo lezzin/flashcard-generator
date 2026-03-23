@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FlashcardController;
@@ -35,4 +36,8 @@ Route::prefix('google')->group(function () {
 Route::prefix('files')->group(function () {
     Route::get('/', [FileController::class, 'index']);
     Route::get('/{id}/download', [FileController::class, 'download'])->name('files.download');
+});
+
+Route::prefix('database')->group(function () {
+    Route::get('/notes', [DatabaseController::class, 'getNotes']);
 });
