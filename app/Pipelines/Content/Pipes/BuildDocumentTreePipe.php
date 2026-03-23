@@ -6,12 +6,17 @@ use App\DTOs\Content\DocumentNodeDto;
 use App\DTOs\Parser\PdfElementDto;
 use App\Pipelines\Content\ContentPipelineContext;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class BuildDocumentTreePipe
 {
     public function handle(ContentPipelineContext $context, Closure $next)
     {
         $context->documentTree = $this->buildTree($context->pdf->elements);
+
+        Log::channel('content')->info(
+            "Document tree: " . json_encode($context->documentTree,  JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
 
         return $next($context);
     }

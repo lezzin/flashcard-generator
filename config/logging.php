@@ -142,6 +142,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'content' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/content.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
         'dicord' => [
             'channels' => ['discord'],
         ],
