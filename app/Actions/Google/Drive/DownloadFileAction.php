@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Google;
+namespace App\Actions\Google\Drive;
 
 use App\Services\Google\GoogleAuthService;
 use Google\Service\Drive;

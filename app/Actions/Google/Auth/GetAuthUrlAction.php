@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Actions\Google;
+namespace App\Actions\Google\Auth;
 
 use App\Services\Google\GoogleClientFactory;
 
-class AuthAction
+class GetAuthUrlAction
 {
     public function __construct(
         private readonly GoogleClientFactory $factory

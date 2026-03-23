@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Flashcard\Highlight;
+namespace App\Actions\Anki\Highlighting;
 
 use App\Actions\Gemini\GenerateJsonAction;
 use App\Enums\CardType;

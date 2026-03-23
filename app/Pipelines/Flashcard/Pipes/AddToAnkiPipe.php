@@ -2,9 +2,9 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\AddNotesAction;
-use App\Actions\Anki\CreateDeckAction;
-use App\Actions\Flashcard\Highlight\HighlightNoteAction;
+use App\Actions\Anki\Notes\AddNotesAction;
+use App\Actions\Anki\Decks\CreateDeckAction;
+use App\Actions\Anki\Highlighting\HighlightNoteAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;

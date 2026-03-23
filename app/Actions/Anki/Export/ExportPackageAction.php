@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Export;
 
-use App\Actions\Google\UploadFileAction;
+use App\Actions\Google\Drive\UploadFileAction;
 use App\Helpers\File;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Http\UploadedFile;

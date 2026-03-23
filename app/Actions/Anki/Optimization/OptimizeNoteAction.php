@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Actions\Flashcard\Optimize;
+namespace App\Actions\Anki\Optimization;
 
-use App\Actions\Anki\FindNoteByIdAction;
+use App\Actions\Anki\Notes\FindNoteByIdAction;
 
 class OptimizeNoteAction extends BaseOptimizeAction
 {

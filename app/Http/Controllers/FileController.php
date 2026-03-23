@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Google\DownloadFileAction;
-use App\Actions\Google\GetFilesAction;
+use App\Actions\Google\Drive\DownloadFileAction;
+use App\Actions\Google\Drive\GetFilesAction;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileController extends Controller

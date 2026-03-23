@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Deck;
 
-use App\Actions\Anki\ExportPackageAction;
+use App\Actions\Anki\Export\ExportPackageAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

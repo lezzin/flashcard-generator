@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Deck;
 
-use App\Actions\Flashcard\Optimize\OptimizeDeckAction;
+use App\Actions\Anki\Optimization\OptimizeDeckAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

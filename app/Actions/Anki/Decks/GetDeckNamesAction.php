@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Decks;
 
 use App\DTOs\Anki\DeckDto;
 use App\Services\Anki\AnkiConnectClient;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Actions\Flashcard\Optimize;
+namespace App\Actions\Anki\Optimization;
 
-use App\Actions\Anki\FindNotesByDeckNameAction;
+use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Jobs\Deck\OptimizeDeckPageJob;
 use Exception;
 

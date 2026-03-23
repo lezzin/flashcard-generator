@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Actions\Google;
+namespace App\Actions\Google\Auth;
 
 use App\Services\Google\GoogleAuthService;
 use App\Services\Google\GoogleClientFactory;
 
-class CallbackAction
+class HandleCallbackAction
 {
     public function __construct(
         private readonly GoogleClientFactory $factory,

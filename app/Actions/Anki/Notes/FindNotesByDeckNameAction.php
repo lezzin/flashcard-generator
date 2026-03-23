@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Notes;
 
+use App\Actions\Anki\Decks\GetDeckNamesFromCardIdsAction;
 use App\DTOs\Anki\NoteDto;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Pagination\LengthAwarePaginator;

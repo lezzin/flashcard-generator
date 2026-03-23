@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Actions\Flashcard\Optimize;
+namespace App\Actions\Anki\Optimization;
 
-use App\Actions\Anki\UpdateNoteFieldsAction;
-use App\Actions\Flashcard\Highlight\HighlightNoteAction;
+use App\Actions\Anki\Notes\UpdateNoteFieldsAction;
+use App\Actions\Anki\Highlighting\HighlightNoteAction;
 use App\Enums\CardType;
 
 abstract class BaseOptimizeAction

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Generation;
 
+use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Enums\CardType;
 use App\Jobs\GenerateFlashcardsJob;
 use Illuminate\Support\Facades\Storage;

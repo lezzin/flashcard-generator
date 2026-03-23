@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Export;
 
+use App\Actions\Anki\Decks\GetDeckNamesAction;
 use App\Jobs\Deck\ExportPackageJob;
 
 class DispatchExportPackageAction
