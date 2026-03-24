@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
-use App\Jobs\GenerateFlashcardsJob;
+use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Services\Anki\AnkiConnectClient;
 
 class FlashcardController extends Controller
@@ -12,7 +12,7 @@ class FlashcardController extends Controller
     {
         $anki->validateConnection();
 
-        dispatch(new GenerateFlashcardsJob(
+        dispatch(new FlashcardPipelineJob(
             title: $request->input('title'),
             treeId: $request->input('tree_id'),
         ))->onQueue('flashcard:generate');

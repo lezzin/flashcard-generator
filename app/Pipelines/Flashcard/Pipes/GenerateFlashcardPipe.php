@@ -8,6 +8,8 @@ use App\Jobs\Flashcard\GenerateFlashcardJob;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GenerateFlashcardPipe
 {
@@ -24,7 +26,16 @@ class GenerateFlashcardPipe
         Bus::batch($jobs)
             ->name('flashcards-batch-generate')
             ->onQueue('flashcard:batch:generate')
-            ->then(function () use ($context) {
+            ->catch(function ($batch, Throwable $e) use ($context) {
+                Log::channel('flashcard')->error('Error on batch processing: ' . $e->getMessage(), [
+                    'batch_id' => $batch->id,
+                    'tree_id' => $context->treeId,
+                    'trace' => $e->getTrace(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]);
+            })
+            ->finally(function () use ($context) {
                 app(AddToAnkiAction::class)->execute($context->treeId);
             })
             ->dispatch();

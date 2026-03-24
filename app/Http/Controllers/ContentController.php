@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Content\ContentGenerateRequest;
-use App\Jobs\GenerateContentJob;
+use App\Jobs\Content\ContentPipelineJob;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
@@ -13,7 +13,7 @@ class ContentController extends Controller
         $file = $request->file('file');
         $uploaded = $file->move(Storage::path('output'), 'temp.pdf');
 
-        dispatch(new GenerateContentJob(
+        dispatch(new ContentPipelineJob(
             filePath: $uploaded->getRealPath(),
         ))->onQueue('content:generate');
 

@@ -223,7 +223,7 @@ return [
                 'timeout' => 120,
             ],
 
-            'flashcard-generate' => [
+            'flashcard-batch-generate' => [
                 'connection' => 'redis',
                 'queue' => ['flashcard:batch:generate'],
                 'balance' => 'auto',
@@ -239,6 +239,15 @@ return [
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 180,
+            ],
+
+            'content-batch-generate' => [
+                'connection' => 'redis',
+                'queue' => ['content:batch:generate'],
+                'balance' => 'auto',
+                'processes' => 5,
+                'tries' => 3,
+                'timeout' => 1800,
             ],
 
             'deck-batch-optimize' => [

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Content;
 
 use App\Pipelines\Content\ContentPipeline;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Http\UploadedFile;
 
-class GenerateContentJob implements ShouldQueue
+class ContentPipelineJob implements ShouldQueue
 {
     use Queueable;
 

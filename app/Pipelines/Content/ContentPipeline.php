@@ -4,7 +4,6 @@ namespace App\Pipelines\Content;
 
 use App\Pipelines\Content\Pipes\BuildDocumentTreePipe;
 use App\Pipelines\Content\Pipes\GenerateContentPipe;
-use App\Pipelines\Content\Pipes\SaveContentResultPipe;
 use Illuminate\Pipeline\Pipeline;
 
 class ContentPipeline
@@ -24,7 +23,6 @@ class ContentPipeline
         return [
             BuildDocumentTreePipe::class,
             GenerateContentPipe::class,
-            SaveContentResultPipe::class,
         ];
     }
 }

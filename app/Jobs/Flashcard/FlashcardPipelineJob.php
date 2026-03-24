@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Flashcard;
 
 use App\Pipelines\Flashcard\FlashcardFromDeckPipeline;
 use App\Pipelines\Flashcard\FlashcardPipeline;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class GenerateFlashcardsJob implements ShouldQueue
+class FlashcardPipelineJob implements ShouldQueue
 {
     use Queueable;
 

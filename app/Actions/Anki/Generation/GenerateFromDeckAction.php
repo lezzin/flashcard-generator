@@ -4,7 +4,7 @@ namespace App\Actions\Anki\Generation;
 
 use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Enums\CardType;
-use App\Jobs\GenerateFlashcardsJob;
+use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Models\BaseContentTree;
 use App\Models\GeneratedContent;
 
@@ -51,7 +51,7 @@ class GenerateFromDeckAction
 
             GeneratedContent::insert($formatted);
 
-            dispatch(new GenerateFlashcardsJob(
+            dispatch(new FlashcardPipelineJob(
                 treeId: $documentTreeId,
                 title: $deckName,
                 fromDeck: true,
