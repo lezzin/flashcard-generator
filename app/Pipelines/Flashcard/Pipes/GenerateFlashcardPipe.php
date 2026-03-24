@@ -2,7 +2,6 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\Generation\AddToAnkiAction;
 use App\DTOs\SourceContentDto;
 use App\Jobs\Flashcard\AddToAnkiJob;
 use App\Jobs\Flashcard\GenerateFlashcardJob;

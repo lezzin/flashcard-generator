@@ -1,18 +1,11 @@
 <?php
 
-namespace App\Actions\Anki\Optimization;
+namespace App\Actions\Anki;
 
-use App\Actions\Anki\Notes\UpdateNoteFieldsAction;
-use App\Actions\Anki\Highlighting\HighlightNoteAction;
 use App\Enums\CardType;
 
 abstract class BaseOptimizeAction
 {
-    public function __construct(
-        protected readonly HighlightNoteAction $highlightNoteAction,
-        protected readonly UpdateNoteFieldsAction $updateNoteFieldsAction,
-    ) {}
-
     protected function updateNoteIfHasFields(array $note): void
     {
         if (isset($note['invalid']) && $note['invalid']) {
@@ -25,7 +18,7 @@ abstract class BaseOptimizeAction
             return;
         }
 
-        $this->updateNoteFieldsAction->execute((string) $note['noteId'], $fields);
+        app(UpdateNoteFieldsAction::class)->execute((string) $note['noteId'], $fields);
     }
 
     protected function extractFieldsToUpdate(array $note): array

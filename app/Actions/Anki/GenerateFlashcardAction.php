@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Anki\Generation;
+namespace App\Actions\Anki;
 
 use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\GeneratedFlashcardDto;

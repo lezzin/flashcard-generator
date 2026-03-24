@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Google\Drive\DownloadFileAction;
-use App\Actions\Google\Drive\GetFilesAction;
+use App\Actions\Google\DownloadFileAction;
+use App\Actions\Google\GetFilesAction;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileController extends Controller
@@ -26,7 +26,7 @@ class FileController extends Controller
             }
         }, Response::HTTP_OK, [
             'Content-Type' => $file->mimeType ?? 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.$file->name.'"',
+            'Content-Disposition' => 'attachment; filename="' . $file->name . '"',
         ]);
     }
 }

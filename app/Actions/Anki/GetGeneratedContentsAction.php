@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Actions\Anki\Database;
+namespace App\Actions\Anki;
 
-use App\Models\AnkiNote;
+use App\Models\GeneratedContent;
 
-class GetNotesAction
+class GetGeneratedContentsAction
 {
     public function execute(int $page, ?int $perPage = 50)
     {
-        return AnkiNote::paginate(
+        return GeneratedContent::paginate(
             perPage: $perPage,
             page: $page
         );

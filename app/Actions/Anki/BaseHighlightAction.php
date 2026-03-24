@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Anki\Highlighting;
+namespace App\Actions\Anki;
 
 use App\Enums\CardType;
 use Illuminate\Support\Collection;
@@ -20,9 +20,9 @@ abstract class BaseHighlightAction
 
             if ($type === CardType::SIMPLE) {
                 return [
-                    'type' => 'qa',
+                    'type'  => 'qa',
                     'front' => $note['fields']['Frente'] ?? '',
-                    'back' => $note['fields']['Verso'] ?? '',
+                    'back'  => $note['fields']['Verso'] ?? '',
                 ];
             }
 

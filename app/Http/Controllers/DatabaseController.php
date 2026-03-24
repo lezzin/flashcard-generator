@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\Database\GetGeneratedContentsAction;
-use App\Actions\Anki\Database\GetNotesAction;
+use App\Actions\Anki\GetGeneratedContentsAction;
+use App\Actions\Anki\GetNotesAction;
 use App\Http\Requests\Database\PaginatedRequest;
 use App\Http\Resources\Database\GetNoteResource;
 

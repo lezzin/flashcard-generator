@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Google\Auth;
+namespace App\Actions\Google;
 
 use App\Services\Google\GoogleClientFactory;
 

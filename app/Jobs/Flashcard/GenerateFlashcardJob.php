@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Flashcard;
 
-use App\Actions\Anki\Generation\GenerateFlashcardAction;
+use App\Actions\Anki\GenerateFlashcardAction;
 use App\DTOs\SourceContentDto;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;

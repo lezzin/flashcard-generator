@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Actions\Anki\Optimization;
+namespace App\Actions\Anki;
 
-use App\Actions\Anki\Notes\DeleteNotesAction;
-use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use Illuminate\Support\Collection;
 
 class OptimizeDeckAction extends BaseOptimizeAction
@@ -16,7 +14,7 @@ class OptimizeDeckAction extends BaseOptimizeAction
             $page
         );
 
-        $processedNotes = $this->highlightNoteAction->execute(collect($currentNotesPage->items()));
+        $processedNotes =  app(HighlightNoteAction::class)->execute(collect($currentNotesPage->items()));
 
         $invalidNotes = $processedNotes->filter(fn($note) => $note['invalid'] ?? false);
         $this->deleteNotes($invalidNotes);

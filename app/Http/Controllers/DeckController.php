@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\Export\DispatchExportPackageAction;
-use App\Actions\Anki\Generation\GenerateFromDeckAction;
-use App\Actions\Anki\Decks\GetDeckNamesAction;
-use App\Actions\Anki\Optimization\DispatchOptimizeDeckAction;
+use App\Actions\Anki\DispatchExportPackageAction;
+use App\Actions\Anki\GenerateFromDeckAction;
+use App\Actions\Anki\GetDeckNamesAction;
+use App\Actions\Anki\DispatchOptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
 use App\Http\Requests\Flashcard\GenerateFromDeckRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardsRequest;

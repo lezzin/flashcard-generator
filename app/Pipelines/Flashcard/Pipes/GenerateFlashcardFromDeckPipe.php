@@ -2,7 +2,7 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\Generation\AddToAnkiAction;
+use App\Actions\Anki\AddToAnkiAction;
 use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\SourceContentDto;
 use App\Jobs\Flashcard\GenerateFlashcardJob;

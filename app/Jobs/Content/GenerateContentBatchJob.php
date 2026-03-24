@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Content;
 
-use App\Actions\Anki\Generation\GenerateContentAction;
+use App\Actions\Anki\GenerateContentAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

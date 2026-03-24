@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Actions\Anki\Generation;
+namespace App\Actions\Anki;
 
-use App\Actions\Anki\Notes\AddNotesAction;
-use App\Actions\Anki\Decks\CreateDeckAction;
-use App\Actions\Anki\Highlighting\HighlightNoteAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Mappers\FlashcardMapper;
 use App\Models\AnkiFlashcard;
 use App\Models\BaseContentTree;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class AddToAnkiAction
@@ -25,30 +24,39 @@ class AddToAnkiAction
     public function execute(int $treeId): void
     {
         AnkiFlashcard::where('is_inserted', false)
-            ->chunkById(self::CHUNK_SIZE, function ($flashcards) {
-                $payloads = $flashcards
-                    ->map(fn($value) => FlashcardMapper::fromDatabaseToDto($value))
-                    ->map(fn($card) => $this->buildPayload($card));
+            ->chunkById(
+                self::CHUNK_SIZE,
+                fn($flashcards) => $this->handleFlashcards($flashcards)
+            );
 
-                $improvedPayloads = $this->highlightNoteAction->execute($payloads);
+        BaseContentTree::whereKey($treeId)
+            ->update([
+                'is_inserted' => true
+            ]);
+    }
 
-                $uniqueDecks = $improvedPayloads
-                    ->pluck('deckName')
-                    ->unique();
+    private function handleFlashcards(Collection $flashcards)
+    {
+        $payloads = $flashcards
+            ->map(fn($value) => FlashcardMapper::fromDatabaseToDto($value))
+            ->map(fn($card) => $this->buildPayload($card));
 
-                foreach ($uniqueDecks as $deck) {
-                    $this->createDeckAction->execute($deck);
-                }
+        $improvedPayloads = $this->highlightNoteAction->execute($payloads);
 
-                $this->addNotesAction->execute($improvedPayloads->values()->toArray());
+        $uniqueDecks = $improvedPayloads
+            ->pluck('deckName')
+            ->unique();
 
-                AnkiFlashcard::whereIn('id', $flashcards->pluck('id'))
-                    ->update(['is_inserted' => true]);
-            });
+        $uniqueDecks->each(
+            fn($deck) => $this->createDeckAction->execute($deck)
+        );
 
-        BaseContentTree::whereKey($treeId)->update([
-            'is_inserted' => true
-        ]);
+        $this->addNotesAction->execute(
+            $improvedPayloads->values()->toArray()
+        );
+
+        AnkiFlashcard::whereIn('id', $flashcards->pluck('id'))
+            ->update(['is_inserted' => true]);
     }
 
     private function buildPayload(GeneratedFlashcardDto $flashcard): array
@@ -73,7 +81,7 @@ class AddToAnkiAction
             'deckName' => $flashcard->deck,
             'modelName' => $flashcard->type->value,
             'tags' => [],
-            'fields' => array_filter($fields, fn($v) => ! is_null($v)),
+            'fields' => Arr::whereNotNull($fields),
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Http\UploadedFile;
+
 class File
 {
     public static function convertWindowsToLinuxPath(string $path): string
@@ -16,5 +18,21 @@ class File
         }
 
         return $path;
+    }
+
+    public static function deleteIfExists(string $filename)
+    {
+        if (file_exists($filename)) @unlink($filename);
+    }
+
+    public static function wrapInUploadedFile(string $path): UploadedFile
+    {
+        return new UploadedFile(
+            $path,
+            basename($path),
+            'application/octet-stream',
+            null,
+            true
+        );
     }
 }

@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Actions\Anki\Optimization;
+namespace App\Actions\Anki;
 
-use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Jobs\Deck\OptimizeDeckPageJob;
 use Exception;
 
 class DispatchOptimizeDeckAction extends BaseOptimizeAction
 {
-    public function execute(string $deckName, int $perPage = 50): void
+    public function execute(string $deckName, int $perPage = 100): void
     {
-        $findNotesByDeckNameAction = app(FindNotesByDeckNameAction::class);
-        $firstPage = $findNotesByDeckNameAction->execute($deckName, $perPage, page: 1);
+        $firstPage = app(FindNotesByDeckNameAction::class)->execute($deckName, $perPage);
 
         if ($firstPage->isEmpty()) {
-            throw new Exception('Nenhum registro encontrado para essa busca.');
+            throw new Exception('No records found for this search.');
         }
 
         $totalPages = (int) ceil($firstPage->total() / $perPage);

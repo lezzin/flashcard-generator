@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Actions\Anki\Generation;
+namespace App\Actions\Anki;
 
-use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Enums\CardType;
 use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Models\BaseContentTree;
@@ -24,7 +23,7 @@ class GenerateFromDeckAction
             $paginator = $this->findNotesAction->execute($deckName, page: $page);
             $notes = $paginator->items();
 
-            if (empty($notes)) {
+            if (count($notes) === 0) {
                 break;
             }
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Google\Auth\GetAuthUrlAction;
-use App\Actions\Google\Auth\HandleCallbackAction;
+use App\Actions\Google\GetAuthUrlAction;
+use App\Actions\Google\HandleCallbackAction;
 use Illuminate\Http\Request;
 
 class GoogleController extends Controller
