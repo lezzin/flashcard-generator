@@ -39,29 +39,29 @@ class AppServiceProvider extends ServiceProvider
             $startMemory[$jobId] = memory_get_usage();
         });
 
-        Queue::after(function (JobProcessed $event) use (&$startTimes, &$startMemory) {
-            $jobId = $event->job->getJobId();
+        // Queue::after(function (JobProcessed $event) use (&$startTimes, &$startMemory) {
+        //     $jobId = $event->job->getJobId();
 
-            if (! isset($startTimes[$jobId])) {
-                return;
-            }
+        //     if (! isset($startTimes[$jobId])) {
+        //         return;
+        //     }
 
-            $executionTime = round(microtime(true) - $startTimes[$jobId], 4);
-            $memoryUsed = memory_get_usage() - $startMemory[$jobId];
-            $peakMemory = memory_get_peak_usage();
+        //     $executionTime = round(microtime(true) - $startTimes[$jobId], 4);
+        //     $memoryUsed = memory_get_usage() - $startMemory[$jobId];
+        //     $peakMemory = memory_get_peak_usage();
 
-            Log::channel('discord')->info("Job Processed: {$event->job->resolveName()}", [
-                'ID' => $jobId,
-                'Connection' => $event->job->getConnectionName(),
-                'Queue' => $event->job->getQueue(),
-                'Duration' => "{$executionTime}s",
-                'Memory' => Number::fileSize($memoryUsed),
-                'Peak Memory' => Number::fileSize($peakMemory),
-                'Attempts' => $event->job->attempts(),
-            ]);
+        //     Log::channel('discord')->info("Job Processed: {$event->job->resolveName()}", [
+        //         'ID' => $jobId,
+        //         'Connection' => $event->job->getConnectionName(),
+        //         'Queue' => $event->job->getQueue(),
+        //         'Duration' => "{$executionTime}s",
+        //         'Memory' => Number::fileSize($memoryUsed),
+        //         'Peak Memory' => Number::fileSize($peakMemory),
+        //         'Attempts' => $event->job->attempts(),
+        //     ]);
 
-            unset($startTimes[$jobId], $startMemory[$jobId]);
-        });
+        //     unset($startTimes[$jobId], $startMemory[$jobId]);
+        // });
 
         Queue::failing(function (JobFailed $event) use (&$startTimes, &$startMemory) {
             $jobId = $event->job->getJobId();
@@ -98,13 +98,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(
-            fn (): ?Password => app()->isProduction()
+            fn(): ?Password => app()->isProduction()
                 ? Password::min(12)
-                    ->mixedCase()
-                    ->letters()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised()
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()
                 : null,
         );
     }
