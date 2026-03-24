@@ -18,6 +18,16 @@ class GenerateContentAction
 
     public function execute(array $chunk, int $documentTreeId, ?string $newContext = null)
     {
+        if (count($chunk) === 0) {
+            Log::channel('content')->info('The provided content chunk is empty: ', [
+                'content' => json_encode($chunk),
+                'tree_id' => $documentTreeId,
+                'context' => $newContext
+            ]);
+
+            return;
+        }
+
         $schema = new Schema(
             type: DataType::OBJECT,
             properties: [
