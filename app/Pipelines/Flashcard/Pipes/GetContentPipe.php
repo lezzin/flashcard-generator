@@ -13,6 +13,7 @@ class GetContentPipe
     {
         $generatedContents = GeneratedContent::query()
             ->where('tree_id', $context->treeId)
+            ->whereHas('tree', fn($q) => $q->where('is_inserted', false))
             ->select('title', 'description')
             ->get()
             ->toArray();

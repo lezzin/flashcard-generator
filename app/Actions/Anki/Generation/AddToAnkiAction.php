@@ -9,6 +9,7 @@ use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Mappers\FlashcardMapper;
 use App\Models\AnkiFlashcard;
+use App\Models\BaseContentTree;
 use Illuminate\Support\Str;
 
 class AddToAnkiAction
@@ -21,11 +22,10 @@ class AddToAnkiAction
         private readonly AddNotesAction $addNotesAction,
     ) {}
 
-    public function execute(): void
+    public function execute(int $treeId): void
     {
         AnkiFlashcard::where('is_inserted', false)
             ->chunkById(self::CHUNK_SIZE, function ($flashcards) {
-
                 $payloads = $flashcards
                     ->map(fn($value) => FlashcardMapper::fromDatabaseToDto($value))
                     ->map(fn($card) => $this->buildPayload($card));
@@ -45,6 +45,10 @@ class AddToAnkiAction
                 AnkiFlashcard::whereIn('id', $flashcards->pluck('id'))
                     ->update(['is_inserted' => true]);
             });
+
+        BaseContentTree::whereKey($treeId)->update([
+            'is_inserted' => true
+        ]);
     }
 
     private function buildPayload(GeneratedFlashcardDto $flashcard): array

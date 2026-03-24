@@ -24,8 +24,8 @@ class GenerateFlashcardPipe
         Bus::batch($jobs)
             ->name('flashcards-batch-generate')
             ->onQueue('flashcard:batch:generate')
-            ->then(function () {
-                app(AddToAnkiAction::class)->execute();
+            ->then(function () use ($context) {
+                app(AddToAnkiAction::class)->execute($context->treeId);
             })
             ->dispatch();
 
