@@ -4,6 +4,7 @@ namespace App\Pipelines\Flashcard\Pipes;
 
 use App\Actions\Anki\Generation\AddToAnkiAction;
 use App\DTOs\SourceContentDto;
+use App\Jobs\Flashcard\AddToAnkiJob;
 use App\Jobs\Flashcard\GenerateFlashcardJob;
 use App\Pipelines\Flashcard\FlashcardPipelineContext;
 use Closure;
@@ -36,7 +37,9 @@ class GenerateFlashcardPipe
                 ]);
             })
             ->finally(function () use ($context) {
-                app(AddToAnkiAction::class)->execute($context->treeId);
+                dispatch(
+                    new AddToAnkiJob($context->treeId)
+                )->onQueue('flashcard:add');
             })
             ->dispatch();
 

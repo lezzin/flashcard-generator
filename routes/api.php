@@ -15,6 +15,7 @@ Route::prefix('contents')->group(function () {
 
 Route::prefix('flashcards')->group(function () {
     Route::post('/', [FlashcardController::class, 'store']);
+    Route::post('/add', [FlashcardController::class, 'addToAnki']);
 });
 
 Route::prefix('decks')->group(function () {

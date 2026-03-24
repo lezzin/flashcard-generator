@@ -232,6 +232,15 @@ return [
                 'timeout' => 600,
             ],
 
+            'flashcard-generate' => [
+                'connection' => 'redis',
+                'queue' => ['flashcard:generate'],
+                'balance' => 'auto',
+                'processes' => 1,
+                'tries' => 3,
+                'timeout' => 1200,
+            ],
+
             'content-generate' => [
                 'connection' => 'redis',
                 'queue' => ['content:generate'],
