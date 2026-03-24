@@ -3,6 +3,7 @@
 namespace App\Actions\Anki\Highlighting;
 
 use App\Actions\Gemini\GenerateJsonAction;
+use App\Enums\CardType;
 use App\Models\AnkiNote;
 use App\Prompts\FlashcardEnhancePrompt;
 use Gemini\Data\Schema;
@@ -50,7 +51,7 @@ class HighlightNoteAction extends BaseHighlightAction
                         [
                             'anki_id' => $item['original']['noteId'] ?? null,
                             'model_name' => $item['original']['modelName'],
-                            'type' => $payloads[$index]['type'] ?? 'unknown',
+                            'type' => ($payloads[$index]['type'] ?? 'unknown') == 'qa' ? CardType::SIMPLE : CardType::CLOZE,
                             'fields' => $item['original']['fields'],
                             'improved_fields' => $this->getImprovedFieldsFromAI($item['original'], $ai),
                             'keywords' => $ai->keywords ?? [],

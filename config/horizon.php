@@ -218,6 +218,15 @@ return [
                 'connection' => 'redis',
                 'queue' => ['flashcard:generate'],
                 'balance' => 'auto',
+                'processes' => 1,
+                'tries' => 3,
+                'timeout' => 120,
+            ],
+
+            'flashcard-generate' => [
+                'connection' => 'redis',
+                'queue' => ['flashcard:batch:generate'],
+                'balance' => 'auto',
                 'processes' => 5,
                 'tries' => 3,
                 'timeout' => 600,

@@ -49,6 +49,7 @@ class GenerateFromDeckAction
 
                 dispatch(new GenerateFlashcardsJob(
                     content: $filename,
+                    title: $deckName,
                     isPath: true,
                     fromDeck: true,
                 ))->onQueue('flashcard:generate');

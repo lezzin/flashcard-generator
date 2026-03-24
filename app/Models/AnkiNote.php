@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CardType;
 use Illuminate\Database\Eloquent\Model;
 
 class AnkiNote extends Model
@@ -20,6 +21,7 @@ class AnkiNote extends Model
     ];
 
     protected $casts = [
+        'type'   => CardType::class,
         'fields' => 'json',
         'improved_fields' => 'json',
         'keywords' => 'json',

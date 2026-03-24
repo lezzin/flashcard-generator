@@ -31,8 +31,6 @@ class FlashcardPipeline
             DeleteSourceFilePipe::class,
             GetContentPipe::class,
             GenerateFlashcardPipe::class,
-            SaveFlashcardResultPipe::class,
-            AddToAnkiPipe::class,
         ];
     }
 }
