@@ -67,6 +67,8 @@ class GenerateContentPipe
                             Log::channel('content')->error(
                                 "Failed to generate content: " . $e->getMessage()
                             );
+
+                            throw $e;
                         }
                     }
                 }
@@ -107,6 +109,8 @@ class GenerateContentPipe
                 Log::channel('content')->error(
                     "Failed to generate content: " . $e->getMessage()
                 );
+
+                throw $e;
             }
         }
 

@@ -236,7 +236,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['content:generate'],
                 'balance' => 'auto',
-                'processes' => 5,
+                'processes' => 1,
                 'tries' => 3,
                 'timeout' => 180,
             ],
