@@ -5,7 +5,6 @@ namespace App\Pipelines\Flashcard;
 use App\DTOs\GeneratedFlashcardDto;
 use App\DTOs\SourceContentDto;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class FlashcardPipelineContext
 {
@@ -18,9 +17,8 @@ class FlashcardPipelineContext
     public ?string $filename;
 
     public function __construct(
-        public readonly string $content,
+        public readonly int $treeId,
         public readonly ?string $title = null,
-        public readonly bool $isPath = false,
     ) {
         $this->sources = collect();
         $this->results = collect();

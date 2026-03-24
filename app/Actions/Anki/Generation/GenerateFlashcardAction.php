@@ -13,6 +13,8 @@ use Illuminate\Support\Collection;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 
+use function Illuminate\Support\now;
+
 class GenerateFlashcardAction
 {
     public function __construct(
@@ -61,6 +63,8 @@ class GenerateFlashcardAction
                 'type'   => $flashcard->type,
                 'fields' => json_encode($fields),
                 'deck'   => $flashcard->deck,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         })->toArray();
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Database;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetNotesRequest extends FormRequest
+class PaginatedRequest extends FormRequest
 {
     public function rules(): array
     {

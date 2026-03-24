@@ -2,21 +2,23 @@
 
 namespace App\Pipelines\Content\Pipes;
 
+use App\Actions\PdfParser\ParsePdfAction;
 use App\DTOs\Content\DocumentNodeDto;
 use App\DTOs\Parser\PdfElementDto;
+use App\Models\BaseContentTree;
 use App\Pipelines\Content\ContentPipelineContext;
 use Closure;
-use Illuminate\Support\Facades\Log;
 
 class BuildDocumentTreePipe
 {
     public function handle(ContentPipelineContext $context, Closure $next)
     {
-        $context->documentTree = $this->buildTree($context->pdf->elements);
+        $pdf = app(ParsePdfAction::class)->execute($context->filePath);
+        $context->documentTree = $this->buildTree($pdf->elements);
 
-        Log::channel('content')->info(
-            "Document tree: " . json_encode($context->documentTree,  JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-        );
+        $context->documentTreeId = BaseContentTree::create([
+            'data' => json_encode($context->documentTree)
+        ])->id;
 
         return $next($context);
     }

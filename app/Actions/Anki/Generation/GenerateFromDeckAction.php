@@ -5,8 +5,8 @@ namespace App\Actions\Anki\Generation;
 use App\Actions\Anki\Notes\FindNotesByDeckNameAction;
 use App\Enums\CardType;
 use App\Jobs\GenerateFlashcardsJob;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Models\BaseContentTree;
+use App\Models\GeneratedContent;
 
 class GenerateFromDeckAction
 {
@@ -28,6 +28,10 @@ class GenerateFromDeckAction
                 break;
             }
 
+            $documentTreeId = BaseContentTree::create([
+                'data' => json_encode($notes)
+            ])->id;
+
             $chunks = array_chunk($notes, self::CHUNK_SIZE);
 
             foreach ($chunks as $chunk) {
@@ -36,24 +40,22 @@ class GenerateFromDeckAction
                     return $this->makeSummary($type, $note['fields']);
                 }, $chunk);
 
-                $formatted = [
-                    [
-                        'title' => $deckName,
-                        'summary' => implode("\n---\n", $notesSummary),
-                    ]
+                $formatted[] =                     [
+                    'title' => $deckName,
+                    'description' => implode("\n---\n", $notesSummary),
+                    'tree_id' => $documentTreeId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
-
-                $filename = 'uploads/' . Str::random(40) . '.json';
-
-                Storage::put($filename, json_encode($formatted));
-
-                dispatch(new GenerateFlashcardsJob(
-                    content: $filename,
-                    title: $deckName,
-                    isPath: true,
-                    fromDeck: true,
-                ))->onQueue('flashcard:generate');
             }
+
+            GeneratedContent::insert($formatted);
+
+            dispatch(new GenerateFlashcardsJob(
+                treeId: $documentTreeId,
+                title: $deckName,
+                fromDeck: true,
+            ))->onQueue('flashcard:generate');
 
             $hasMore = $paginator->hasMorePages();
             $page++;

@@ -12,18 +12,9 @@ class FlashcardController extends Controller
     {
         $anki->validateConnection();
 
-        $content = $request->input('content');
-        $isPath = false;
-
-        if ($request->hasFile('content')) {
-            $content = $request->file('content')->store('uploads');
-            $isPath = true;
-        }
-
         dispatch(new GenerateFlashcardsJob(
             title: $request->input('title'),
-            content: $content,
-            isPath: $isPath,
+            treeId: $request->input('tree_id'),
         ))->onQueue('flashcard:generate');
 
         return response()->noContent();

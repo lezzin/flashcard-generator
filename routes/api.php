@@ -40,4 +40,5 @@ Route::prefix('files')->group(function () {
 
 Route::prefix('database')->group(function () {
     Route::get('/notes', [DatabaseController::class, 'getNotes']);
+    Route::get('/contents', [DatabaseController::class, 'getGeneratedContents']);
 });
