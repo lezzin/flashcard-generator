@@ -2,18 +2,22 @@
 
 namespace App\Pipelines\Content\Pipes;
 
-use App\Actions\PdfParser\ParsePdfAction;
 use App\DTOs\Content\DocumentNodeDto;
 use App\DTOs\Parser\PdfElementDto;
 use App\Models\BaseContentTree;
 use App\Pipelines\Content\ContentPipelineContext;
+use App\Services\Parser\ParserService;
 use Closure;
 
 class BuildDocumentTreePipe
 {
+    public function __construct(
+        private ParserService $parserService
+    ) {}
+
     public function handle(ContentPipelineContext $context, Closure $next)
     {
-        $pdf = app(ParsePdfAction::class)->execute($context->filePath);
+        $pdf = $this->parserService->handle($context->filePath);
         $context->documentTree = $this->buildTree($pdf->elements);
 
         $context->documentTreeId = BaseContentTree::create([

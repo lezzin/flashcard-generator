@@ -2,34 +2,43 @@
 
 namespace App\Services\Anki;
 
-use Exception;
+use App\Exceptions\Anki\AnkiConnectionException;
+use App\Exceptions\Anki\AnkiResponseException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Throwable;
 
 class AnkiConnectClient
 {
     protected string $url;
+    protected string $timeout;
 
     public function __construct()
     {
-        $this->url = config('services.anki.host');
+        $config = config('services.anki');
+
+        $this->url = $config['host'];
+        $this->timeout = $config['timeout'];
     }
 
     public function invoke(string $action, array $params = []): mixed
     {
-        $requestJson = $this->getRequestPayload($action, $params);
-        $response = Http::timeout(60)->post($this->url, $requestJson);
+        try {
+            $response = Http::timeout($this->timeout)->post(
+                $this->url,
+                $this->getRequestPayload($action, $params)
+            );
+        } catch (ConnectionException $e) {
+            throw new AnkiConnectionException();
+        }
 
         if (! $response->ok()) {
-            throw new Exception('Failed to connect to AnkiConnect.');
+            throw new AnkiConnectionException();
         }
 
         $data = $response->json();
 
         if (! is_null($data['error'])) {
-            throw new Exception($data['error']);
+            throw new AnkiResponseException($data['error']);
         }
 
         return $data['result'];
@@ -38,16 +47,13 @@ class AnkiConnectClient
     public function validateConnection(): void
     {
         try {
-            $response = Http::timeout(10)->get($this->url);
+            $response = Http::timeout($this->timeout)->get($this->url);
+
             if (! $response->ok()) {
-                throw new Exception('Failed to connect to AnkiConnect.');
+                throw new AnkiConnectionException();
             }
-        } catch (Throwable $e) {
-            throw new HttpException(
-                Response::HTTP_INTERNAL_SERVER_ERROR,
-                'Erro ao validar conexão com o Anki. Certifique-se que o Anki está aberto e o AnkiConnect instalado.',
-                $e
-            );
+        } catch (ConnectionException) {
+            throw new AnkiConnectionException();
         }
     }
 
