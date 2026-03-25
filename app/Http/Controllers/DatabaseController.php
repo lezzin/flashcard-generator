@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\GetGeneratedContentsAction;
-use App\Actions\Anki\GetNotesAction;
+use App\Actions\Anki\GetDatabaseGeneratedContentsAction;
+use App\Actions\Anki\GetDatabaseNotesAction;
 use App\Http\Requests\Database\PaginatedRequest;
 use App\Http\Resources\Database\GetNoteResource;
 
 class DatabaseController extends Controller
 {
-    public function getNotes(PaginatedRequest $request, GetNotesAction $action)
+    public function getNotes(PaginatedRequest $request, GetDatabaseNotesAction $action)
     {
         $items = $action->execute(
             $request->input('page'),
@@ -19,7 +19,7 @@ class DatabaseController extends Controller
         return GetNoteResource::collection($items);
     }
 
-    public function getGeneratedContents(PaginatedRequest $request, GetGeneratedContentsAction $action)
+    public function getGeneratedContents(PaginatedRequest $request, GetDatabaseGeneratedContentsAction $action)
     {
         $items = $action->execute(
             $request->input('page'),

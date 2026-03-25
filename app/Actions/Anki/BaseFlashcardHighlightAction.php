@@ -5,7 +5,7 @@ namespace App\Actions\Anki;
 use App\Enums\CardType;
 use Illuminate\Support\Collection;
 
-abstract class BaseHighlightAction
+abstract class BaseFlashcardHighlightAction
 {
     protected const COLORS = [
         'background-color: #FFE0B2; color: #D84315; font-weight: bold;',

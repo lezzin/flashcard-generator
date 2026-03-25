@@ -2,13 +2,13 @@
 
 namespace App\Actions\Anki;
 
-use App\Models\GeneratedContent;
+use App\Models\AnkiNote;
 
-class GetGeneratedContentsAction
+class GetDatabaseNotesAction
 {
     public function execute(int $page, ?int $perPage = 50)
     {
-        return GeneratedContent::paginate(
+        return AnkiNote::paginate(
             perPage: $perPage,
             page: $page
         );

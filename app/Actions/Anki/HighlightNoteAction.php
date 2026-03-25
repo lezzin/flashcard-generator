@@ -10,12 +10,11 @@ use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 use Illuminate\Support\Collection;
 
-class HighlightNoteAction extends BaseHighlightAction
+class HighlightNoteAction extends BaseFlashcardHighlightAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {
-    }
+    ) {}
 
     public function execute(array|Collection $notes): array|Collection
     {

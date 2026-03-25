@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Anki\DispatchExportPackageAction;
-use App\Actions\Anki\GenerateFromDeckAction;
+use App\Actions\Anki\GenerateFlashcardFromDeckAction;
 use App\Actions\Anki\GetDeckNamesAction;
 use App\Actions\Anki\DispatchOptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
@@ -36,7 +36,7 @@ class DeckController extends Controller
         return response()->noContent();
     }
 
-    public function generate(GenerateFromDeckRequest $request, GenerateFromDeckAction $action)
+    public function generate(GenerateFromDeckRequest $request, GenerateFlashcardFromDeckAction $action)
     {
         $action->execute($request->input('deck_name'));
 

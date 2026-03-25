@@ -2,7 +2,7 @@
 
 namespace App\Pipelines\Flashcard\Pipes;
 
-use App\Actions\Anki\AddToAnkiAction;
+use App\Actions\Anki\AddFromDatabaseToAnkiAction;
 use App\Actions\Gemini\GenerateJsonAction;
 use App\DTOs\SourceContentDto;
 use App\Jobs\Flashcard\GenerateFlashcardJob;
@@ -14,8 +14,7 @@ class GenerateFlashcardFromDeckPipe extends GenerateFlashcardPipe
 {
     public function __construct(
         protected readonly GenerateJsonAction $generateJsonAction
-    ) {
-    }
+    ) {}
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {
@@ -31,7 +30,7 @@ class GenerateFlashcardFromDeckPipe extends GenerateFlashcardPipe
             ->name('flashcards-batch-generate')
             ->onQueue('flashcard:batch:generate')
             ->then(function () use ($context) {
-                app(AddToAnkiAction::class)->execute($context->treeId);
+                app(AddFromDatabaseToAnkiAction::class)->execute($context->treeId);
             })
             ->dispatch();
 

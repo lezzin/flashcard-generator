@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Flashcard\AddToAnkiRequest;
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
-use App\Jobs\Flashcard\AddToAnkiJob;
+use App\Jobs\Flashcard\AddFlashcardToAnkiJob;
 use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Services\Anki\AnkiConnectClient;
 
@@ -25,7 +25,7 @@ class FlashcardController extends Controller
     public function addToAnki(AddToAnkiRequest $request)
     {
         dispatch(
-            new AddToAnkiJob($request->input('tree_id'))
+            new AddFlashcardToAnkiJob($request->input('tree_id'))
         )->onQueue('flashcard:add');
 
         return response()->noContent();

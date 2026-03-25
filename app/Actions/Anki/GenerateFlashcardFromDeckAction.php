@@ -7,14 +7,13 @@ use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Models\BaseContentTree;
 use App\Models\GeneratedContent;
 
-class GenerateFromDeckAction
+class GenerateFlashcardFromDeckAction
 {
     private const CHUNK_SIZE = 20;
 
     public function __construct(
         private readonly FindNotesByDeckNameAction $findNotesAction,
-    ) {
-    }
+    ) {}
 
     public function execute(string $deckName): void
     {
