@@ -13,7 +13,8 @@ class PdfDataDto
         public ?string $modificationDate,
         /** @var PdfElementDto[] */
         public array $elements,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
@@ -25,7 +26,7 @@ class PdfDataDto
             creationDate: $data['creation date'],
             modificationDate: $data['modification date'],
             elements: array_map(
-                fn($item) => PdfElementDto::fromArray($item),
+                fn ($item) => PdfElementDto::fromArray($item),
                 $data['kids'] ?? []
             ),
         );

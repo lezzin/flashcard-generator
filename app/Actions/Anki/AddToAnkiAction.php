@@ -19,14 +19,15 @@ class AddToAnkiAction
         private readonly HighlightNoteAction $highlightNoteAction,
         private readonly CreateDeckAction $createDeckAction,
         private readonly AddNotesAction $addNotesAction,
-    ) {}
+    ) {
+    }
 
     public function execute(int $treeId): void
     {
         AnkiFlashcard::where('is_inserted', false)
             ->chunkById(
                 self::CHUNK_SIZE,
-                fn($flashcards) => $this->handleFlashcards($flashcards)
+                fn ($flashcards) => $this->handleFlashcards($flashcards)
             );
 
         BaseContentTree::whereKey($treeId)
@@ -38,8 +39,8 @@ class AddToAnkiAction
     private function handleFlashcards(Collection $flashcards)
     {
         $payloads = $flashcards
-            ->map(fn($value) => FlashcardMapper::fromDatabaseToDto($value))
-            ->map(fn($card) => $this->buildPayload($card));
+            ->map(fn ($value) => FlashcardMapper::fromDatabaseToDto($value))
+            ->map(fn ($card) => $this->buildPayload($card));
 
         $improvedPayloads = $this->highlightNoteAction->execute($payloads);
 
@@ -48,7 +49,7 @@ class AddToAnkiAction
             ->unique();
 
         $uniqueDecks->each(
-            fn($deck) => $this->createDeckAction->execute($deck)
+            fn ($deck) => $this->createDeckAction->execute($deck)
         );
 
         $this->addNotesAction->execute(

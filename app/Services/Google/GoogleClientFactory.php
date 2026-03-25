@@ -8,7 +8,7 @@ class GoogleClientFactory
 {
     public function create(): Google_Client
     {
-        $client = new Google_Client;
+        $client = new Google_Client();
 
         $client->setClientId(config('filesystems.disks.google.clientId'));
         $client->setClientSecret(config('filesystems.disks.google.clientSecret'));

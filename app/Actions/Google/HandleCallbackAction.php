@@ -10,7 +10,8 @@ class HandleCallbackAction
     public function __construct(
         private readonly GoogleClientFactory $factory,
         private readonly GoogleAuthService $authService
-    ) {}
+    ) {
+    }
 
     public function execute(string $code): array
     {

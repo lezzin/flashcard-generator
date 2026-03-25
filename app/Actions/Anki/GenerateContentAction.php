@@ -13,7 +13,8 @@ class GenerateContentAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function execute(array $chunk, int $documentTreeId, ?string $newContext = null)
     {

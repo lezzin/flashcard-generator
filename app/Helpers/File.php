@@ -22,7 +22,9 @@ class File
 
     public static function deleteIfExists(string $filename)
     {
-        if (file_exists($filename)) @unlink($filename);
+        if (file_exists($filename)) {
+            @unlink($filename);
+        }
     }
 
     public static function wrapInUploadedFile(string $path): UploadedFile

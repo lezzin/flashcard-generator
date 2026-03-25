@@ -10,7 +10,8 @@ class GetFilesAction
 {
     public function __construct(
         private readonly GoogleAuthService $authService
-    ) {}
+    ) {
+    }
 
     public function execute(): array
     {

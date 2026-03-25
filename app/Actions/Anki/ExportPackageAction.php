@@ -12,7 +12,8 @@ class ExportPackageAction
 {
     public function __construct(
         private readonly AnkiConnectClient $ankiClient,
-    ) {}
+    ) {
+    }
 
     public function execute(string $deckName): void
     {

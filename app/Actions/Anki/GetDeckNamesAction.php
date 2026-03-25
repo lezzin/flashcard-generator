@@ -9,7 +9,8 @@ class GetDeckNamesAction
 {
     public function __construct(
         private readonly AnkiConnectClient $ankiClient
-    ) {}
+    ) {
+    }
 
     public function execute(bool $onlyFirstLevel = false): array
     {
@@ -23,7 +24,7 @@ class GetDeckNamesAction
 
                 return substr_count($deck, '::') <= 1;
             })
-            ->map(fn($deck) => DeckDto::fromRequest($deck)->toArray())
+            ->map(fn ($deck) => DeckDto::fromRequest($deck)->toArray())
             ->values()
             ->toArray();
     }

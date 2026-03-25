@@ -14,7 +14,8 @@ class UploadFileAction
 
     public function __construct(
         private readonly GoogleAuthService $authService
-    ) {}
+    ) {
+    }
 
     public function execute(UploadedFile $file, string $deckName): string
     {

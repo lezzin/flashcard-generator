@@ -9,7 +9,8 @@ class DownloadFileAction
 {
     public function __construct(
         private readonly GoogleAuthService $authService
-    ) {}
+    ) {
+    }
 
     public function execute(string $id): array
     {

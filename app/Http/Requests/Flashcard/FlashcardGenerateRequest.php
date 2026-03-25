@@ -12,6 +12,6 @@ class FlashcardGenerateRequest extends FormRequest
         return  [
             'title' => ['required', 'string'],
             'tree_id' => ['required', 'string', Rule::exists('generated_contents', 'id')],
-        ];;
+        ];
     }
 }

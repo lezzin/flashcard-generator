@@ -14,7 +14,8 @@ class HighlightNoteAction extends BaseHighlightAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function execute(array|Collection $notes): array|Collection
     {
@@ -44,7 +45,9 @@ class HighlightNoteAction extends BaseHighlightAction
 
                 foreach ($uniqueToEnhance->values() as $index => $item) {
                     $ai = $aiResults[$index] ?? null;
-                    if (!$ai) continue;
+                    if (!$ai) {
+                        continue;
+                    }
 
                     AnkiNote::updateOrCreate(
                         ['fields_hash' => $item['hash']],

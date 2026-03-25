@@ -13,7 +13,8 @@ class BuildDocumentTreePipe
 {
     public function __construct(
         private ParserService $parserService
-    ) {}
+    ) {
+    }
 
     public function handle(ContentPipelineContext $context, Closure $next)
     {
@@ -68,7 +69,9 @@ class BuildDocumentTreePipe
 
     private function handleParagraph(PdfElementDto $element, array &$stack, array &$root): void
     {
-        if (!$element->content) return;
+        if (!$element->content) {
+            return;
+        }
 
         $node = DocumentNodeDto::paragraph(trim($element->content));
 
@@ -89,7 +92,9 @@ class BuildDocumentTreePipe
             }
         }
 
-        if (empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
         $node = DocumentNodeDto::list($items);
 

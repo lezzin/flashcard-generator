@@ -13,7 +13,8 @@ class GenerateFromDeckAction
 
     public function __construct(
         private readonly FindNotesByDeckNameAction $findNotesAction,
-    ) {}
+    ) {
+    }
 
     public function execute(string $deckName): void
     {

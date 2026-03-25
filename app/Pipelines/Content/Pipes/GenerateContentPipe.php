@@ -21,7 +21,7 @@ class GenerateContentPipe
 
     private function processTree(array $nodes, int $documentTreeId, string $parentContext = ''): void
     {
-        $hasSections = collect($nodes)->contains(fn($n) => $n->type === 'section');
+        $hasSections = collect($nodes)->contains(fn ($n) => $n->type === 'section');
 
         if (!$hasSections) {
             $this->processFlatParagraphs($nodes, $documentTreeId);
@@ -87,7 +87,7 @@ class GenerateContentPipe
                 'list' => $parts = array_merge(
                     $parts,
                     array_map(
-                        fn($item) => $this->normalize($item),
+                        fn ($item) => $this->normalize($item),
                         $child->items
                     )
                 ),

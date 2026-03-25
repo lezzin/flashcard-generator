@@ -67,7 +67,9 @@ abstract class BaseHighlightAction
         $colorIndex = 0;
 
         foreach ($keywords as $keyword) {
-            if (empty($keyword)) continue;
+            if (empty($keyword)) {
+                continue;
+            }
 
             $style = self::COLORS[$colorIndex % count(self::COLORS)];
 

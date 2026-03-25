@@ -8,7 +8,8 @@ class DeckDto
 {
     public function __construct(
         public readonly string $name
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(string $request): self
     {

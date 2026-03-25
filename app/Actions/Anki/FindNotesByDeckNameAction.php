@@ -11,7 +11,8 @@ class FindNotesByDeckNameAction
     public function __construct(
         private readonly AnkiConnectClient $ankiClient,
         private readonly GetDeckNamesFromCardIdsAction $getDeckNames,
-    ) {}
+    ) {
+    }
 
     public function execute(string $deckName, int $perPage = 100, int $page = 1): LengthAwarePaginator
     {
@@ -26,7 +27,7 @@ class FindNotesByDeckNameAction
             'notes' => $pagedNoteIds,
         ]);
 
-        $notes = collect($noteInfos)->map(fn($note) => $this->enrichAndFormatNote($note));
+        $notes = collect($noteInfos)->map(fn ($note) => $this->enrichAndFormatNote($note));
 
         return new LengthAwarePaginator(
             $notes,

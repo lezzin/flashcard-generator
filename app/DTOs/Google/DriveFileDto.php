@@ -3,7 +3,6 @@
 namespace App\DTOs\Google;
 
 use App\Helpers\Date;
-use Illuminate\Support\Carbon;
 
 class DriveFileDto
 {
@@ -16,7 +15,8 @@ class DriveFileDto
         public readonly ?string $url,
         public readonly ?string $downloadUrl,
         public array $children = []
-    ) {}
+    ) {
+    }
 
     public static function folder(object $folder): self
     {
@@ -69,10 +69,10 @@ class DriveFileDto
     {
         return collect($this->children)
             ->sortBy([
-                fn($item) => $item->type !== 'folder',
-                fn($item) => strtolower($item->name),
+                fn ($item) => $item->type !== 'folder',
+                fn ($item) => strtolower($item->name),
             ])
-            ->map(fn($c) => $c->toArray())
+            ->map(fn ($c) => $c->toArray())
             ->values()
             ->all();
     }

@@ -8,7 +8,8 @@ class GetAuthUrlAction
 {
     public function __construct(
         private readonly GoogleClientFactory $factory
-    ) {}
+    ) {
+    }
 
     public function execute(): string
     {

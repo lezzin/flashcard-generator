@@ -14,7 +14,8 @@ class GenerateContentBatchJob implements ShouldQueue
         private readonly array $chunk,
         private readonly int $documentTreeId,
         private readonly ?string $newContext = null,
-    ) {}
+    ) {
+    }
 
     public function handle(GenerateContentAction $action): void
     {

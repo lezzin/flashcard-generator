@@ -12,7 +12,8 @@ class ContentPipelineJob implements ShouldQueue
 
     public function __construct(
         private readonly string $filePath,
-    ) {}
+    ) {
+    }
 
     public function handle(): void
     {

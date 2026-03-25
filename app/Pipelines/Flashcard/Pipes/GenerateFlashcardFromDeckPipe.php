@@ -14,7 +14,8 @@ class GenerateFlashcardFromDeckPipe extends GenerateFlashcardPipe
 {
     public function __construct(
         protected readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function handle(FlashcardPipelineContext $context, Closure $next)
     {

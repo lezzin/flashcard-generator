@@ -10,13 +10,15 @@ use Illuminate\Foundation\Queue\Queueable;
 
 class GenerateFlashcardJob implements ShouldQueue
 {
-    use Queueable, Batchable;
+    use Queueable;
+    use Batchable;
 
     public function __construct(
         private readonly SourceContentDto $source,
         private readonly string $baseTitle,
         private readonly string $generationType,
-    ) {}
+    ) {
+    }
 
     public function handle(GenerateFlashcardAction $action): void
     {

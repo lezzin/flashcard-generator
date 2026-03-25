@@ -11,6 +11,7 @@ class AddToAnkiRequest extends FormRequest
     {
         return  [
             'tree_id' => ['required', 'string', Rule::exists('generated_contents', 'id')],
-        ];;
+        ];
+        ;
     }
 }

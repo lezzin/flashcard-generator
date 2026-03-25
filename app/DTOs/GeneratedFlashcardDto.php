@@ -12,7 +12,8 @@ class GeneratedFlashcardDto
         public readonly string $deck,
         public readonly ?string $back = null,
         public readonly ?string $extra = null,
-    ) {}
+    ) {
+    }
 
     public static function omitFromObject(object $card)
     {

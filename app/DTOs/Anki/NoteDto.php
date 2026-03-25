@@ -13,7 +13,8 @@ class NoteDto
         public readonly ?array $tags,
         public readonly ?array $cards,
         public readonly array $deckNames = [],
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(array $request): self
     {
@@ -45,7 +46,7 @@ class NoteDto
     public function toArray(): array
     {
         $formattedFields = collect($this->fields)
-            ->mapWithKeys(fn($field, $name) => [$name => strip_tags($field['value'])])
+            ->mapWithKeys(fn ($field, $name) => [$name => strip_tags($field['value'])])
             ->all();
 
         return [

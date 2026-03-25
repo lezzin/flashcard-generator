@@ -5,7 +5,6 @@ namespace App\Pipelines\Flashcard;
 use App\Pipelines\Flashcard\Pipes\GenerateFlashcardFromDeckPipe;
 use App\Pipelines\Flashcard\Pipes\GetContentPipe;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Collection;
 
 class FlashcardFromDeckPipeline
 {

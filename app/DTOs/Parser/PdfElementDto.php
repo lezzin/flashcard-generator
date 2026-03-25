@@ -16,7 +16,8 @@ class PdfElementDto
         public array $extra = [],
         /** @var PdfElementDto[] */
         public array $children = [],
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
@@ -31,7 +32,7 @@ class PdfElementDto
             textColor: $data['text color'] ?? null,
             extra: self::extractExtra($data),
             children: array_map(
-                fn($child) => self::fromArray($child),
+                fn ($child) => self::fromArray($child),
                 $data['kids'] ?? $data['list items'] ?? []
             ),
         );

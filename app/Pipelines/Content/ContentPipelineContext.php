@@ -10,5 +10,6 @@ class ContentPipelineContext
 
     public function __construct(
         public readonly string $filePath
-    ) {}
+    ) {
+    }
 }

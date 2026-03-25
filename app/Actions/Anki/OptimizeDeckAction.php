@@ -16,11 +16,11 @@ class OptimizeDeckAction extends BaseOptimizeAction
 
         $processedNotes =  app(HighlightNoteAction::class)->execute(collect($currentNotesPage->items()));
 
-        $invalidNotes = $processedNotes->filter(fn($note) => $note['invalid'] ?? false);
+        $invalidNotes = $processedNotes->filter(fn ($note) => $note['invalid'] ?? false);
         $this->deleteNotes($invalidNotes);
 
-        $validNotes = $processedNotes->reject(fn($note) => $note['invalid'] ?? false);
-        $validNotes->each(fn($note) => $this->updateNoteIfHasFields($note));
+        $validNotes = $processedNotes->reject(fn ($note) => $note['invalid'] ?? false);
+        $validNotes->each(fn ($note) => $this->updateNoteIfHasFields($note));
     }
 
     protected function deleteNotes(Collection $notes): void

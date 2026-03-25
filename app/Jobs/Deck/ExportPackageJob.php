@@ -12,7 +12,8 @@ class ExportPackageJob implements ShouldQueue
 
     public function __construct(
         private readonly ?string $deckName = null,
-    ) {}
+    ) {
+    }
 
     public function handle(ExportPackageAction $action): void
     {

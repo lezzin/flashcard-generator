@@ -15,7 +15,8 @@ class FlashcardPipelineJob implements ShouldQueue
         private readonly int $treeId,
         private readonly ?string $title = null,
         private readonly bool $fromDeck = false,
-    ) {}
+    ) {
+    }
 
     public function handle(): void
     {

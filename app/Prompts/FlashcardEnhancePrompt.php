@@ -4,11 +4,11 @@ namespace App\Prompts;
 
 class FlashcardEnhancePrompt
 {
-  public static function handle(array $items): string
-  {
-    $json = json_encode($items, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    public static function handle(array $items): string
+    {
+        $json = json_encode($items, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
-    return <<<PROMPT
+        return <<<PROMPT
 Você é um especialista em memorização e criação de flashcards de alta qualidade.
 
 Cada item possui um "type":
@@ -152,5 +152,5 @@ INPUT
 {$json}
 
 PROMPT;
-  }
+    }
 }
