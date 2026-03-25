@@ -2,9 +2,10 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\GetDeckNamesAction;
 use App\Jobs\Deck\ExportPackageJob;
 
-class DispatchExportPackageAction
+class DispatchExportPackageToDriveAction
 {
     public function execute(?string $deckName = null): void
     {

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\FindNotesByDeckNameAction;
 use App\Jobs\Deck\OptimizeDeckPageJob;
 use Exception;
 

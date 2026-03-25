@@ -2,6 +2,8 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\DeleteNotesAction;
+use App\Actions\Anki\Api\FindNotesByDeckNameAction;
 use Illuminate\Support\Collection;
 
 class OptimizeDeckAction extends BaseOptimizeAction

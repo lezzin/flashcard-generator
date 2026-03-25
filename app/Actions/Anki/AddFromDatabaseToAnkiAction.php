@@ -2,6 +2,8 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\AddNotesAction;
+use App\Actions\Anki\Api\CreateDeckAction;
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
 use App\Mappers\FlashcardMapper;
@@ -23,11 +25,10 @@ class AddFromDatabaseToAnkiAction
 
     public function execute(int $treeId): void
     {
-        AnkiFlashcard::where('is_inserted', false)
-            ->chunkById(
-                self::CHUNK_SIZE,
-                fn($flashcards) => $this->handleFlashcards($flashcards)
-            );
+        AnkiFlashcard::where('is_inserted', false)->chunkById(
+            self::CHUNK_SIZE,
+            fn($flashcards) => $this->handleFlashcards($flashcards)
+        );
 
         BaseContentTree::whereKey($treeId)
             ->update([
@@ -61,27 +62,27 @@ class AddFromDatabaseToAnkiAction
 
     private function buildPayload(GeneratedFlashcardDto $flashcard): array
     {
-        $fields = [
-            'ID' => Str::uuid()->toString(),
+        $baseFields = [
+            'ID'    => Str::uuid()->toString(),
             'Extra' => $flashcard->extra,
         ];
 
-        switch ($flashcard->type) {
-            case CardType::CLOZE:
-                $fields['Texto'] = $flashcard->front;
-                break;
+        $typeFields = match ($flashcard->type) {
+            CardType::CLOZE => [
+                'Texto' => $flashcard->front,
+            ],
 
-            case CardType::SIMPLE:
-                $fields['Frente'] = $flashcard->front;
-                $fields['Verso'] = $flashcard->back;
-                break;
-        }
+            CardType::SIMPLE => [
+                'Frente' => $flashcard->front,
+                'Verso'  => $flashcard->back,
+            ],
+        };
 
         return [
-            'deckName' => $flashcard->deck,
+            'deckName'  => $flashcard->deck,
             'modelName' => $flashcard->type->value,
-            'tags' => [],
-            'fields' => Arr::whereNotNull($fields),
+            'tags'      => [],
+            'fields'    => Arr::whereNotNull([...$baseFields, ...$typeFields])
         ];
     }
 }

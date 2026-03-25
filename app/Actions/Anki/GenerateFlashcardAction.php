@@ -12,6 +12,7 @@ use App\Prompts\FlashcardGeneratePrompt;
 use Illuminate\Support\Collection;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
+use Illuminate\Support\Facades\Log;
 
 use function Illuminate\Support\now;
 
@@ -19,8 +20,7 @@ class GenerateFlashcardAction
 {
     public function __construct(
         protected readonly GenerateJsonAction $generateJsonAction
-    ) {
-    }
+    ) {}
 
     public function execute(
         SourceContentDto $source,
@@ -33,6 +33,11 @@ class GenerateFlashcardAction
         );
 
         if (!isset($data->flashcards)) {
+            Log::channel('content')->info('The generated data for flashcards is empty: ', [
+                'content' => json_encode($source),
+                'data'    => json_encode($data),
+            ]);
+
             return;
         }
 
@@ -47,6 +52,11 @@ class GenerateFlashcardAction
         );
 
         if ($flashcards->isEmpty()) {
+            Log::channel('content')->info('Failed to transform flashcards into DTO: ', [
+                'content' => json_encode($source),
+                'data'    => json_encode($data),
+            ]);
+
             return;
         }
 

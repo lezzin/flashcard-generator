@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Api;
 
 use App\Services\Anki\AnkiConnectClient;
 
 class DeleteNotesAction
 {
-    public function execute(?array $notes): void
+    public function execute(?array $notes = []): void
     {
         if (empty($notes)) {
             return;

@@ -3,9 +3,26 @@
 namespace App\Helpers;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File as FileFacade;
+use Illuminate\Support\Str;
 
 class File
 {
+    public static function buildWindowsPath(string $filename, string $extension = 'apkg', string $folder = 'Anki'): string
+    {
+        $safeName = Str::slug($filename, '_');
+        $safeExtension = ltrim(Str::lower($extension), '.');
+
+        $uniqueSuffix = now()->format('Ymd_His') . '_' . Str::random(6);
+        $basePath = "C:/" . trim($folder, '/\\');
+
+        if (!FileFacade::exists($basePath)) {
+            FileFacade::makeDirectory($basePath, 0755, true);
+        }
+
+        return $basePath . DIRECTORY_SEPARATOR . "{$safeName}_{$uniqueSuffix}.{$safeExtension}";
+    }
+
     public static function convertWindowsToLinuxPath(string $path): string
     {
         $path = str_replace('\\', '/', $path);

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\DispatchExportPackageAction;
+use App\Actions\Anki\Api\GetDeckNamesAction;
+use App\Actions\Anki\DispatchExportPackageToDriveAction;
 use App\Actions\Anki\GenerateFlashcardFromDeckAction;
-use App\Actions\Anki\GetDeckNamesAction;
 use App\Actions\Anki\DispatchOptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
 use App\Http\Requests\Flashcard\GenerateFromDeckRequest;
@@ -18,7 +18,7 @@ class DeckController extends Controller
         return $action->execute();
     }
 
-    public function export(ExportPackageRequest $request, AnkiConnectClient $anki, DispatchExportPackageAction $action)
+    public function export(ExportPackageRequest $request, AnkiConnectClient $anki, DispatchExportPackageToDriveAction $action)
     {
         $anki->validateConnection();
 

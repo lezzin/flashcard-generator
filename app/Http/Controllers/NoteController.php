@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\FindNotesByDeckNameAction;
+use App\Actions\Anki\Api\FindNotesByDeckNameAction;
 use App\Actions\Anki\OptimizeNoteAction;
 use App\Http\Requests\Flashcard\FindNotesRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardRequest;

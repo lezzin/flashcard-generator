@@ -13,8 +13,7 @@ class GenerateContentAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {
-    }
+    ) {}
 
     public function execute(array $chunk, int $documentTreeId, ?string $newContext = null)
     {
@@ -37,13 +36,12 @@ class GenerateContentAction
             required: ['title', 'summary'],
         );
 
-        $result = $this->generateJsonAction->execute(
-            ContentGeneratePrompt::handle(
-                $newContext,
-                implode("\n", $chunk)
-            ),
-            $schema
+        $prompt = ContentGeneratePrompt::handle(
+            $newContext,
+            implode("\n", $chunk)
         );
+
+        $result = $this->generateJsonAction->execute($prompt, $schema);
 
         GeneratedContent::insert([
             'title'       => $result->title,

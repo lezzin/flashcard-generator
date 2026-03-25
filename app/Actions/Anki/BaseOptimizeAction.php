@@ -2,6 +2,7 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\UpdateNoteFieldsAction;
 use App\Enums\CardType;
 
 abstract class BaseOptimizeAction

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Anki;
 
+use App\Actions\Anki\Api\FindNoteByIdAction;
+
 class OptimizeNoteAction extends BaseOptimizeAction
 {
     public function execute(string $noteId): array

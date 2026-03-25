@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Api;
 
 use App\DTOs\Anki\NoteDto;
 use App\Services\Anki\AnkiConnectClient;

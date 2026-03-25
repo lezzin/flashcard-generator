@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Anki;
+namespace App\Actions\Anki\Api;
 
 use App\Services\Anki\AnkiConnectClient;
 
@@ -8,8 +8,7 @@ class UpdateNoteFieldsAction
 {
     public function __construct(
         private readonly AnkiConnectClient $ankiClient
-    ) {
-    }
+    ) {}
 
     public function execute(int $noteId, array $fields): void
     {
