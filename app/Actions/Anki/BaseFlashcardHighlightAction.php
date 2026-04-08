@@ -4,6 +4,7 @@ namespace App\Actions\Anki;
 
 use App\Enums\CardType;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseFlashcardHighlightAction
 {
@@ -17,6 +18,14 @@ abstract class BaseFlashcardHighlightAction
     {
         return $notes->map(function ($note) {
             $type = CardType::tryFrom($note['modelName']);
+
+            if ($type === null) {
+                Log::channel('flashcard')->warning("Card type not mapped on application.", [
+                    'type' => $type,
+                    'note' => json_encode($note),
+                    'method' => 'BaseFlashcardHighlightAction::buildPayloads'
+                ]);
+            }
 
             if ($type === CardType::SIMPLE) {
                 return [
@@ -40,6 +49,14 @@ abstract class BaseFlashcardHighlightAction
     protected function applyImprovedText(array $note, string $improvedText): array
     {
         $type = CardType::tryFrom($note['modelName']);
+
+        if ($type === null) {
+            Log::channel('flashcard')->warning("Card type not mapped on application.", [
+                'type' => $type,
+                'note' => json_encode($note),
+                'method' => 'BaseFlashcardHighlightAction::applyImprovedText'
+            ]);
+        }
 
         if ($type === CardType::SIMPLE) {
             if (preg_match('/Pergunta:\s*(.*?)\s*Resposta:\s*(.*)/is', $improvedText, $matches)) {
@@ -92,6 +109,14 @@ abstract class BaseFlashcardHighlightAction
     protected function applyStylingToFields(array $note, array $keywords): array
     {
         $type = CardType::tryFrom($note['modelName']);
+
+        if ($type === null) {
+            Log::channel('flashcard')->warning("Card type not mapped on application.", [
+                'type' => $type,
+                'note' => json_encode($note),
+                'method' => 'BaseFlashcardHighlightAction::applyStylingToFields'
+            ]);
+        }
 
         if ($type === CardType::SIMPLE) {
             $note['fields']['Frente'] = $this->applyStyling($note['fields']['Frente'] ?? '', $keywords);

@@ -8,7 +8,7 @@ use Exception;
 
 class DispatchOptimizeDeckAction extends BaseOptimizeAction
 {
-    public function execute(string $deckName, int $perPage = 100): void
+    public function execute(string $deckName, int $perPage = 20): void
     {
         $firstPage = app(FindNotesByDeckNameAction::class)->execute($deckName, $perPage);
 

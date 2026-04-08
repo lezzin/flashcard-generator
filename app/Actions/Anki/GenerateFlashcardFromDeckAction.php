@@ -7,6 +7,7 @@ use App\Enums\CardType;
 use App\Jobs\Flashcard\FlashcardPipelineJob;
 use App\Models\BaseContentTree;
 use App\Models\GeneratedContent;
+use Illuminate\Support\Facades\Log;
 
 class GenerateFlashcardFromDeckAction
 {
@@ -37,6 +38,15 @@ class GenerateFlashcardFromDeckAction
             foreach ($chunks as $chunk) {
                 $notesSummary = array_map(function ($note) {
                     $type = CardType::tryFrom($note['modelName']);
+
+                    if ($type === null) {
+                        Log::channel('flashcard')->warning("Card type not mapped on application.", [
+                            'type' => $type,
+                            'note' => json_encode($note),
+                            'method' => 'GenerateFlashcardFromDeckAction::makeSummary'
+                        ]);
+                    }
+
                     return $this->makeSummary($type, $note['fields']);
                 }, $chunk);
 

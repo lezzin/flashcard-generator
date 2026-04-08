@@ -2,7 +2,6 @@
 
 namespace App\Actions\Anki\Api;
 
-use App\Actions\Anki\GetDeckNamesFromCardIdsAction;
 use App\DTOs\Anki\NoteDto;
 use App\Services\Anki\AnkiConnectClient;
 use Illuminate\Pagination\LengthAwarePaginator;

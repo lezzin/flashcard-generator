@@ -136,14 +136,14 @@ return [
         ],
 
         'flashcard' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/flashcard.log'),
             'level' => 'debug',
             'replace_placeholders' => true,
         ],
 
         'content' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/content.log'),
             'level' => 'debug',
             'replace_placeholders' => true,

@@ -4,6 +4,7 @@ namespace App\Actions\Anki;
 
 use App\Actions\Anki\Api\UpdateNoteFieldsAction;
 use App\Enums\CardType;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseOptimizeAction
 {
@@ -25,6 +26,14 @@ abstract class BaseOptimizeAction
     protected function extractFieldsToUpdate(array $note): array
     {
         $type = CardType::tryFrom($note['modelName']);
+
+        if ($type === null) {
+            Log::channel('flashcard')->warning("Card type not mapped on application.", [
+                'type' => $type,
+                'note' => json_encode($note),
+                'method' => 'BaseOptimizeAction::extractFieldsToUpdate'
+            ]);
+        }
 
         $fields = match ($type) {
             CardType::CLOZE => [
