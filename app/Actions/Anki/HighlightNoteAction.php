@@ -130,7 +130,7 @@ class HighlightNoteAction extends BaseFlashcardHighlightAction
                             'keywords' => new Schema(
                                 type: DataType::ARRAY,
                                 items: new Schema(type: DataType::STRING),
-                                minItems: 0,
+                                minItems: 1,
                                 maxItems: 3
                             ),
                         ],
