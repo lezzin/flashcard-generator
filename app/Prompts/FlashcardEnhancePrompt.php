@@ -12,11 +12,11 @@ class FlashcardEnhancePrompt
       }
 
       if ($item['type'] === 'qa') {
-        return ['qa', $item['front'] ?? '', $item['back'] ?? '', $item['extra'] ?? ''];
+        return ['qa', $item['front'] ?? '', $item['back'] ?? '', $item['extra'] ?? null];
       }
 
       if ($item['type'] === 'cloze') {
-        return ['cloze', $item['text'] ?? '', $item['extra'] ?? ''];
+        return ['cloze', $item['text'] ?? '', $item['extra'] ?? null];
       }
 
       return null;
@@ -52,7 +52,7 @@ Para cada item, você deve:
 2) Dizer se pode ser corrigido (recoverable)
 3) Explicar (reason)
 4) Melhorar o conteúdo (improved_text)
-5) Melhorar o conteúdo extra ou remover o existente
+5) Decidir o destino do campo extra (melhorar OU remover)
 6) Extrair keywords
 
 ========================
@@ -119,6 +119,40 @@ INVALIDAR (valid = false) quando:
 - Dependência de contexto externo
 
 ========================
+REGRAS DE EXTRA (CRÍTICO)
+========================
+
+O campo "extra" é OPCIONAL e deve ser tratado com rigor.
+
+Você deve decidir entre:
+
+1) MELHORAR o extra
+2) REMOVER o extra (retornar null)
+
+REMOVER (extra = null) quando:
+
+- Estiver vazio ou irrelevante
+- Repetir o conteúdo do flashcard
+- Contiver conteúdo genérico
+- Contiver meta (ex: "cai na prova", "importante lembrar")
+- Estiver confuso ou sem contexto
+- Não agregar valor real à memorização
+
+MELHORAR quando:
+
+- Complementar o entendimento
+- Adicionar contexto útil
+- Trazer exemplo relevante
+- Trazer detalhe que ajuda a memorizar
+
+REGRAS IMPORTANTES:
+
+- Nunca inventar informação no extra
+- Nunca repetir o improved_text
+- Seja conciso
+- Se houver dúvida → REMOVER (extra = null)
+
+========================
 REGRAS DE RECOVERABLE
 ========================
 
@@ -129,6 +163,7 @@ Se recoverable = false:
 - valid = false
 - improved_text = ""
 - keywords = []
+- extra = null
 
 ========================
 REGRAS DE improved_text
@@ -171,7 +206,7 @@ Responda APENAS com JSON válido:
       "recoverable": true,
       "reason": "claro e específico",
       "improved_text": "Pergunta: ... Resposta: ...",
-      "extra": "Conteúdo extra",
+      "extra": null,
       "keywords": ["termo1"]
     }
   ]

@@ -105,6 +105,7 @@ class HighlightNoteAction extends BaseFlashcardHighlightAction
         }
 
         $tempNote = $this->applyImprovedText($note, $improvedText);
+        $tempNote['fields']['Extra'] = $ai?->extra ?? null;
 
         return array_diff_assoc($tempNote['fields'], $note['fields']);
     }
@@ -127,6 +128,7 @@ class HighlightNoteAction extends BaseFlashcardHighlightAction
                             'recoverable' => new Schema(type: DataType::BOOLEAN),
                             'reason' => new Schema(type: DataType::STRING),
                             'improved_text' => new Schema(type: DataType::STRING),
+                            'extra' => new Schema(type: DataType::STRING),
                             'keywords' => new Schema(
                                 type: DataType::ARRAY,
                                 items: new Schema(type: DataType::STRING),
