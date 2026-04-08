@@ -4,6 +4,7 @@ namespace App\Actions\Anki;
 
 use App\Actions\Anki\Api\UpdateNoteFieldsAction;
 use App\Enums\CardType;
+use App\Support\AnkiFieldNormalizer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -46,28 +47,15 @@ abstract class BaseOptimizeAction
             CardType::SIMPLE => [
                 'Frente' => $noteFields['Frente'] ?? null,
                 'Verso'  => $noteFields['Verso'] ?? null,
-                'Extra'  => $noteFields['Extra'] ?? null,
+                'Extra' => $noteFields['Extra'] ?? null,
             ],
             default => [],
         };
 
         if (array_key_exists('ID', $noteFields)) {
-            if (empty($noteFields['ID'])) {
-                $noteFields['ID'] = Str::uuid()->toString();
-            }
-
-            $fields['ID'] = $noteFields['ID'];
+            $fields['ID'] = $noteFields['ID'] ?: Str::uuid()->toString();
         }
 
-        $extra = $fields['Extra'] ?? null;
-        unset($fields['Extra']);
-
-        $filtered = array_filter($fields, fn($value) => $value !== null && $value !== '');
-
-        if (array_key_exists('Extra', $noteFields)) {
-            $filtered['Extra'] = $extra;
-        }
-
-        return $filtered;
+        return AnkiFieldNormalizer::prepareForUpdate($fields);
     }
 }

@@ -6,6 +6,7 @@ use App\Actions\Gemini\GenerateJsonAction;
 use App\Enums\CardType;
 use App\Models\AnkiNote;
 use App\Prompts\FlashcardEnhancePrompt;
+use App\Support\AnkiFieldNormalizer;
 use Gemini\Data\Schema;
 use Gemini\Enums\DataType;
 use Illuminate\Support\Collection;
@@ -100,14 +101,21 @@ class HighlightNoteAction extends BaseFlashcardHighlightAction
     protected function getImprovedFieldsFromAI(array $note, object $ai): array
     {
         $improvedText = trim($ai->improved_text ?? '');
+
         if (empty($improvedText)) {
             return [];
         }
 
         $tempNote = $this->applyImprovedText($note, $improvedText);
-        $tempNote['fields']['Extra'] = $ai?->extra ?? null;
 
-        return array_diff_assoc($tempNote['fields'], $note['fields']);
+        if (property_exists($ai, 'extra')) {
+            $tempNote['fields']['Extra'] = $ai->extra;
+        }
+
+        $normalizedNew = AnkiFieldNormalizer::normalizeExtra($tempNote['fields']);
+        $normalizedOld = AnkiFieldNormalizer::normalizeExtra($note['fields']);
+
+        return array_diff_assoc($normalizedNew, $normalizedOld);
     }
 
     protected function enhance(array $payloads): array
