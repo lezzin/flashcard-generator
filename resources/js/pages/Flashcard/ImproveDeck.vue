@@ -70,9 +70,9 @@ const submit = async () => {
             }),
         });
 
-        const result = await response.json();
-
         if (!response.ok) {
+            const result = await response.json();
+
             if (response.status === 422 && result.errors) {
                 Object.keys(result.errors).forEach((key) => {
                     form.setError(key as any, result.errors[key][0]);
@@ -86,7 +86,7 @@ const submit = async () => {
             return;
         }
 
-        successMessage.value = 'Seus flashcards foram otimizados com sucesso!';
+        successMessage.value = 'Flashcards enviados para otimização com sucesso!';
         form.reset();
     } catch (_) {
         errorMessage.value =
@@ -101,6 +101,7 @@ onMounted(fetchDecks);
 
 <template>
     <Layout>
+
         <Head title="Otimizar Deck" />
 
         <Card class="mx-auto max-w-xl border-gray-200 shadow-sm">
@@ -120,11 +121,8 @@ onMounted(fetchDecks);
                 <Alert v-if="errorMessage" variant="destructive">
                     <div class="flex w-full items-center justify-between">
                         <span>{{ errorMessage }}</span>
-                        <button
-                            v-if="!loadingDecks && deckNames.length === 0"
-                            @click="fetchDecks"
-                            class="ml-4 font-medium text-white underline hover:no-underline"
-                        >
+                        <button v-if="!loadingDecks && deckNames.length === 0" @click="fetchDecks"
+                            class="ml-4 font-medium text-white underline hover:no-underline">
                             Tentar Novamente
                         </button>
                     </div>
@@ -134,41 +132,26 @@ onMounted(fetchDecks);
                     <div class="space-y-2">
                         <Label for="deck_name">Selecione o Deck do Anki</Label>
 
-                        <SelectSearch
-                            v-model="form.deck_name"
-                            :options="deckNames"
-                            :disabled="loadingDecks || deckNames.length === 0"
-                            :placeholder="
-                                loadingDecks
-                                    ? 'Carregando decks...'
-                                    : 'Escolha um deck para otimizar'
-                            "
-                            :class="{
-                                'border-red-500 ring-red-500':
-                                    form.errors.deck_name,
-                            }"
-                        />
+                        <SelectSearch v-model="form.deck_name" :options="deckNames"
+                            :disabled="loadingDecks || deckNames.length === 0" :placeholder="loadingDecks
+                                ? 'Carregando decks...'
+                                : 'Escolha um deck para otimizar'
+                                " :class="{
+                                    'border-red-500 ring-red-500':
+                                        form.errors.deck_name,
+                                }" />
 
-                        <p
-                            v-if="!loadingDecks && deckNames.length === 0"
-                            class="text-xs font-medium text-amber-600"
-                        >
+                        <p v-if="!loadingDecks && deckNames.length === 0" class="text-xs font-medium text-amber-600">
                             Nenhum deck encontrado. Abra o Anki com o plugin
                             AnkiConnect.
                         </p>
-                        <p
-                            v-if="form.errors.deck_name"
-                            class="text-sm font-medium text-red-500"
-                        >
+                        <p v-if="form.errors.deck_name" class="text-sm font-medium text-red-500">
                             {{ form.errors.deck_name }}
                         </p>
                     </div>
 
                     <div class="pt-4">
-                        <Button
-                            class="w-full"
-                            :disabled="form.processing || !form.deck_name"
-                        >
+                        <Button class="w-full" :disabled="form.processing || !form.deck_name">
                             {{
                                 form.processing
                                     ? 'Otimizando...'
