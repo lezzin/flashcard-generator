@@ -1,1 +1,0 @@
-[] Adicionar validação de conteúdo com IA -> ao melhorar o card, verificar se o conteúdo é bom, caso nao, retornar na resposta algum identificador para remover a nota do ANki
