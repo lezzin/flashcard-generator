@@ -19,8 +19,7 @@
         "laravel/wayfinder": "^0.1.11",
         "marvinlabs/laravel-discord-logger": "^1.4",
         "masbug/flysystem-google-drive-ext": "^2.4",
-        "predis/predis": "^3.4",
-        "smalot/pdfparser": "^2.12"
+        "predis/predis": "^3.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
