@@ -10,6 +10,10 @@ class FindNotesRequest extends FormRequest
     {
         return [
             'deck_name' => ['required', 'string'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'page' => ['nullable', 'integer', 'min:1'],
+            'strip_tags' => ['nullable', 'boolean'],
+            'filter_by_style' => ['nullable', 'boolean'],
         ];
     }
 }

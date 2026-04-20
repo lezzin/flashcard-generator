@@ -12,9 +12,11 @@ class NoteController extends Controller
     public function index(FindNotesRequest $request, FindNotesByDeckNameAction $action)
     {
         return $action->execute(
-            $request->input('deck_name'),
-            $request->input('per_page', 100),
-            $request->input('page'),
+            deckName: $request->input('deck_name'),
+            perPage: $request->input('per_page', 100),
+            page: $request->input('page'),
+            stripTags: $request->input('strip_tags', true),
+            filterByStyle: $request->input('filter_by_style', false),
         );
     }
 

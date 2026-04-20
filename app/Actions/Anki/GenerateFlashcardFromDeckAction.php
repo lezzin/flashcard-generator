@@ -22,7 +22,7 @@ class GenerateFlashcardFromDeckAction
         $page = 1;
 
         do {
-            $paginator = $this->findNotesAction->execute($deckName, page: $page);
+            $paginator = $this->findNotesAction->execute(deckName: $deckName, page: $page);
             $notes = $paginator->items();
 
             if (count($notes) === 0) {

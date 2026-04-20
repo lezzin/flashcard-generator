@@ -13,12 +13,12 @@ class OptimizeDeckPageJob implements ShouldQueue
     public function __construct(
         private readonly string $deckName,
         private readonly string $perPage,
-        private readonly string $page
-    ) {
-    }
+        private readonly string $page,
+        private readonly bool $filterByStyle,
+    ) {}
 
     public function handle(OptimizeDeckAction $action): void
     {
-        $action->execute($this->deckName, $this->perPage, $this->page);
+        $action->execute($this->deckName, $this->perPage, $this->page, $this->filterByStyle);
     }
 }

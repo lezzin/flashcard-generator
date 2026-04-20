@@ -9,6 +9,7 @@ use App\Actions\Anki\DispatchOptimizeDeckAction;
 use App\Http\Requests\Flashcard\ExportPackageRequest;
 use App\Http\Requests\Flashcard\GenerateFromDeckRequest;
 use App\Http\Requests\Flashcard\ImproveFlashcardsRequest;
+use App\Http\Resources\ResponseResource;
 use App\Services\Anki\AnkiConnectClient;
 
 class DeckController extends Controller
@@ -31,9 +32,15 @@ class DeckController extends Controller
     {
         $anki->validateConnection();
 
-        $action->execute($request->input('deck_name'));
+        $result = $action->execute(
+            deckName: $request->input('deck_name'),
+            filterByStyle: $request->input('filter_by_style', false)
+        );
 
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Enviado para a fila!',
+            'data'    => $result
+        ]);
     }
 
     public function generate(GenerateFromDeckRequest $request, GenerateFlashcardFromDeckAction $action)

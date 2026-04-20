@@ -8,12 +8,13 @@ use Illuminate\Support\Collection;
 
 class OptimizeDeckAction extends BaseOptimizeAction
 {
-    public function execute(string $deckName, string $perPage, string $page): void
+    public function execute(string $deckName, string $perPage, string $page, bool $filterByStyle): void
     {
         $currentNotesPage = app(FindNotesByDeckNameAction::class)->execute(
-            $deckName,
-            $perPage,
-            $page
+            deckName: $deckName,
+            perPage: $perPage,
+            page: $page,
+            filterByStyle: $filterByStyle,
         );
 
         $processedNotes =  app(HighlightNoteAction::class)->execute(collect($currentNotesPage->items()));

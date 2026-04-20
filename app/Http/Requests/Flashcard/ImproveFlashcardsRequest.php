@@ -10,6 +10,7 @@ class ImproveFlashcardsRequest extends FormRequest
     {
         return [
             'deck_name' => ['required', 'string'],
+            'filter_by_style' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 abstract class BaseFlashcardHighlightAction
 {
-    protected const COLORS = [
+    public const COLORS = [
         'background-color: #FFE0B2; color: #D84315; font-weight: bold;',
         'background-color: #E1F5FE; color: #0277BD; font-weight: bold;',
         'background-color: #F1F8E9; color: #33691E; font-weight: bold;',
