@@ -218,53 +218,19 @@ return [
                 'connection' => 'redis',
                 'queue' => ['flashcard:generate'],
                 'balance' => 'auto',
-                'processes' => 1,
+                'processes' => 2,
                 'tries' => 3,
+                'backoff' => [5, 10, 20],
                 'timeout' => 120,
-            ],
-
-            'flashcard-batch-generate' => [
-                'connection' => 'redis',
-                'queue' => ['flashcard:batch:generate'],
-                'balance' => 'auto',
-                'processes' => 5,
-                'tries' => 3,
-                'timeout' => 600,
-            ],
-
-            'flashcard-generate' => [
-                'connection' => 'redis',
-                'queue' => ['flashcard:generate'],
-                'balance' => 'auto',
-                'processes' => 1,
-                'tries' => 3,
-                'timeout' => 1200,
-            ],
-
-            'content-generate' => [
-                'connection' => 'redis',
-                'queue' => ['content:generate'],
-                'balance' => 'auto',
-                'processes' => 1,
-                'tries' => 3,
-                'timeout' => 180,
-            ],
-
-            'content-batch-generate' => [
-                'connection' => 'redis',
-                'queue' => ['content:batch:generate'],
-                'balance' => 'auto',
-                'processes' => 5,
-                'tries' => 3,
-                'timeout' => 1800,
             ],
 
             'deck-batch-optimize' => [
                 'connection' => 'redis',
                 'queue' => ['deck:batch:optimize'],
                 'balance' => 'auto',
-                'processes' => 5,
+                'processes' => 2,
                 'tries' => 3,
+                'backoff' => [5, 10, 20],
                 'timeout' => 120,
             ],
 
@@ -272,8 +238,8 @@ return [
                 'connection' => 'redis',
                 'queue' => ['deck:batch:export'],
                 'balance' => 'auto',
-                'processes' => 5,
-                'tries' => 3,
+                'processes' => 2,
+                'tries' => 2,
                 'timeout' => 120,
             ],
         ],
