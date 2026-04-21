@@ -149,6 +149,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'gemini-backup' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/gemini-backup.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
         'dicord' => [
             'channels' => ['discord'],
         ],

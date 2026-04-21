@@ -7,11 +7,8 @@ use App\DTOs\GeneratedFlashcardDto;
 use App\DTOs\SourceContentDto;
 use App\Enums\CardType;
 use App\Models\AnkiFlashcard;
-use App\Prompts\FlashcardFromDeckPrompt;
 use App\Prompts\FlashcardGeneratePrompt;
 use Illuminate\Support\Collection;
-use Gemini\Data\Schema;
-use Gemini\Enums\DataType;
 use Illuminate\Support\Facades\Log;
 
 use function Illuminate\Support\now;
@@ -22,14 +19,11 @@ class GenerateFlashcardAction
         protected readonly GenerateJsonAction $generateJsonAction
     ) {}
 
-    public function execute(
-        SourceContentDto $source,
-        string $baseTitle,
-        string $generationType,
-    ) {
+    public function execute(SourceContentDto $source)
+    {
         $data = $this->generateJsonAction->execute(
-            $this->getPrompt($generationType, $source),
-            $this->getSchema($generationType, $source),
+            FlashcardGeneratePrompt::handle($source),
+            FlashcardGeneratePrompt::schema()
         );
 
         if (!isset($data->flashcards)) {
@@ -41,14 +35,14 @@ class GenerateFlashcardAction
             return;
         }
 
-        $deckName =
-            !is_null($baseTitle) ?
-            "{$baseTitle}::{$source->title}" :
-            $source->title;
+        Log::channel('gemini-backup')->info("[FLASHCARD GENERATED]", [
+            'data' => json_encode($data),
+            'timestamp' => now(),
+        ]);
 
         $flashcards = $this->toDto(
             flashcards: $data->flashcards,
-            deckName: $deckName
+            deckName: $source->title
         );
 
         if ($flashcards->isEmpty()) {
@@ -63,11 +57,11 @@ class GenerateFlashcardAction
         $toInsert = $flashcards->map(function ($flashcard) {
             $fields = $flashcard->type == CardType::CLOZE ? [
                 'Texto' => $flashcard->front,
-                'Extra' => $flashcard->extra,
+                'Extra' => $flashcard?->extra ?? null,
             ] : [
                 'Frente' => $flashcard->front,
                 'Verso'  => $flashcard->back,
-                'Extra'  => $flashcard->extra,
+                'Extra'  => $flashcard?->extra ?? null,
             ];
 
             return [
@@ -80,6 +74,8 @@ class GenerateFlashcardAction
         })->toArray();
 
         AnkiFlashcard::insert($toInsert);
+
+        app(AddFromAIToAnkiAction::class)->execute(collect($toInsert));
     }
 
     protected function toDto(array $flashcards, string $deckName): Collection
@@ -95,64 +91,5 @@ class GenerateFlashcardAction
                 };
             })
             ->filter();
-    }
-
-    private function getPrompt(string $generationType, SourceContentDto $source)
-    {
-        return match ($generationType) {
-            "deck"    => FlashcardFromDeckPrompt::handle($source),
-            "content" => FlashcardGeneratePrompt::handle($source),
-        };
-    }
-
-    private function getSchema(string $generationType, SourceContentDto $source)
-    {
-        return match ($generationType) {
-            "deck"    => new Schema(
-                type: DataType::OBJECT,
-                properties: [
-                    'flashcards' => new Schema(
-                        type: DataType::ARRAY,
-                        items: new Schema(
-                            type: DataType::OBJECT,
-                            properties: [
-                                'type' => new Schema(
-                                    type: DataType::STRING,
-                                    enum: CardType::values()
-                                ),
-                                'front' => new Schema(type: DataType::STRING),
-                                'back' => new Schema(type: DataType::STRING),
-                                'extra' => new Schema(type: DataType::STRING),
-                                'deck' => new Schema(type: DataType::STRING),
-                            ],
-                            required: ['type', 'front']
-                        )
-                    ),
-                ],
-                required: ['flashcards']
-            ),
-            "content" => new Schema(
-                type: DataType::OBJECT,
-                properties: [
-                    'flashcards' => new Schema(
-                        type: DataType::ARRAY,
-                        items: new Schema(
-                            type: DataType::OBJECT,
-                            properties: [
-                                'type' => new Schema(
-                                    type: DataType::STRING,
-                                    enum: CardType::values()
-                                ),
-                                'front' => new Schema(type: DataType::STRING),
-                                'back' => new Schema(type: DataType::STRING),
-                                'extra' => new Schema(type: DataType::STRING),
-                            ],
-                            required: ['type', 'front']
-                        )
-                    ),
-                ],
-                required: ['flashcards']
-            ),
-        };
     }
 }

@@ -4,27 +4,28 @@ namespace App\Mappers;
 
 use App\DTOs\GeneratedFlashcardDto;
 use App\Enums\CardType;
-use App\Models\AnkiFlashcard;
 
 class FlashcardMapper
 {
-    public static function fromDatabaseToDto(AnkiFlashcard $card): GeneratedFlashcardDto
+    public static function fromDatabaseToDto(object $card): GeneratedFlashcardDto
     {
+        $fields = json_decode($card->fields);
+
         if ($card->type == CardType::CLOZE) {
             return new GeneratedFlashcardDto(
                 type: CardType::CLOZE,
                 deck: $card->deck,
-                front: $card->fields['Texto'],
-                extra: $card->fields['Extra'],
+                front: $fields->Texto,
+                extra: $fields->Extra,
             );
         }
 
         return new GeneratedFlashcardDto(
             type: CardType::SIMPLE,
             deck: $card->deck,
-            front: $card->fields['Frente'],
-            back: $card->fields['Verso'],
-            extra: $card->fields['Extra'],
+            front: $fields->Frente,
+            back: $fields->Verso,
+            extra: $fields->Extra,
         );
     }
 }

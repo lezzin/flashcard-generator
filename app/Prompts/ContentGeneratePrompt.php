@@ -2,54 +2,67 @@
 
 namespace App\Prompts;
 
+use Gemini\Data\Schema;
+use Gemini\Enums\DataType;
+
 class ContentGeneratePrompt
 {
-    public static function handle(?string $context, string $text): string
+    public static function handle(string $content): string
     {
         $prompt = <<<'PROMPT'
-Você é um especialista em memorização e criação de flashcards (Anki).
+    Você é um especialista em memorização e criação de flashcards (Anki).
 
-Sua tarefa é converter o conteúdo em múltiplos pontos independentes, cada um representando UM único conceito claro.
+    Sua tarefa é transformar o conteúdo em unidades de estudo independentes e bem estruturadas.
 
-REGRAS CRÍTICAS:
-- Cada linha deve representar APENAS 1 conceito.
-- NÃO agrupe conceitos diferentes na mesma linha.
-- Prefira várias linhas curtas ao invés de poucas linhas longas.
-- Use linguagem simples, direta e objetiva.
-- Cada linha deve poder virar um flashcard independente.
-- Inclua exemplos quando existirem.
-- Não invente informações.
-- NÃO use markdown.
+    REGRAS CRÍTICAS:
+    - Cada linha deve conter UM conceito completo e memorizável.
+    - NÃO fragmente excessivamente conceitos que fazem sentido juntos.
+    - Agrupe características relacionadas no mesmo conceito quando forem parte da mesma definição.
+    - Prefira clareza e compreensão, não atomização extrema.
+    - Use linguagem simples e direta.
+    - Inclua exemplos quando ajudarem na memorização.
+    - Não invente informações.
+    - NÃO use markdown.
 
-FORMATO:
-- Uma linha por conceito
-- Separe as linhas usando quebra de linha (\n)
-- NÃO use listas com símbolos (•, -, etc)
+    FORMATO:
+    - Uma linha por flashcard
+    - Separe com quebra de linha (\n)
+    - Sem bullets ou símbolos
 
-EXEMPLO DE SAÍDA CORRETA:
-Mutualismo: ambos se beneficiam
-Mutualismo obrigatório: espécies dependem da relação
-Exemplo: líquen (alga + fungo)
+    BOA PRÁTICA:
+    - Definições completas devem permanecer juntas
+    - Listas conceituais podem ser agrupadas se forem parte do mesmo tema
+    - Só separar quando realmente forem conceitos independentes
 
-EXEMPLO DE SAÍDA ERRADA:
-Mutualismo é uma relação onde ambos se beneficiam e dependem da relação, como no caso do líquen.
+    EXEMPLO CORRETO:
+    Mutualismo: relação ecológica em que ambas as espécies se beneficiam
+    Exemplo: líquen (alga + fungo)
 
-OBJETIVO:
-Maximizar a memorização (formato ideal para Anki)
+    CF/88: Constituição promulgada, rígida, analítica, formal, dogmática e eclética
 
-SAÍDA (JSON):
-{
-  "title": "Título curto e específico (máx 5 palavras)",
-  "summary": "Linhas separadas por quebra de linha"
-}
-PROMPT;
+    EXEMPLO ERRADO:
+    CF/88: promulgada
+    CF/88: rígida
+    CF/88: analítica
 
-        if ($context) {
-            $prompt .= "\n\nCONTEXTO DA SEÇÃO:\n{$context}";
-        }
+    OBJETIVO:
+    Criar flashcards ideais para memorização profunda e compreensão conceitual.
+    PROMPT;
 
-        $prompt .= "\n\nCONTEÚDO:\n{$text}";
+        $prompt .= "\n\nCONTEÚDO:\n{$content}";
 
         return $prompt;
+    }
+
+    public static function schema(): Schema
+    {
+        return new Schema(
+            type: DataType::OBJECT,
+            properties: [
+                'title' => new Schema(type: DataType::STRING),
+                'content' => new Schema(type: DataType::STRING),
+            ],
+            required: ['title', 'content'],
+        );
     }
 }

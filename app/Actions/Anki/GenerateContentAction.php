@@ -3,10 +3,9 @@
 namespace App\Actions\Anki;
 
 use App\Actions\Gemini\GenerateJsonAction;
+use App\DTOs\SourceContentDto;
 use App\Models\GeneratedContent;
 use App\Prompts\ContentGeneratePrompt;
-use Gemini\Data\Schema;
-use Gemini\Enums\DataType;
 use Illuminate\Support\Facades\Log;
 
 class GenerateContentAction
@@ -15,40 +14,28 @@ class GenerateContentAction
         private readonly GenerateJsonAction $generateJsonAction
     ) {}
 
-    public function execute(array $chunk, int $documentTreeId, ?string $newContext = null)
+    public function execute(string $content)
     {
-        if (count($chunk) === 0) {
-            Log::channel('content')->info('The provided content chunk is empty: ', [
-                'content' => json_encode($chunk),
-                'tree_id' => $documentTreeId,
-                'context' => $newContext
-            ]);
-
-            return;
-        }
-
-        $schema = new Schema(
-            type: DataType::OBJECT,
-            properties: [
-                'title' => new Schema(type: DataType::STRING),
-                'summary' => new Schema(type: DataType::STRING),
-            ],
-            required: ['title', 'summary'],
+        $result = $this->generateJsonAction->execute(
+            ContentGeneratePrompt::handle($content),
+            ContentGeneratePrompt::schema()
         );
 
-        $prompt = ContentGeneratePrompt::handle(
-            $newContext,
-            implode("\n", $chunk)
-        );
-
-        $result = $this->generateJsonAction->execute($prompt, $schema);
+        Log::channel('gemini-backup')->info("[CONTENT GENERATED]", [
+            'data' => json_encode($result),
+            'timestamp' => now(),
+        ]);
 
         GeneratedContent::insert([
             'title'       => $result->title,
-            'description' => $result->summary,
-            'tree_id'     => $documentTreeId,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'description' => $result->content,
+            'created_at'  => now(),
+            'updated_at'  => now(),
         ]);
+
+        $source = SourceContentDto::fromAIResult($result);
+        app(GenerateFlashcardAction::class)->execute($source);
+
+        return $result;
     }
 }

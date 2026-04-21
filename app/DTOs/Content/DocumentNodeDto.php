@@ -9,11 +9,11 @@ class DocumentNodeDto
         public ?string $title = null,
         public ?int $level = null,
         public ?string $content = null,
+        /** @var DocumentNodeDto[] */
         public array $items = [],
         /** @var DocumentNodeDto[] */
         public array $children = [],
-    ) {
-    }
+    ) {}
 
     public static function section(string $title, int $level): self
     {
@@ -28,5 +28,10 @@ class DocumentNodeDto
     public static function list(array $items): self
     {
         return new self(type: 'list', items: $items);
+    }
+
+    public static function listItem(string $content, array $children = []): self
+    {
+        return new self(type: 'list_item', content: $content, children: $children);
     }
 }

@@ -15,14 +15,12 @@ Route::prefix('contents')->group(function () {
 
 Route::prefix('flashcards')->group(function () {
     Route::post('/', [FlashcardController::class, 'store']);
-    Route::post('/add', [FlashcardController::class, 'addToAnki']);
 });
 
 Route::prefix('decks')->group(function () {
     Route::get('/', [DeckController::class, 'index']);
     Route::post('export', [DeckController::class, 'export']);
     Route::post('improve', [DeckController::class, 'improve']);
-    Route::post('generate', [DeckController::class, 'generate']);
 });
 
 Route::prefix('notes')->group(function () {

@@ -18,14 +18,14 @@ class FindNotesByDeckNameAction
     ) {}
 
     public function execute(
-        string $deckName,
+        ?string $deckName = null,
         int $perPage = 100,
         int $page = 1,
         bool $stripTags = true,
         bool $filterByStyle = true,
     ): LengthAwarePaginator {
         $noteIds = $this->ankiClient->invoke('findNotes', [
-            'query' => "\"deck:{$deckName}\"",
+            'query' => is_null($deckName) ? "deck:*" : "\"deck:{$deckName}\"",
         ]);
 
         $results = $filterByStyle

@@ -9,7 +9,7 @@ class FindNotesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'deck_name' => ['required', 'string'],
+            'deck_name' => ['nullable', 'string'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'page' => ['nullable', 'integer', 'min:1'],
             'strip_tags' => ['nullable', 'boolean'],

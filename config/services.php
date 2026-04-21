@@ -39,9 +39,4 @@ return [
         'host' => env('ANKI_CONNECTION', 'http://127.0.0.1:8765'),
         'timeout' => env('ANKI_CONNECTION_TIMEOUT', 60),
     ],
-
-    'parser' => [
-        'host' => env('PARSER_CONNECTION', 'http://127.0.0.1:3000'),
-        'timeout' => env('PARSER_CONNECTION_TIMEOUT', 120),
-    ],
 ];

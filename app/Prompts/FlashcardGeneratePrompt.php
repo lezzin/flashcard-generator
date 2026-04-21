@@ -3,12 +3,15 @@
 namespace App\Prompts;
 
 use App\DTOs\SourceContentDto;
+use App\Enums\CardType;
+use Gemini\Data\Schema;
+use Gemini\Enums\DataType;
 
 class FlashcardGeneratePrompt
 {
-    public static function handle(SourceContentDto $source): string
-    {
-        return <<<PROMPT
+  public static function handle(SourceContentDto $source): string
+  {
+    return <<<PROMPT
 Você é um especialista em criação de flashcards para memorização de longo prazo (estilo Anki).
 Sua tarefa é transformar o resumo fornecido em um conjunto de flashcards de alta qualidade, objetivos e fáceis de revisar.
 
@@ -45,9 +48,32 @@ REGRAS DE OURO:
 CONTEÚDO PARA TRANSFORMAR EM FLASHCARDS:
 Título: {$source->title}
 Texto: {$source->content}
-
-INSTRUÇÃO DE SAÍDA:
-Retorne EXCLUSIVAMENTE um objeto JSON contendo uma lista de "flashcards".
 PROMPT;
-    }
+  }
+
+  public static function schema(): Schema
+  {
+    return new Schema(
+      type: DataType::OBJECT,
+      properties: [
+        'flashcards' => new Schema(
+          type: DataType::ARRAY,
+          items: new Schema(
+            type: DataType::OBJECT,
+            properties: [
+              'type' => new Schema(
+                type: DataType::STRING,
+                enum: CardType::values()
+              ),
+              'front' => new Schema(type: DataType::STRING),
+              'back' => new Schema(type: DataType::STRING),
+              'extra' => new Schema(type: DataType::STRING),
+            ],
+            required: ['type', 'front']
+          )
+        ),
+      ],
+      required: ['flashcards']
+    );
+  }
 }

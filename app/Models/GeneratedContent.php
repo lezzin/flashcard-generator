@@ -9,11 +9,5 @@ class GeneratedContent extends Model
     protected $fillable = [
         "description",
         "title",
-        "tree_id"
     ];
-
-    public function tree()
-    {
-        return $this->belongsTo(BaseContentTree::class, 'tree_id');
-    }
 }
