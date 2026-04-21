@@ -15,7 +15,8 @@ class HighlightNoteAction extends BaseFlashcardHighlightAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function execute(array|Collection $notes): array|Collection
     {

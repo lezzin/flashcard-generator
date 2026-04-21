@@ -17,13 +17,14 @@ class AddFromAIToAnkiAction
         private readonly HighlightNoteAction $highlightNoteAction,
         private readonly CreateDeckAction $createDeckAction,
         private readonly AddNotesAction $addNotesAction,
-    ) {}
+    ) {
+    }
 
     public function execute(Collection $flashcards): void
     {
         $payloads = $flashcards
-            ->map(fn($value) => FlashcardMapper::fromDatabaseToDto(is_array($value) ? (object) $value : $value))
-            ->map(fn($card) => $this->buildPayload($card));
+            ->map(fn ($value) => FlashcardMapper::fromDatabaseToDto(is_array($value) ? (object) $value : $value))
+            ->map(fn ($card) => $this->buildPayload($card));
 
         $improvedPayloads = $this->highlightNoteAction->execute($payloads);
 
@@ -32,7 +33,7 @@ class AddFromAIToAnkiAction
             ->unique();
 
         $uniqueDecks->each(
-            fn($deck) => $this->createDeckAction->execute($deck)
+            fn ($deck) => $this->createDeckAction->execute($deck)
         );
 
         $this->addNotesAction->execute(

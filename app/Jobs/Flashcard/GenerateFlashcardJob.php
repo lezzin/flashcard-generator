@@ -14,7 +14,8 @@ class GenerateFlashcardJob implements ShouldQueue
 
     public function __construct(
         private readonly string $content,
-    ) {}
+    ) {
+    }
 
     public function handle(GenerateContentAction $action): void
     {

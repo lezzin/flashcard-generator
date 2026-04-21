@@ -15,7 +15,8 @@ class FindNotesByDeckNameAction
     public function __construct(
         private readonly AnkiConnectClient $ankiClient,
         private readonly GetDeckNamesFromCardIdsAction $getDeckNames,
-    ) {}
+    ) {
+    }
 
     public function execute(
         ?string $deckName = null,
@@ -47,15 +48,15 @@ class FindNotesByDeckNameAction
             ->chunk(self::CHUNK_SIZE)
             ->flatMap(function ($chunk) {
                 return $this->ankiClient->invoke('notesInfo', [
-                    'notes' => $chunk->map(fn($id) => (int) $id)->values()->all()
+                    'notes' => $chunk->map(fn ($id) => (int) $id)->values()->all()
                 ]);
             })
-            ->reject(fn($note) => $this->noteHasColor($note));
+            ->reject(fn ($note) => $this->noteHasColor($note));
 
         $total = $filtered->count();
 
         $pagedItems = $filtered->forPage(request('page', 1), request('perPage', 100))
-            ->map(fn($note) => $this->enrichAndFormatNote($note, $stripTags))
+            ->map(fn ($note) => $this->enrichAndFormatNote($note, $stripTags))
             ->values();
 
         return ['items' => $pagedItems, 'total' => $total];
@@ -69,7 +70,7 @@ class FindNotesByDeckNameAction
         $noteInfos = $this->ankiClient->invoke('notesInfo', ['notes' => $chunkIds]);
 
         $items = collect($noteInfos)
-            ->map(fn($note) => $this->enrichAndFormatNote($note, $stripTags));
+            ->map(fn ($note) => $this->enrichAndFormatNote($note, $stripTags));
 
         return ['items' => $items, 'total' => count($noteIds)];
     }

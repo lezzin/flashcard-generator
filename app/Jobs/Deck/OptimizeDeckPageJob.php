@@ -15,7 +15,8 @@ class OptimizeDeckPageJob implements ShouldQueue
         private readonly string $perPage,
         private readonly string $page,
         private readonly bool $filterByStyle,
-    ) {}
+    ) {
+    }
 
     public function handle(OptimizeDeckAction $action): void
     {

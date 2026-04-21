@@ -12,7 +12,8 @@ class GenerateContentAction
 {
     public function __construct(
         private readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function execute(string $content)
     {

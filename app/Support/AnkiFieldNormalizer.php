@@ -26,7 +26,7 @@ class AnkiFieldNormalizer
         $fields = self::normalizeExtra($fields);
         $extra = $fields['Extra'] ?? null;
 
-        $filtered = array_filter($fields, fn($v) => $v !== null && $v !== '');
+        $filtered = array_filter($fields, fn ($v) => $v !== null && $v !== '');
 
         if (array_key_exists('Extra', $fields)) {
             $filtered['Extra'] = $extra;

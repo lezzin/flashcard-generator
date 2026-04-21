@@ -17,7 +17,8 @@ class GenerateFlashcardAction
 {
     public function __construct(
         protected readonly GenerateJsonAction $generateJsonAction
-    ) {}
+    ) {
+    }
 
     public function execute(SourceContentDto $source)
     {

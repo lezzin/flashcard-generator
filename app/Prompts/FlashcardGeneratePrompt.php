@@ -9,9 +9,9 @@ use Gemini\Enums\DataType;
 
 class FlashcardGeneratePrompt
 {
-  public static function handle(SourceContentDto $source): string
-  {
-    return <<<PROMPT
+    public static function handle(SourceContentDto $source): string
+    {
+        return <<<PROMPT
 Você é um especialista em criação de flashcards de alta performance para memorização de longo prazo (Anki).
 
 Sua função é transformar o conteúdo em o MAIOR NÚMERO POSSÍVEL de flashcards corretos, sem perder nenhuma informação relevante.
@@ -75,31 +75,31 @@ CONTEÚDO:
 Título: {$source->title}
 Texto: {$source->content}
 PROMPT;
-  }
+    }
 
-  public static function schema(): Schema
-  {
-    return new Schema(
-      type: DataType::OBJECT,
-      properties: [
-        'flashcards' => new Schema(
-          type: DataType::ARRAY,
-          items: new Schema(
+    public static function schema(): Schema
+    {
+        return new Schema(
             type: DataType::OBJECT,
             properties: [
+            'flashcards' => new Schema(
+                type: DataType::ARRAY,
+                items: new Schema(
+                    type: DataType::OBJECT,
+                    properties: [
               'type' => new Schema(
-                type: DataType::STRING,
-                enum: CardType::values()
+                  type: DataType::STRING,
+                  enum: CardType::values()
               ),
               'front' => new Schema(type: DataType::STRING),
               'back' => new Schema(type: DataType::STRING),
               'extra' => new Schema(type: DataType::STRING),
             ],
-            required: ['type', 'front']
-          )
-        ),
+                    required: ['type', 'front']
+                )
+            ),
       ],
-      required: ['flashcards']
-    );
-  }
+            required: ['flashcards']
+        );
+    }
 }

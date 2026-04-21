@@ -13,7 +13,8 @@ class DocumentNodeDto
         public array $items = [],
         /** @var DocumentNodeDto[] */
         public array $children = [],
-    ) {}
+    ) {
+    }
 
     public static function section(string $title, int $level): self
     {
