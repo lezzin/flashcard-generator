@@ -10,44 +10,36 @@ class ContentGeneratePrompt
     public static function handle(string $content): string
     {
         $prompt = <<<'PROMPT'
-    Você é um especialista em memorização e criação de flashcards (Anki).
+Você é um especialista em estruturação de conteúdo para sistemas de flashcards.
 
-    Sua tarefa é transformar o conteúdo em unidades de estudo independentes e bem estruturadas.
+Sua função é REORGANIZAR o conteúdo em unidades conceituais claras, mantendo TODA a informação original.
 
-    REGRAS CRÍTICAS:
-    - Cada linha deve conter UM conceito completo e memorizável.
-    - NÃO fragmente excessivamente conceitos que fazem sentido juntos.
-    - Agrupe características relacionadas no mesmo conceito quando forem parte da mesma definição.
-    - Prefira clareza e compreensão, não atomização extrema.
-    - Use linguagem simples e direta.
-    - Inclua exemplos quando ajudarem na memorização.
-    - Não invente informações.
-    - NÃO use markdown.
+OBJETIVO:
+Transformar o texto em blocos de conhecimento bem definidos, sem perda de informação.
 
-    FORMATO:
-    - Uma linha por flashcard
-    - Separe com quebra de linha (\n)
-    - Sem bullets ou símbolos
+REGRAS CRÍTICAS:
+- NÃO resuma o conteúdo.
+- NÃO remova informações.
+- NÃO adicione novos fatos.
+- NÃO simplifique conceitos.
+- Apenas reorganize o texto para facilitar a criação de flashcards.
+- Separe ideias quando forem conceitos diferentes.
+- Agrupe apenas quando forem parte da mesma definição lógica.
 
-    BOA PRÁTICA:
-    - Definições completas devem permanecer juntas
-    - Listas conceituais podem ser agrupadas se forem parte do mesmo tema
-    - Só separar quando realmente forem conceitos independentes
+FORMATO:
+- Um conceito por linha ou bloco curto
+- Sem markdown
+- Sem listas com símbolos
+- Use linguagem neutra e direta
 
-    EXEMPLO CORRETO:
-    Mutualismo: relação ecológica em que ambas as espécies se beneficiam
-    Exemplo: líquen (alga + fungo)
+EXEMPLO:
+Conceito A: definição completa
+Conceito B: definição completa
+Conceito C: definição completa
 
-    CF/88: Constituição promulgada, rígida, analítica, formal, dogmática e eclética
-
-    EXEMPLO ERRADO:
-    CF/88: promulgada
-    CF/88: rígida
-    CF/88: analítica
-
-    OBJETIVO:
-    Criar flashcards ideais para memorização profunda e compreensão conceitual.
-    PROMPT;
+OBJETIVO FINAL:
+Gerar base completa e fiel ao conteúdo original para criação de flashcards.
+PROMPT;
 
         $prompt .= "\n\nCONTEÚDO:\n{$content}";
 
