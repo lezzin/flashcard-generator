@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Anki\GenerateContentAction;
 use App\Http\Requests\Flashcard\FlashcardGenerateRequest;
+use App\Jobs\Flashcard\GenerateFlashcardJob;
 
 class FlashcardController extends Controller
 {
-    public function store(FlashcardGenerateRequest $request, GenerateContentAction $action)
+    public function store(FlashcardGenerateRequest $request)
     {
-        $action->execute($request->input('content'));
+        dispatch(
+            new GenerateFlashcardJob($request->input('content'))
+        )->onQueue('flashcard:generate');
 
         return response()->noContent();
     }

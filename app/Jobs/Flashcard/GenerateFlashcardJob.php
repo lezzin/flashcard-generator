@@ -2,8 +2,7 @@
 
 namespace App\Jobs\Flashcard;
 
-use App\Actions\Anki\GenerateFlashcardAction;
-use App\DTOs\SourceContentDto;
+use App\Actions\Anki\GenerateContentAction;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -14,18 +13,11 @@ class GenerateFlashcardJob implements ShouldQueue
     use Batchable;
 
     public function __construct(
-        private readonly SourceContentDto $source,
-        private readonly string $baseTitle,
-        private readonly string $generationType,
-    ) {
-    }
+        private readonly string $content,
+    ) {}
 
-    public function handle(GenerateFlashcardAction $action): void
+    public function handle(GenerateContentAction $action): void
     {
-        $action->execute(
-            source: $this->source,
-            baseTitle: $this->baseTitle,
-            generationType: $this->generationType
-        );
+        $action->execute($this->content);
     }
 }
