@@ -134,6 +134,9 @@ abstract class BaseFlashcardHighlightAction
 
     protected function getNoteHash(array $note): string
     {
-        return md5($note['modelName'] . json_encode($note['fields']));
+        $fieldsJson = json_encode($note['fields'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $hash = md5($fieldsJson);
+
+        return $hash;
     }
 }

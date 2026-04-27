@@ -2,29 +2,32 @@
 
 namespace App\Prompts;
 
+use Gemini\Data\Schema;
+use Gemini\Enums\DataType;
+
 class FlashcardEnhancePrompt
 {
-    public static function handle(array $items): string
-    {
-        $optimized = array_values(array_filter(array_map(function ($item) {
-            if (!isset($item['type'])) {
-                return null;
-            }
+  public static function handle(array $items): string
+  {
+    $optimized = array_values(array_filter(array_map(function ($item) {
+      if (!isset($item['type'])) {
+        return null;
+      }
 
-            if ($item['type'] === 'qa') {
-                return ['qa', $item['front'] ?? '', $item['back'] ?? '', $item['extra'] ?? null];
-            }
+      if ($item['type'] === 'qa') {
+        return ['qa', $item['front'] ?? '', $item['back'] ?? '', $item['extra'] ?? null];
+      }
 
-            if ($item['type'] === 'cloze') {
-                return ['cloze', $item['text'] ?? '', $item['extra'] ?? null];
-            }
+      if ($item['type'] === 'cloze') {
+        return ['cloze', $item['text'] ?? '', $item['extra'] ?? null];
+      }
 
-            return null;
-        }, $items)));
+      return null;
+    }, $items)));
 
-        $json = json_encode($optimized, JSON_UNESCAPED_UNICODE);
+    $json = json_encode($optimized, JSON_UNESCAPED_UNICODE);
 
-        return <<<PROMPT
+    return <<<PROMPT
 Você é um especialista em memorização e criação de flashcards de alta qualidade.
 
 Cada item possui um "type":
@@ -219,5 +222,37 @@ INPUT
 {$json}
 
 PROMPT;
-    }
+  }
+
+  public static function schema(): Schema
+  {
+    $schema = new Schema(
+      type: DataType::OBJECT,
+      properties: [
+        'results' => new Schema(
+          type: DataType::ARRAY,
+          items: new Schema(
+            type: DataType::OBJECT,
+            properties: [
+              'valid' => new Schema(type: DataType::BOOLEAN),
+              'recoverable' => new Schema(type: DataType::BOOLEAN),
+              'reason' => new Schema(type: DataType::STRING),
+              'improved_text' => new Schema(type: DataType::STRING),
+              'extra' => new Schema(type: DataType::STRING),
+              'keywords' => new Schema(
+                type: DataType::ARRAY,
+                items: new Schema(type: DataType::STRING),
+                minItems: 1,
+                maxItems: 3
+              ),
+            ],
+            required: ['valid', 'recoverable', 'reason', 'improved_text', 'keywords']
+          )
+        ),
+      ],
+      required: ['results']
+    );
+
+    return $schema;
+  }
 }

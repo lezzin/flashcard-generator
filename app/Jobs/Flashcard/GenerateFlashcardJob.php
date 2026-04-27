@@ -13,13 +13,6 @@ class GenerateFlashcardJob implements ShouldQueue
     use Queueable;
     use Batchable;
 
-    protected $tries = 3;
-
-    public function backoff(): array
-    {
-        return [10, 30, 60];
-    }
-
     public function __construct(
         private readonly SourceContentDto $dto,
     ) {}
