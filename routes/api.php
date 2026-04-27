@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ContentController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\FileController;
@@ -9,12 +8,9 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('contents')->group(function () {
-    Route::post('/', [ContentController::class, 'store']);
-});
-
 Route::prefix('flashcards')->group(function () {
     Route::post('/', [FlashcardController::class, 'store']);
+    Route::post('/backup', [FlashcardController::class, 'storeByBackup']);
 });
 
 Route::prefix('decks')->group(function () {
@@ -39,5 +35,4 @@ Route::prefix('files')->group(function () {
 
 Route::prefix('database')->group(function () {
     Route::get('/notes', [DatabaseController::class, 'getNotes']);
-    Route::get('/contents', [DatabaseController::class, 'getGeneratedContents']);
 });

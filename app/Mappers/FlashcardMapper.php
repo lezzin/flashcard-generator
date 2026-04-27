@@ -7,25 +7,14 @@ use App\Enums\CardType;
 
 class FlashcardMapper
 {
-    public static function fromDatabaseToDto(object $card): GeneratedFlashcardDto
+    public static function toDto(object $card, string $deckName): ?GeneratedFlashcardDto
     {
-        $fields = json_decode($card->fields);
+        $card->deck = $deckName;
 
-        if ($card->type == CardType::CLOZE) {
-            return new GeneratedFlashcardDto(
-                type: CardType::CLOZE,
-                deck: $card->deck,
-                front: $fields->Texto,
-                extra: $fields->Extra,
-            );
-        }
-
-        return new GeneratedFlashcardDto(
-            type: CardType::SIMPLE,
-            deck: $card->deck,
-            front: $fields->Frente,
-            back: $fields->Verso,
-            extra: $fields->Extra,
-        );
+        return match ($card->type) {
+            CardType::CLOZE->value => GeneratedFlashcardDto::omitFromObject($card),
+            CardType::SIMPLE->value => GeneratedFlashcardDto::simpleFromObject($card),
+            default => null,
+        };
     }
 }
